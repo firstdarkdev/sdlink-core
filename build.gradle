@@ -1,0 +1,152 @@
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
+    id 'maven-publish'
+    id "com.diffplug.spotless" version "6.13.0"
+}
+apply plugin: 'java'
+java.toolchain.languageVersion = JavaLanguageVersion.of(16)
+
+group 'com.hypherionmc.sdlink'
+version = "${version_major}.${version_minor}.${version_patch}"
+
+configurations {
+    shaded
+    shaded.transitive = true
+    implementation.extendsFrom(shaded)
+}
+
+repositories {
+    mavenCentral()
+    maven { url "https://maven.firstdarkdev.xyz/releases" }
+    maven { url "https://maven.firstdarkdev.xyz/snapshots" }
+    maven { url "https://m2.dv8tion.net/releases" }
+    maven { url "https://nexus.velocitypowered.com/repository/maven-public/" }
+}
+
+dependencies {
+    // Core dependencies, Shaded
+
+    // Discord
+    shaded("pw.chew:jda-chewtils:${chewtils}") {
+        exclude group: 'org.apache.commons'
+    }
+    shaded("net.dv8tion:JDA:${jda}") {
+        exclude module: 'opus-java'
+        exclude group: 'org.apache.commons'
+    }
+    shaded("club.minnced:discord-webhooks:${webhooks}")
+
+    // Utilities
+    shaded("org.apache.commons:commons-collections4:${commons4}")
+    shaded("com.github.oshi:oshi-core:${oshi}")
+    shaded("org.jasypt:jasypt:${jasypt}:lite")
+    shaded("io.jsondb:jsondb-core:${json_db}")
+
+    // Config
+    shaded("me.hypherionmc.moon-config:core:${moonconfig}")
+    shaded("me.hypherionmc.moon-config:toml:${moonconfig}")
+
+
+    // Compile Only, Not Shaded
+
+    // Logging
+    implementation("org.apache.logging.log4j:log4j-api:${log4j}")
+    implementation("org.apache.logging.log4j:log4j-core:${log4j}")
+    implementation("org.apache.logging.log4j:log4j-slf4j18-impl:${log4j}")
+
+    // Utilities
+    implementation("org.apache.commons:commons-lang3:${commons}")
+    implementation("commons-io:commons-io:${commonsio}")
+    implementation("com.google.code.gson:gson:${gson}")
+    implementation("com.google.guava:guava:31.1-jre")
+}
+
+shadowJar {
+    configurations = [project.configurations.shaded]
+    dependencies {
+        exclude(dependency('org.apache.logging.log4j:log4j-core:.*'))
+        exclude(dependency('org.apache.logging.log4j:log4j-core:.*'))
+        exclude(dependency('org.apache.logging.log4j:log4j-slf4j18-impl:.*'))
+        exclude(dependency('org.apache.commons:commons-lang3:.*'))
+        exclude(dependency('com.google.code.gson:.*'))
+        exclude(dependency('javax:.*'))
+        exclude(dependency('org.jetbrains:.*'))
+        exclude(dependency('net.java.dev.jna:.*'))
+        exclude(dependency('org.slf4j:.*'))
+
+        exclude 'org/slf4j/**'
+        exclude 'META-INF/versions/9/**'
+        exclude 'module-info.class'
+        exclude 'org/apache/commons/lang3/**'
+
+        relocate 'org.apache.commons.collections4', shade_group + 'apache.commons.collections4'
+        relocate 'javax.annotation', shade_group + 'javax.annotation'
+        relocate 'gnu.trove', shade_group + 'gnu.trove'
+        relocate 'com.fasterxml', shade_group + 'fasterxml'
+        relocate 'club.minnced', shade_group + 'club.minnced'
+        relocate 'com.iwebpp', shade_group + 'iwebpp'
+        relocate 'com.jagrosh', shade_group + 'jagrosh'
+        relocate 'com.neovisionaries', shade_group + 'neovisionaries'
+        relocate 'me.hypherionmc.moonconfig', shade_group + 'moonconfig'
+        relocate 'me.hypherionmc.jqlite', shade_group + 'jqlite'
+        relocate 'net.dv8tion', shade_group + 'dv8tion'
+        relocate 'okhttp3', shade_group + 'okhttp3'
+        relocate 'okio', shade_group + 'okio'
+        relocate 'org.json', shade_group + 'json'
+        relocate 'org.sqlite', shade_group + 'sqlite'
+        relocate 'pw.chew', shade_group + 'chew'
+        relocate 'oshi', shade_group + 'oshi'
+        relocate 'kotlin', shade_group + 'kotlin'
+        relocate 'org.jasypt', shade_group + 'jasypt'
+        relocate 'com.google', shade_group + 'google'
+        relocate 'edu', shade_group + 'edu'
+        relocate 'io', shade_group + 'io'
+        relocate 'javassist', shade_group + 'javassist'
+        relocate 'net', shade_group + 'net'
+        relocate 'org.apache.commons.beanutils', shade_group + 'org.apache.commons.beanutils'
+        relocate 'org.apache.commons.collections', shade_group + 'org.apache.commons.collections'
+        relocate 'org.apache.commons.jxpath', shade_group + 'org.apache.commons.jxpath'
+        relocate 'org.apache.commons.logging', shade_group + 'org.apache.commons.logging'
+        relocate 'org.reflections', shade_group + 'org.reflections'
+    }
+    exclude 'META-INF/**'
+    setArchiveClassifier('')
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact(shadowJar) {
+                builtBy shadowJar
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            url System.getenv("MAVEN_URL")
+            credentials {
+                username System.getenv("MAVEN_USER")
+                password System.getenv("MAVEN_PASS")
+            }
+        }
+    }
+}
+
+spotless {
+    java {
+        licenseHeaderFile(rootProject.file("HEADER")).yearSeparator("-")
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.encoding = 'UTF-8'
+    it.options.release = 16
+}
+
+tasks.withType(GenerateModuleMetadata) {
+    enabled = false
+}
+
+build.finalizedBy(shadowJar)
