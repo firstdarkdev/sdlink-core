@@ -4,9 +4,9 @@
  */
 package com.hypherionmc.sdlink.core.config.impl;
 
+import com.hypherionmc.sdlink.core.config.AvatarType;
 import me.hypherionmc.moonconfig.core.conversion.Path;
 import me.hypherionmc.moonconfig.core.conversion.SpecComment;
-import com.hypherionmc.sdlink.core.config.AvatarType;
 
 import java.util.ArrayList;
 import java.util.List;

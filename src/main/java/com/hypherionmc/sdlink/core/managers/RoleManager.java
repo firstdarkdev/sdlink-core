@@ -4,14 +4,13 @@
  */
 package com.hypherionmc.sdlink.core.managers;
 
+import com.hypherionmc.sdlink.core.config.SDLinkConfig;
 import com.hypherionmc.sdlink.core.discord.BotController;
 import net.dv8tion.jda.api.entities.Role;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import static com.hypherionmc.sdlink.core.config.ConfigController.sdLinkConfig;
 
 /**
  * @author HypherionSA
@@ -30,21 +29,21 @@ public class RoleManager {
      * @param builder
      */
     public static void loadRequiredRoles(AtomicInteger errCount, StringBuilder builder) {
-        if (!sdLinkConfig.botConfig.staffRole.isEmpty()) {
-            staffRole = getRole(errCount, builder, "Staff", sdLinkConfig.botConfig.staffRole);
+        if (!SDLinkConfig.INSTANCE.botConfig.staffRole.isEmpty()) {
+            staffRole = getRole(errCount, builder, "Staff", SDLinkConfig.INSTANCE.botConfig.staffRole);
         }
 
-        if (!sdLinkConfig.whitelistingAndLinking.whitelisting.autoWhitelistRole.isEmpty()) {
-            whitelistedRole = getRole(errCount, builder, "Whitelist", sdLinkConfig.whitelistingAndLinking.whitelisting.autoWhitelistRole);
+        if (!SDLinkConfig.INSTANCE.whitelistingAndLinking.whitelisting.autoWhitelistRole.isEmpty()) {
+            whitelistedRole = getRole(errCount, builder, "Whitelist", SDLinkConfig.INSTANCE.whitelistingAndLinking.whitelisting.autoWhitelistRole);
         }
 
-        if (!sdLinkConfig.whitelistingAndLinking.accountLinking.linkedRole.isEmpty()) {
-            linkedRole = getRole(errCount, builder, "Linked Account", sdLinkConfig.whitelistingAndLinking.accountLinking.linkedRole);
+        if (!SDLinkConfig.INSTANCE.whitelistingAndLinking.accountLinking.linkedRole.isEmpty()) {
+            linkedRole = getRole(errCount, builder, "Linked Account", SDLinkConfig.INSTANCE.whitelistingAndLinking.accountLinking.linkedRole);
         }
 
-        if (sdLinkConfig.linkedCommands.enabled) {
+        if (SDLinkConfig.INSTANCE.linkedCommands.enabled) {
             commandRoles.clear();
-            sdLinkConfig.linkedCommands.commands.forEach(cmd -> {
+            SDLinkConfig.INSTANCE.linkedCommands.commands.forEach(cmd -> {
                 if (!cmd.discordRole.isEmpty()) {
                     Role role = getRole(errCount, builder, cmd.discordCommand + " usage", cmd.discordRole);
                     if (role != null) {

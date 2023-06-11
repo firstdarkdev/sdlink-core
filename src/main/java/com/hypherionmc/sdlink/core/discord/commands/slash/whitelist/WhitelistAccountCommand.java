@@ -5,6 +5,7 @@
 package com.hypherionmc.sdlink.core.discord.commands.slash.whitelist;
 
 import com.hypherionmc.sdlink.core.accounts.MinecraftAccount;
+import com.hypherionmc.sdlink.core.config.SDLinkConfig;
 import com.hypherionmc.sdlink.core.database.SDLinkAccount;
 import com.hypherionmc.sdlink.core.discord.commands.slash.SDLinkSlashCommand;
 import com.hypherionmc.sdlink.core.services.SDLinkPlatform;
@@ -16,7 +17,6 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 
 import java.util.Collections;
 
-import static com.hypherionmc.sdlink.core.config.ConfigController.sdLinkConfig;
 import static com.hypherionmc.sdlink.core.managers.DatabaseManager.sdlinkDatabase;
 
 /**
@@ -28,7 +28,7 @@ import static com.hypherionmc.sdlink.core.managers.DatabaseManager.sdlinkDatabas
 public class WhitelistAccountCommand extends SDLinkSlashCommand {
 
     public WhitelistAccountCommand() {
-        super(sdLinkConfig.whitelistingAndLinking.whitelisting.staffOnlyWhitelist);
+        super(SDLinkConfig.INSTANCE.whitelistingAndLinking.whitelisting.staffOnlyWhitelist);
 
         this.name = "whitelist";
         this.help = "Start the process of Whitelisting your Minecraft Account";
@@ -61,7 +61,7 @@ public class WhitelistAccountCommand extends SDLinkSlashCommand {
                 event.reply("Could not start account whitelisting process. Please notify the server owner").setEphemeral(true).queue();
             }
         } else {
-            if (!account.getDiscordID().isEmpty() || SDLinkPlatform.minecraftHelper.isPlayerWhitelisted(minecraftAccount).isError()) {
+            if (account.isWhitelisted() || !SDLinkPlatform.minecraftHelper.isPlayerWhitelisted(minecraftAccount).isError()) {
                 event.reply("Sorry, this Minecraft account is already whitelisted").setEphemeral(true).queue();
                 return;
             }

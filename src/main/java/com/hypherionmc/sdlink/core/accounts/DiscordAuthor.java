@@ -4,9 +4,8 @@
  */
 package com.hypherionmc.sdlink.core.accounts;
 
+import com.hypherionmc.sdlink.core.config.SDLinkConfig;
 import com.hypherionmc.sdlink.core.services.SDLinkPlatform;
-
-import static com.hypherionmc.sdlink.core.config.ConfigController.sdLinkConfig;
 
 /**
  * @author HypherionSA
@@ -15,7 +14,7 @@ import static com.hypherionmc.sdlink.core.config.ConfigController.sdLinkConfig;
 public class DiscordAuthor {
 
     // User used for Server Messages
-    public static final DiscordAuthor SERVER = new DiscordAuthor(sdLinkConfig.channelsAndWebhooks.serverName, sdLinkConfig.channelsAndWebhooks.serverAvatar, true);
+    public static final DiscordAuthor SERVER = new DiscordAuthor(SDLinkConfig.INSTANCE.channelsAndWebhooks.serverName, SDLinkConfig.INSTANCE.channelsAndWebhooks.serverAvatar, true);
 
     private final String username;
     private final String avatar;
@@ -42,7 +41,7 @@ public class DiscordAuthor {
     public static DiscordAuthor of(String username, String uuid) {
         return new DiscordAuthor(
                 username,
-                SDLinkPlatform.minecraftHelper.isOnlineMode() ? sdLinkConfig.chatConfig.playerAvatarType.resolve(uuid) : username,
+                SDLinkConfig.INSTANCE.chatConfig.playerAvatarType.resolve(SDLinkPlatform.minecraftHelper.isOnlineMode() ? uuid : username),
                 false
         );
     }

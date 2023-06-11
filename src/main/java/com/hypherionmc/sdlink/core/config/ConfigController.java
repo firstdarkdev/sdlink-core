@@ -4,41 +4,27 @@
  */
 package com.hypherionmc.sdlink.core.config;
 
-import me.hypherionmc.moonconfig.core.CommentedConfig;
-import me.hypherionmc.moonconfig.core.Config;
-import me.hypherionmc.moonconfig.core.conversion.ObjectConverter;
-import me.hypherionmc.moonconfig.core.file.CommentedFileConfig;
-import com.hypherionmc.sdlink.core.util.EncryptionUtil;
-
-import java.io.File;
-
 /**
  * @author HypherionSA
  * Main Config class for Loading, Saving and Upgrading configs
  */
-public class ConfigController {
+/*@NoConfigScreen
+public class ConfigController extends ModuleConfig {
 
     // Private internal variables
-    private final File configFile;
-    public static int configVer = 1;
+    public static transient int configVer = 1;
 
     // Instance of the currently loaded config
-    public static SDLinkConfig sdLinkConfig;
+    public static transient SDLinkConfig sdLinkConfig;
 
     public ConfigController() {
-        File path = new File("config/");
-        if (!path.exists())
-            path.mkdirs();
-
-        this.configFile = new File(path.getAbsolutePath() + File.separator + "simple-discord-link.toml");
+        super("sdlink", "simple-discord-link");
         initConfig();
     }
 
-    /**
-     * Set up the Config File as needed.
-     * This will either Create, Upgrade or load an existing config file
-     */
-    private void initConfig() {
+
+    @Override
+    public void registerAndSetup(ModuleConfig conf) {
         Config.setInsertionOrderPreserved(true);
         if (!configFile.exists() || configFile.length() < 10) {
             SDLinkConfig config = new SDLinkConfig();
@@ -49,11 +35,19 @@ public class ConfigController {
             performEncryption();
         }
         loadConfig();
+
+        if (this.getConfigPath().exists() && this.getConfigPath().length() >= 2L) {
+            this.migrateConfig(conf);
+        } else {
+            saveConfig(new SDLinkConfig());
+            performEncryption();
+        }
+
+        com.hypherionmc.craterlib.core.config.ConfigController.register_config(this);
+        this.configReloaded();
     }
 
-    /**
-     * Serialize an existing config file into an instance of {@link SDLinkConfig}
-     */
+
     private void loadConfig() {
         ObjectConverter converter = new ObjectConverter();
         CommentedFileConfig config = CommentedFileConfig.builder(configFile).build();
@@ -62,10 +56,7 @@ public class ConfigController {
         config.close();
     }
 
-    /**
-     * Serialize an instance of {@link SDLinkConfig} to the config file
-     * @param conf An instance of the config to save
-     */
+
     public void saveConfig(Object conf) {
         ObjectConverter converter = new ObjectConverter();
         CommentedFileConfig config = CommentedFileConfig.builder(configFile).build();
@@ -75,9 +66,7 @@ public class ConfigController {
         config.close();
     }
 
-    /**
-     * Handle config structure changes between version changes
-     */
+
     private void configUpgrade() {
         CommentedFileConfig oldConfig = CommentedFileConfig.builder(configFile).build();
         CommentedFileConfig newConfig = CommentedFileConfig.builder(configFile).build();
@@ -116,9 +105,7 @@ public class ConfigController {
         oldConfig.close();
     }
 
-    /**
-     * Apply encryption to Bot-Token and Webhook URLS
-     */
+
     private void performEncryption() {
         CommentedFileConfig oldConfig = CommentedFileConfig.builder(configFile).build();
         oldConfig.load();
@@ -151,4 +138,4 @@ public class ConfigController {
         oldConfig.save();
         oldConfig.close();
     }
-}
+}*/

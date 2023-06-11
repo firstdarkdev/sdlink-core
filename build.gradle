@@ -44,9 +44,10 @@ dependencies {
     shaded("io.jsondb:jsondb-core:${json_db}")
 
     // Config
-    shaded("me.hypherionmc.moon-config:core:${moonconfig}")
-    shaded("me.hypherionmc.moon-config:toml:${moonconfig}")
-
+    implementation("me.hypherionmc.moon-config:core:${moonconfig}")
+    implementation("me.hypherionmc.moon-config:toml:${moonconfig}")
+    implementation "me.hypherionmc.craterlib:CraterLib-modules:${craterlib}:config"
+    implementation "me.hypherionmc.craterlib:CraterLib-modules:${craterlib}:events"
 
     // Compile Only, Not Shaded
 
@@ -88,7 +89,7 @@ shadowJar {
         relocate 'com.iwebpp', shade_group + 'iwebpp'
         relocate 'com.jagrosh', shade_group + 'jagrosh'
         relocate 'com.neovisionaries', shade_group + 'neovisionaries'
-        relocate 'me.hypherionmc.moonconfig', shade_group + 'moonconfig'
+        relocate 'me.hypherionmc.moonconfig', 'shadow.hypherionmc.moonconfig'
         relocate 'me.hypherionmc.jqlite', shade_group + 'jqlite'
         relocate 'net.dv8tion', shade_group + 'dv8tion'
         relocate 'okhttp3', shade_group + 'okhttp3'

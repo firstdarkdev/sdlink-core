@@ -4,6 +4,7 @@
  */
 package com.hypherionmc.sdlink.core.managers;
 
+import com.hypherionmc.sdlink.core.config.SDLinkConfig;
 import com.hypherionmc.sdlink.core.discord.BotController;
 import com.hypherionmc.sdlink.core.messaging.MessageDestination;
 import net.dv8tion.jda.api.JDA;
@@ -11,8 +12,6 @@ import net.dv8tion.jda.api.entities.channel.middleman.StandardGuildMessageChanne
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.HashMap;
-
-import static com.hypherionmc.sdlink.core.config.ConfigController.sdLinkConfig;
 
 /**
  * @author HypherionSA
@@ -32,9 +31,9 @@ public class ChannelManager {
 
         JDA jda = BotController.INSTANCE.getJDA();
 
-        StandardGuildMessageChannel chatChannel = jda.getChannelById(StandardGuildMessageChannel.class, sdLinkConfig.channelsAndWebhooks.channels.chatChannelID);
-        StandardGuildMessageChannel eventChannel = jda.getChannelById(StandardGuildMessageChannel.class, sdLinkConfig.channelsAndWebhooks.channels.eventsChannelID);
-        consoleChannel = jda.getChannelById(StandardGuildMessageChannel.class, sdLinkConfig.channelsAndWebhooks.channels.consoleChannelID);
+        StandardGuildMessageChannel chatChannel = jda.getChannelById(StandardGuildMessageChannel.class, SDLinkConfig.INSTANCE.channelsAndWebhooks.channels.chatChannelID);
+        StandardGuildMessageChannel eventChannel = jda.getChannelById(StandardGuildMessageChannel.class, SDLinkConfig.INSTANCE.channelsAndWebhooks.channels.eventsChannelID);
+        consoleChannel = jda.getChannelById(StandardGuildMessageChannel.class, SDLinkConfig.INSTANCE.channelsAndWebhooks.channels.consoleChannelID);
 
         if (chatChannel != null) {
             channelMap.put(MessageDestination.CHAT, Pair.of(chatChannel, false));

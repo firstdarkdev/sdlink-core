@@ -4,6 +4,7 @@
  */
 package com.hypherionmc.sdlink.core.discord.commands;
 
+import com.hypherionmc.sdlink.core.config.SDLinkConfig;
 import com.hypherionmc.sdlink.core.discord.commands.slash.general.HelpSlashCommand;
 import com.hypherionmc.sdlink.core.discord.commands.slash.general.PlayerListSlashCommand;
 import com.hypherionmc.sdlink.core.discord.commands.slash.general.ServerStatusSlashCommand;
@@ -11,6 +12,7 @@ import com.hypherionmc.sdlink.core.discord.commands.slash.linking.ConfirmAccount
 import com.hypherionmc.sdlink.core.discord.commands.slash.linking.LinkAccountCommand;
 import com.hypherionmc.sdlink.core.discord.commands.slash.linking.UnlinkAccountSlashCommand;
 import com.hypherionmc.sdlink.core.discord.commands.slash.linking.ViewLinkedAccountsCommand;
+import com.hypherionmc.sdlink.core.discord.commands.slash.mc.MCSlashCommand;
 import com.hypherionmc.sdlink.core.discord.commands.slash.whitelist.ConfirmWhitelistSlashCommand;
 import com.hypherionmc.sdlink.core.discord.commands.slash.whitelist.UnWhitelistAccountSlashCommand;
 import com.hypherionmc.sdlink.core.discord.commands.slash.whitelist.ViewWhitelistedAccountsSlashCommand;
@@ -20,8 +22,6 @@ import com.jagrosh.jdautilities.command.SlashCommand;
 
 import java.util.HashSet;
 import java.util.Set;
-
-import static com.hypherionmc.sdlink.core.config.ConfigController.sdLinkConfig;
 
 /**
  * @author HypherionSA
@@ -39,7 +39,7 @@ public class CommandManager {
 
     private void addCommands() {
         // Register Account Linking commands, if linking is enabled
-        if (sdLinkConfig.whitelistingAndLinking.accountLinking.accountLinking) {
+        if (SDLinkConfig.INSTANCE.whitelistingAndLinking.accountLinking.accountLinking) {
             commands.add(new LinkAccountCommand());
             commands.add(new ConfirmAccountLinkSlashCommand());
             commands.add(new UnlinkAccountSlashCommand());
@@ -47,7 +47,7 @@ public class CommandManager {
         }
 
         // Register Whitelist commands, if whitelisting is enabled
-        if (sdLinkConfig.whitelistingAndLinking.whitelisting.whitelisting) {
+        if (SDLinkConfig.INSTANCE.whitelistingAndLinking.whitelisting.whitelisting) {
             commands.add(new WhitelistAccountCommand());
             commands.add(new ConfirmWhitelistSlashCommand());
             commands.add(new ViewWhitelistedAccountsSlashCommand());
@@ -55,18 +55,22 @@ public class CommandManager {
         }
 
         // Enable the Server Status command
-        if (sdLinkConfig.botCommands.allowServerStatus) {
+        if (SDLinkConfig.INSTANCE.botCommands.allowServerStatus) {
             commands.add(new ServerStatusSlashCommand());
         }
 
         // Enable the Player List command
-        if (sdLinkConfig.botCommands.allowPlayerList) {
+        if (SDLinkConfig.INSTANCE.botCommands.allowPlayerList) {
             commands.add(new PlayerListSlashCommand());
         }
 
         // Enable the Help command
-        if (sdLinkConfig.botCommands.allowHelpCommand) {
+        if (SDLinkConfig.INSTANCE.botCommands.allowHelpCommand) {
             commands.add(new HelpSlashCommand());
+        }
+
+        if (SDLinkConfig.INSTANCE.linkedCommands.enabled) {
+            commands.add(new MCSlashCommand());
         }
     }
 

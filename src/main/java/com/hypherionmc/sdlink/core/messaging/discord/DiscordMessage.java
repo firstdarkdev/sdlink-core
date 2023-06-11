@@ -9,6 +9,7 @@ import club.minnced.discord.webhook.send.WebhookEmbed;
 import club.minnced.discord.webhook.send.WebhookEmbedBuilder;
 import club.minnced.discord.webhook.send.WebhookMessageBuilder;
 import com.hypherionmc.sdlink.core.accounts.DiscordAuthor;
+import com.hypherionmc.sdlink.core.config.SDLinkConfig;
 import com.hypherionmc.sdlink.core.config.impl.MessageChannelConfig;
 import com.hypherionmc.sdlink.core.discord.BotController;
 import com.hypherionmc.sdlink.core.managers.ChannelManager;
@@ -17,8 +18,6 @@ import com.hypherionmc.sdlink.core.messaging.MessageType;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.channel.middleman.StandardGuildMessageChannel;
 import org.apache.commons.lang3.tuple.Triple;
-
-import static com.hypherionmc.sdlink.core.config.ConfigController.sdLinkConfig;
 
 /**
  * @author HypherionSA
@@ -56,7 +55,7 @@ public final class DiscordMessage {
                 sendNormalMessage();
             }
         } catch (Exception e) {
-            if (sdLinkConfig.generalConfig.debugging) {
+            if (SDLinkConfig.INSTANCE.generalConfig.debugging) {
                 BotController.INSTANCE.getLogger().error("Failed to send Discord Message", e);
             }
         }
@@ -69,7 +68,7 @@ public final class DiscordMessage {
         Triple<StandardGuildMessageChannel, WebhookClient, Boolean> channel = resolveDestination();
 
         // Check if a webhook is configured, and use that instead
-        if (channel.getMiddle() != null && sdLinkConfig.channelsAndWebhooks.webhooks.enabled) {
+        if (channel.getMiddle() != null && SDLinkConfig.INSTANCE.channelsAndWebhooks.webhooks.enabled) {
             WebhookMessageBuilder builder = new WebhookMessageBuilder();
             builder.setUsername(this.author.getUsername());
             if (!this.author.getAvatar().isEmpty()) {
@@ -85,21 +84,26 @@ public final class DiscordMessage {
                 builder.setContent(message);
             }
 
-            channel.getMiddle().send(builder.build());
+            channel.getMiddle().send(builder.build()).thenRun(() -> {
+                if (afterSend != null)
+                    afterSend.run();
+            });
         } else {
             // Use the configured channel instead
             if (channel.getRight()) {
                 EmbedBuilder eb = buildEmbed(true);
-                channel.getLeft().sendMessageEmbeds(eb.build()).queue();
+                channel.getLeft().sendMessageEmbeds(eb.build()).queue(success -> {
+                    if (afterSend != null)
+                        afterSend.run();
+                });
             } else {
                 channel.getLeft().sendMessage(
                                 this.messageType == MessageType.CHAT ?
-                                        sdLinkConfig.messageFormatting.chat.replace("%player%", author.getUsername()).replace("%message%", message)
+                                        SDLinkConfig.INSTANCE.messageFormatting.chat.replace("%player%", author.getUsername()).replace("%message%", message)
                                         : message)
                         .queue(success -> {
-                            if (afterSend != null) {
+                            if (afterSend != null)
                                 afterSend.run();
-                            }
                         });
             }
         }
@@ -110,7 +114,7 @@ public final class DiscordMessage {
      */
     private void sendConsoleMessage() {
         try {
-            if (!BotController.INSTANCE.isBotReady() || !sdLinkConfig.chatConfig.sendConsoleMessages)
+            if (!BotController.INSTANCE.isBotReady() || !SDLinkConfig.INSTANCE.chatConfig.sendConsoleMessages)
                 return;
 
             StandardGuildMessageChannel channel = ChannelManager.getConsoleChannel();
@@ -118,14 +122,13 @@ public final class DiscordMessage {
                 channel.sendMessage(this.message).queue();
             }
         } catch (Exception e) {
-            if (sdLinkConfig.generalConfig.debugging) {
+            if (SDLinkConfig.INSTANCE.generalConfig.debugging) {
                 BotController.INSTANCE.getLogger().error("Failed to send console message", e);
             }
         }
 
-        if (afterSend != null) {
+        if (afterSend != null)
             afterSend.run();
-        }
     }
 
     /**
@@ -153,7 +156,7 @@ public final class DiscordMessage {
     private Triple<StandardGuildMessageChannel, WebhookClient, Boolean> resolveDestination() {
         switch (messageType) {
             case CHAT -> {
-                MessageChannelConfig.DestinationObject chat = sdLinkConfig.messageDestinations.chat;
+                MessageChannelConfig.DestinationObject chat = SDLinkConfig.INSTANCE.messageDestinations.chat;
                 return Triple.of(
                         ChannelManager.getDestinationChannel(chat.channel),
                         WebhookManager.getWebhookClient(chat.channel),
@@ -161,7 +164,7 @@ public final class DiscordMessage {
                 );
             }
             case START_STOP -> {
-                MessageChannelConfig.DestinationObject startStop = sdLinkConfig.messageDestinations.startStop;
+                MessageChannelConfig.DestinationObject startStop = SDLinkConfig.INSTANCE.messageDestinations.startStop;
                 return Triple.of(
                         ChannelManager.getDestinationChannel(startStop.channel),
                         WebhookManager.getWebhookClient(startStop.channel),
@@ -169,7 +172,7 @@ public final class DiscordMessage {
                 );
             }
             case JOIN_LEAVE -> {
-                MessageChannelConfig.DestinationObject joinLeave = sdLinkConfig.messageDestinations.joinLeave;
+                MessageChannelConfig.DestinationObject joinLeave = SDLinkConfig.INSTANCE.messageDestinations.joinLeave;
                 return Triple.of(
                         ChannelManager.getDestinationChannel(joinLeave.channel),
                         WebhookManager.getWebhookClient(joinLeave.channel),
@@ -177,7 +180,7 @@ public final class DiscordMessage {
                 );
             }
             case ADVANCEMENT -> {
-                MessageChannelConfig.DestinationObject advancement = sdLinkConfig.messageDestinations.advancements;
+                MessageChannelConfig.DestinationObject advancement = SDLinkConfig.INSTANCE.messageDestinations.advancements;
                 return Triple.of(
                         ChannelManager.getDestinationChannel(advancement.channel),
                         WebhookManager.getWebhookClient(advancement.channel),
@@ -185,7 +188,7 @@ public final class DiscordMessage {
                 );
             }
             case DEATH -> {
-                MessageChannelConfig.DestinationObject death = sdLinkConfig.messageDestinations.death;
+                MessageChannelConfig.DestinationObject death = SDLinkConfig.INSTANCE.messageDestinations.death;
                 return Triple.of(
                         ChannelManager.getDestinationChannel(death.channel),
                         WebhookManager.getWebhookClient(death.channel),
@@ -193,7 +196,7 @@ public final class DiscordMessage {
                 );
             }
             case COMMAND -> {
-                MessageChannelConfig.DestinationObject command = sdLinkConfig.messageDestinations.commands;
+                MessageChannelConfig.DestinationObject command = SDLinkConfig.INSTANCE.messageDestinations.commands;
                 return Triple.of(
                         ChannelManager.getDestinationChannel(command.channel),
                         WebhookManager.getWebhookClient(command.channel),
@@ -203,7 +206,7 @@ public final class DiscordMessage {
         }
 
         // This code should never be reached, but it's added here as a fail-safe
-        MessageChannelConfig.DestinationObject chat = sdLinkConfig.messageDestinations.chat;
+        MessageChannelConfig.DestinationObject chat = SDLinkConfig.INSTANCE.messageDestinations.chat;
         return Triple.of(ChannelManager.getDestinationChannel(chat.channel), WebhookManager.getWebhookClient(chat.channel), chat.useEmbed);
     }
 }

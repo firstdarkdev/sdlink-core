@@ -4,6 +4,7 @@
  */
 package com.hypherionmc.sdlink.core.managers;
 
+import com.hypherionmc.sdlink.core.config.SDLinkConfig;
 import com.hypherionmc.sdlink.core.discord.BotController;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
@@ -14,8 +15,6 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import static com.hypherionmc.sdlink.core.config.ConfigController.sdLinkConfig;
 
 /**
  * @author HypherionSA
@@ -88,7 +87,7 @@ public class PermissionChecker {
                         checkBotPerms(errCount, builder, botPerms);
 
                         checkChannelPerms(
-                                sdLinkConfig.channelsAndWebhooks.channels.chatChannelID,
+                                SDLinkConfig.INSTANCE.channelsAndWebhooks.channels.chatChannelID,
                                 "Chat Channel",
                                 errCount,
                                 builder,
@@ -98,7 +97,7 @@ public class PermissionChecker {
                         );
 
                         checkChannelPerms(
-                                sdLinkConfig.channelsAndWebhooks.channels.eventsChannelID,
+                                SDLinkConfig.INSTANCE.channelsAndWebhooks.channels.eventsChannelID,
                                 "Events Channel",
                                 errCount,
                                 builder,
@@ -108,7 +107,7 @@ public class PermissionChecker {
                         );
 
                         checkChannelPerms(
-                                sdLinkConfig.channelsAndWebhooks.channels.consoleChannelID,
+                                SDLinkConfig.INSTANCE.channelsAndWebhooks.channels.consoleChannelID,
                                 "Console Channel",
                                 errCount,
                                 builder,
@@ -177,7 +176,7 @@ public class PermissionChecker {
             });
 
             if (isChat) {
-                if (sdLinkConfig.botConfig.channelTopic.doTopicUpdates && !chatPerms.contains(Permission.MANAGE_CHANNEL)) {
+                if (SDLinkConfig.INSTANCE.botConfig.channelTopic.doTopicUpdates && !chatPerms.contains(Permission.MANAGE_CHANNEL)) {
                     errCount.incrementAndGet();
                     builder.append(errCount.get()).append(") ").append("Missing Chat Channel Permission: Manage Channel. Topic updates will not work").append("\r\n");
                 }

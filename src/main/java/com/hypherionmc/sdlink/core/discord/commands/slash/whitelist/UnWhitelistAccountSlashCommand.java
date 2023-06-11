@@ -37,7 +37,7 @@ public class UnWhitelistAccountSlashCommand extends SDLinkSlashCommand {
         }
 
         for (SDLinkAccount account : accounts) {
-            if (account.getDiscordID().equalsIgnoreCase(event.getMember().getId())) {
+            if (account.getAddedBy().equalsIgnoreCase(event.getMember().getId())) {
                 MinecraftAccount minecraftAccount = MinecraftAccount.standard(account.getUsername());
                 if (SDLinkPlatform.minecraftHelper.isPlayerWhitelisted(minecraftAccount).isError()) {
                     event.reply("Your account is not whitelisted in Minecraft. Cannot remove your account").setEphemeral(true).queue();

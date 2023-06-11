@@ -4,6 +4,7 @@
  */
 package com.hypherionmc.sdlink.core.discord.hooks;
 
+import com.hypherionmc.sdlink.core.config.SDLinkConfig;
 import com.hypherionmc.sdlink.core.discord.BotController;
 import com.hypherionmc.sdlink.core.managers.ChannelManager;
 import com.hypherionmc.sdlink.core.messaging.MessageDestination;
@@ -15,8 +16,6 @@ import net.dv8tion.jda.api.entities.channel.middleman.StandardGuildMessageChanne
 import net.dv8tion.jda.api.events.session.ReadyEvent;
 
 import java.util.concurrent.TimeUnit;
-
-import static com.hypherionmc.sdlink.core.config.ConfigController.sdLinkConfig;
 
 /**
  * @author HypherionSA
@@ -32,40 +31,40 @@ public class BotReadyHooks {
         BotController.taskManager.scheduleAtFixedRate(() -> {
             try {
                 if (event.getJDA().getStatus() == JDA.Status.CONNECTED) {
-                    Activity act = Activity.of(sdLinkConfig.botConfig.botStatus.botStatusType, sdLinkConfig.botConfig.botStatus.botStatus
+                    Activity act = Activity.of(SDLinkConfig.INSTANCE.botConfig.botStatus.botStatusType, SDLinkConfig.INSTANCE.botConfig.botStatus.botStatus
                             .replace("%players%", String.valueOf(SDLinkPlatform.minecraftHelper.getPlayerCounts().getLeft()))
                             .replace("%maxplayers%", String.valueOf(SDLinkPlatform.minecraftHelper.getPlayerCounts().getRight())));
 
-                    if (sdLinkConfig.botConfig.botStatus.botStatusType == Activity.ActivityType.STREAMING) {
-                        act = Activity.of(sdLinkConfig.botConfig.botStatus.botStatusType, sdLinkConfig.botConfig.botStatus.botStatus
+                    if (SDLinkConfig.INSTANCE.botConfig.botStatus.botStatusType == Activity.ActivityType.STREAMING) {
+                        act = Activity.of(SDLinkConfig.INSTANCE.botConfig.botStatus.botStatusType, SDLinkConfig.INSTANCE.botConfig.botStatus.botStatus
                                         .replace("%players%", String.valueOf(SDLinkPlatform.minecraftHelper.getPlayerCounts().getLeft()))
                                         .replace("%maxplayers%", String.valueOf(SDLinkPlatform.minecraftHelper.getPlayerCounts().getRight())),
-                                sdLinkConfig.botConfig.botStatus.botStatusStreamingURL);
+                                SDLinkConfig.INSTANCE.botConfig.botStatus.botStatusStreamingURL);
                     }
 
                     event.getJDA().getPresence().setActivity(act);
                 }
             } catch (Exception e) {
-                if (sdLinkConfig.generalConfig.debugging) {
+                if (SDLinkConfig.INSTANCE.generalConfig.debugging) {
                     BotController.INSTANCE.getLogger().info(e.getMessage());
                 }
             }
-        }, sdLinkConfig.botConfig.statusUpdateInterval, sdLinkConfig.botConfig.statusUpdateInterval, TimeUnit.SECONDS);
+        }, SDLinkConfig.INSTANCE.botConfig.statusUpdateInterval, SDLinkConfig.INSTANCE.botConfig.statusUpdateInterval, TimeUnit.SECONDS);
     }
 
     /**
      * Update the Chat Channel topic, if enabled
      */
     public static void startTopicUpdates() {
-        if (!sdLinkConfig.botConfig.channelTopic.doTopicUpdates)
+        if (!SDLinkConfig.INSTANCE.botConfig.channelTopic.doTopicUpdates)
             return;
 
         BotController.taskManager.scheduleAtFixedRate(() -> {
             try {
-                if (BotController.INSTANCE.isBotReady() && (sdLinkConfig.botConfig.channelTopic.channelTopic != null && !sdLinkConfig.botConfig.channelTopic.channelTopic.isEmpty())) {
+                if (BotController.INSTANCE.isBotReady() && (SDLinkConfig.INSTANCE.botConfig.channelTopic.channelTopic != null && !SDLinkConfig.INSTANCE.botConfig.channelTopic.channelTopic.isEmpty())) {
                     StandardGuildMessageChannel channel = ChannelManager.getDestinationChannel(MessageDestination.CHAT);
                     if (channel != null) {
-                        String topic = sdLinkConfig.botConfig.channelTopic.channelTopic
+                        String topic = SDLinkConfig.INSTANCE.botConfig.channelTopic.channelTopic
                                 .replace("%players%", String.valueOf(SDLinkPlatform.minecraftHelper.getPlayerCounts().getLeft()))
                                 .replace("%maxplayers%", String.valueOf(SDLinkPlatform.minecraftHelper.getPlayerCounts().getRight()))
                                 .replace("%uptime%", SystemUtils.secondsToTimestamp(SDLinkPlatform.minecraftHelper.getServerUptime()));
@@ -73,7 +72,7 @@ public class BotReadyHooks {
                     }
                 }
             } catch (Exception e) {
-                if (sdLinkConfig.generalConfig.debugging) {
+                if (SDLinkConfig.INSTANCE.generalConfig.debugging) {
                     BotController.INSTANCE.getLogger().info(e.getMessage());
                 }
             }

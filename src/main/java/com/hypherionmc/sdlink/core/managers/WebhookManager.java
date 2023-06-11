@@ -5,14 +5,13 @@
 package com.hypherionmc.sdlink.core.managers;
 
 import club.minnced.discord.webhook.WebhookClient;
+import com.hypherionmc.sdlink.core.config.SDLinkConfig;
 import com.hypherionmc.sdlink.core.discord.BotController;
 import com.hypherionmc.sdlink.core.messaging.MessageDestination;
 import com.hypherionmc.sdlink.core.messaging.SDLinkWebhookClient;
 import com.hypherionmc.sdlink.core.util.EncryptionUtil;
 
 import java.util.HashMap;
-
-import static com.hypherionmc.sdlink.core.config.ConfigController.sdLinkConfig;
 
 /**
  * @author HypherionSA
@@ -30,32 +29,32 @@ public class WebhookManager {
     public static void init() {
         clientMap.clear();
 
-        if (sdLinkConfig == null || !sdLinkConfig.channelsAndWebhooks.webhooks.enabled)
+        if (SDLinkConfig.INSTANCE == null || !SDLinkConfig.INSTANCE.channelsAndWebhooks.webhooks.enabled)
             return;
 
-        if (!sdLinkConfig.generalConfig.enabled)
+        if (!SDLinkConfig.INSTANCE.generalConfig.enabled)
             return;
 
-        if (!sdLinkConfig.channelsAndWebhooks.webhooks.chatWebhook.isEmpty()) {
+        if (!SDLinkConfig.INSTANCE.channelsAndWebhooks.webhooks.chatWebhook.isEmpty()) {
             chatWebhookClient = new SDLinkWebhookClient(
                     "Chat",
-                    EncryptionUtil.INSTANCE.decrypt(sdLinkConfig.channelsAndWebhooks.webhooks.chatWebhook)
+                    EncryptionUtil.INSTANCE.decrypt(SDLinkConfig.INSTANCE.channelsAndWebhooks.webhooks.chatWebhook)
             ).build();
             BotController.INSTANCE.getLogger().info("Using Webhook for Chat Messages");
         }
 
-        if (!sdLinkConfig.channelsAndWebhooks.webhooks.eventsWebhook.isEmpty()) {
+        if (!SDLinkConfig.INSTANCE.channelsAndWebhooks.webhooks.eventsWebhook.isEmpty()) {
             eventWebhookClient = new SDLinkWebhookClient(
                     "Events",
-                    EncryptionUtil.INSTANCE.decrypt(sdLinkConfig.channelsAndWebhooks.webhooks.eventsWebhook)
+                    EncryptionUtil.INSTANCE.decrypt(SDLinkConfig.INSTANCE.channelsAndWebhooks.webhooks.eventsWebhook)
             ).build();
             BotController.INSTANCE.getLogger().info("Using Webhook for Event Messages");
         }
 
-        if (!sdLinkConfig.channelsAndWebhooks.webhooks.consoleWebhook.isEmpty()) {
+        if (!SDLinkConfig.INSTANCE.channelsAndWebhooks.webhooks.consoleWebhook.isEmpty()) {
             consoleWebhookClient = new SDLinkWebhookClient(
                     "Console",
-                    EncryptionUtil.INSTANCE.decrypt(sdLinkConfig.channelsAndWebhooks.webhooks.consoleWebhook)
+                    EncryptionUtil.INSTANCE.decrypt(SDLinkConfig.INSTANCE.channelsAndWebhooks.webhooks.consoleWebhook)
             ).build();
             BotController.INSTANCE.getLogger().info("Using Webhook for Console Messages");
         }

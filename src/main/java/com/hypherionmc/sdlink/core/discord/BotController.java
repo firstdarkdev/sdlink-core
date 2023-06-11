@@ -4,7 +4,7 @@
  */
 package com.hypherionmc.sdlink.core.discord;
 
-import com.hypherionmc.sdlink.core.config.ConfigController;
+import com.hypherionmc.sdlink.core.config.SDLinkConfig;
 import com.hypherionmc.sdlink.core.discord.commands.CommandManager;
 import com.hypherionmc.sdlink.core.discord.events.DiscordEventHandler;
 import com.hypherionmc.sdlink.core.managers.DatabaseManager;
@@ -25,8 +25,6 @@ import org.slf4j.Logger;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
-import static com.hypherionmc.sdlink.core.config.ConfigController.sdLinkConfig;
 
 /**
  * @author HypherionSA
@@ -64,7 +62,7 @@ public class BotController {
         INSTANCE = this;
         this.logger = logger;
 
-        new ConfigController();
+        new SDLinkConfig();
 
         DatabaseManager.initialize();
 
@@ -76,21 +74,21 @@ public class BotController {
      * Start the bot and handle all the startup work
      */
     public void initializeBot() {
-        if (sdLinkConfig == null) {
+        if (SDLinkConfig.INSTANCE == null) {
             logger.error("Failed to load config. Check your log for errors");
             return;
         }
 
-        if (sdLinkConfig.botConfig.botToken.isEmpty()) {
+        if (SDLinkConfig.INSTANCE.botConfig.botToken.isEmpty()) {
             logger.error("Missing bot token. Mod will be disabled");
             return;
         }
 
-        if (!sdLinkConfig.generalConfig.enabled)
+        if (!SDLinkConfig.INSTANCE.generalConfig.enabled)
             return;
 
         try {
-            String token = EncryptionUtil.INSTANCE.decrypt(sdLinkConfig.botConfig.botToken);
+            String token = EncryptionUtil.INSTANCE.decrypt(SDLinkConfig.INSTANCE.botConfig.botToken);
             _jda = JDABuilder.createLight(
                             token,
                             GatewayIntent.GUILD_MEMBERS,
@@ -127,10 +125,10 @@ public class BotController {
      * Check if the bot is in a state to send messages to discord
      */
     public boolean isBotReady() {
-        if (sdLinkConfig == null)
+        if (SDLinkConfig.INSTANCE == null)
             return false;
 
-        if (!sdLinkConfig.generalConfig.enabled)
+        if (!SDLinkConfig.INSTANCE.generalConfig.enabled)
             return false;
 
         if (_jda == null)
@@ -173,7 +171,7 @@ public class BotController {
      * Ensure that whitelisting is set up properly, so the bot can use the feature
      */
     public void checkWhiteListing() {
-        if (!sdLinkConfig.whitelistingAndLinking.whitelisting.whitelisting)
+        if (!SDLinkConfig.INSTANCE.whitelistingAndLinking.whitelisting.whitelisting)
             return;
 
         if (SDLinkPlatform.minecraftHelper.checkWhitelisting().isError()) {

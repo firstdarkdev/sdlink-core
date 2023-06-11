@@ -4,10 +4,12 @@
  */
 package com.hypherionmc.sdlink.core.discord.events;
 
+import com.hypherionmc.craterlib.core.event.CraterEventBus;
 import com.hypherionmc.sdlink.core.discord.BotController;
 import com.hypherionmc.sdlink.core.discord.commands.slash.general.ServerStatusSlashCommand;
 import com.hypherionmc.sdlink.core.discord.hooks.BotReadyHooks;
 import com.hypherionmc.sdlink.core.discord.hooks.DiscordMessageHooks;
+import com.hypherionmc.sdlink.core.events.SDLinkReadyEvent;
 import com.hypherionmc.sdlink.core.managers.ChannelManager;
 import com.hypherionmc.sdlink.core.managers.PermissionChecker;
 import net.dv8tion.jda.api.JDA;
@@ -54,6 +56,7 @@ public class DiscordEventHandler extends ListenerAdapter {
             ChannelManager.loadChannels();
             BotReadyHooks.startActivityUpdates(event);
             BotReadyHooks.startTopicUpdates();
+            CraterEventBus.INSTANCE.postEvent(new SDLinkReadyEvent());
         }
     }
 

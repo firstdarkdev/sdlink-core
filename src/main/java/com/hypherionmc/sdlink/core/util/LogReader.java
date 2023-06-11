@@ -5,6 +5,7 @@
 package com.hypherionmc.sdlink.core.util;
 
 import com.hypherionmc.sdlink.core.accounts.DiscordAuthor;
+import com.hypherionmc.sdlink.core.config.SDLinkConfig;
 import com.hypherionmc.sdlink.core.discord.BotController;
 import com.hypherionmc.sdlink.core.messaging.MessageType;
 import com.hypherionmc.sdlink.core.messaging.discord.DiscordMessage;
@@ -25,8 +26,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import static com.hypherionmc.sdlink.core.config.ConfigController.sdLinkConfig;
 
 /**
  * @author HypherionSA
@@ -104,7 +103,7 @@ public class LogReader extends AbstractAppender {
                                 .author(DiscordAuthor.SERVER)
                                 .build();
 
-                        if (sdLinkConfig.chatConfig.sendConsoleMessages) {
+                        if (SDLinkConfig.INSTANCE.chatConfig.sendConsoleMessages) {
                             discordMessage.sendMessage();
                         }
 
@@ -114,7 +113,7 @@ public class LogReader extends AbstractAppender {
                     try {
                         Thread.sleep(30);
                     } catch (InterruptedException e) {
-                        if (sdLinkConfig.generalConfig.debugging) {
+                        if (SDLinkConfig.INSTANCE.generalConfig.debugging) {
                             BotController.INSTANCE.getLogger().error("Failed to send console message: {}", e.getMessage());
                         }
                     }

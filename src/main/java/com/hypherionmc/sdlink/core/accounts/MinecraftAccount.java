@@ -4,6 +4,7 @@
  */
 package com.hypherionmc.sdlink.core.accounts;
 
+import com.hypherionmc.sdlink.core.config.SDLinkConfig;
 import com.hypherionmc.sdlink.core.database.SDLinkAccount;
 import com.hypherionmc.sdlink.core.discord.BotController;
 import com.hypherionmc.sdlink.core.managers.RoleManager;
@@ -27,7 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static com.hypherionmc.sdlink.core.config.ConfigController.sdLinkConfig;
 import static com.hypherionmc.sdlink.core.managers.DatabaseManager.sdlinkDatabase;
 
 /**
@@ -116,6 +116,7 @@ public class MinecraftAccount {
 
         SDLinkAccount account = getStoredAccount();
         account.setDiscordID(member.getId());
+        account.setAddedBy(member.getId());
         account.setAccountLinkCode("");
 
         try {
@@ -138,7 +139,7 @@ public class MinecraftAccount {
                     guild.addRoleToMember(UserSnowflake.fromId(member.getId()), RoleManager.getLinkedRole()).queue();
                 }
             } catch (Exception e) {
-                if (sdLinkConfig.generalConfig.debugging) {
+                if (SDLinkConfig.INSTANCE.generalConfig.debugging) {
                     e.printStackTrace();
                 }
             }
@@ -194,7 +195,7 @@ public class MinecraftAccount {
         }
 
         SDLinkAccount account = getStoredAccount();
-        account.setDiscordID(member.getId());
+        account.setAddedBy(member.getId());
         account.setWhitelistCode("");
 
         try {
@@ -203,7 +204,7 @@ public class MinecraftAccount {
                 sdlinkDatabase.upsert(account);
 
                 // Auto Linking is enabled, so we link the Discord and MC accounts
-                if (sdLinkConfig.whitelistingAndLinking.whitelisting.linkedWhitelist) {
+                if (SDLinkConfig.INSTANCE.whitelistingAndLinking.whitelisting.linkedWhitelist) {
                     this.linkAccount(member, guild);
                 }
             }
@@ -230,10 +231,11 @@ public class MinecraftAccount {
             if (whitelistResult.isError()) {
                 return whitelistResult;
             } else {
-                sdlinkDatabase.remove(account, SDLinkAccount.class);
+                account.setWhitelisted(false);
+                sdlinkDatabase.upsert(account);
 
                 // Auto Linking is enabled. So we unlink the account
-                if (sdLinkConfig.whitelistingAndLinking.whitelisting.linkedWhitelist) {
+                if (SDLinkConfig.INSTANCE.whitelistingAndLinking.whitelisting.linkedWhitelist) {
                     this.unlinkAccount();
                 }
 

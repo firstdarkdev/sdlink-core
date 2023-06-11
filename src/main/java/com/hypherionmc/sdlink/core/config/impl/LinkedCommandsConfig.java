@@ -26,11 +26,11 @@ public class LinkedCommandsConfig {
 
     public static class Command {
         @Path("mcCommand")
-        @SpecComment("The Minecraft Command. Use %args% and %args(1-9)% (for example %args1%) to pass everything after the discordCommand to Minecraft")
+        @SpecComment("The Minecraft Command. Use %args% to pass everything after the discordCommand to Minecraft")
         public String mcCommand;
 
         @Path("discordCommand")
-        @SpecComment("The command slug in discord. To be used as /mc slug or ~mc slug")
+        @SpecComment("The command slug in discord. To be used as /mc slug")
         public String discordCommand;
 
         @Path("discordRole")

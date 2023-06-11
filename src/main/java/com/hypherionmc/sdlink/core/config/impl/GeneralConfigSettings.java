@@ -4,9 +4,9 @@
  */
 package com.hypherionmc.sdlink.core.config.impl;
 
+import com.hypherionmc.sdlink.core.config.SDLinkConfig;
 import me.hypherionmc.moonconfig.core.conversion.Path;
 import me.hypherionmc.moonconfig.core.conversion.SpecComment;
-import com.hypherionmc.sdlink.core.config.ConfigController;
 
 /**
  * @author HypherionSA
@@ -24,5 +24,5 @@ public class GeneralConfigSettings {
 
     @Path("configVersion")
     @SpecComment("Internal version control. DO NOT TOUCH!")
-    public int configVersion = ConfigController.configVer;
+    public int configVersion = SDLinkConfig.configVer;
 }

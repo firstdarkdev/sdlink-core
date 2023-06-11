@@ -58,7 +58,7 @@ public class LinkAccountCommand extends SDLinkSlashCommand {
                 event.reply("Could not start account linking process. Please notify the server owner").setEphemeral(true).queue();
             }
         } else {
-            if (account.getDiscordID() != null || !account.getDiscordID().isEmpty()) {
+            if (account.getDiscordID() != null && !account.getDiscordID().isEmpty()) {
                 event.reply("Sorry, this Minecraft account is already linked to a discord account").setEphemeral(true).queue();
                 return;
             }
