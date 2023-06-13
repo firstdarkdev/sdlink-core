@@ -14,39 +14,46 @@ import com.hypherionmc.sdlink.core.services.SDLinkPlatform;
 public class DiscordAuthor {
 
     // User used for Server Messages
-    public static final DiscordAuthor SERVER = new DiscordAuthor(SDLinkConfig.INSTANCE.channelsAndWebhooks.serverName, SDLinkConfig.INSTANCE.channelsAndWebhooks.serverAvatar, true);
+    public static final DiscordAuthor SERVER = new DiscordAuthor(SDLinkConfig.INSTANCE.channelsAndWebhooks.serverName, SDLinkConfig.INSTANCE.channelsAndWebhooks.serverAvatar, "server", true);
 
-    private final String username;
+    private final String displayName;
     private final String avatar;
     private final boolean isServer;
+    private final String username;
 
     /**
-     * Internal. Use {@link #of(String, String)}
-     * @param username The Username of the Author
+     * Internal. Use {@link #of(String, String, String)}
+     * @param displayName The Username of the Author
      * @param avatar The avatar URL of the Author
      * @param isServer Is the Author the Minecraft Server
      */
-    private DiscordAuthor(String username, String avatar, boolean isServer) {
-        this.username = username;
+    private DiscordAuthor(String displayName, String avatar, String username, boolean isServer) {
+        this.displayName = displayName;
         this.avatar = avatar;
+        this.username = username;
         this.isServer = isServer;
     }
 
     /**
      * Create a new Discord Author
-     * @param username The name/Username of the Author
+     * @param displayName The name/Username of the Author
      * @param uuid The Mojang UUID of the Author
      * @return A constructed {@link DiscordAuthor}
      */
-    public static DiscordAuthor of(String username, String uuid) {
+    public static DiscordAuthor of(String displayName, String uuid, String username) {
         return new DiscordAuthor(
-                username,
+                displayName,
                 SDLinkConfig.INSTANCE.chatConfig.playerAvatarType.resolve(SDLinkPlatform.minecraftHelper.isOnlineMode() ? uuid : username),
+                username,
                 false
         );
     }
 
-    public String getUsername() {
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public String getRawUsername() {
         return username;
     }
 

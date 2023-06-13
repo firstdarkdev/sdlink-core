@@ -21,7 +21,6 @@ repositories {
     maven { url "https://maven.firstdarkdev.xyz/releases" }
     maven { url "https://maven.firstdarkdev.xyz/snapshots" }
     maven { url "https://m2.dv8tion.net/releases" }
-    maven { url "https://nexus.velocitypowered.com/repository/maven-public/" }
 }
 
 dependencies {
@@ -61,6 +60,7 @@ dependencies {
     implementation("commons-io:commons-io:${commonsio}")
     implementation("com.google.code.gson:gson:${gson}")
     implementation("com.google.guava:guava:31.1-jre")
+    implementation 'com.mojang:authlib:4.0.43'
 }
 
 shadowJar {

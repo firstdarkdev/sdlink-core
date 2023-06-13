@@ -32,7 +32,7 @@ public final class DiscordMessageBuilder {
     public DiscordMessageBuilder author(DiscordAuthor author) {
         this.author = author;
 
-        if (author.getUsername().equalsIgnoreCase("server")) {
+        if (author.getRawUsername().equalsIgnoreCase("server")) {
             this.author = DiscordAuthor.SERVER;
         }
 

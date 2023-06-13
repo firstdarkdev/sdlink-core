@@ -70,7 +70,7 @@ public final class DiscordMessage {
         // Check if a webhook is configured, and use that instead
         if (channel.getMiddle() != null && SDLinkConfig.INSTANCE.channelsAndWebhooks.webhooks.enabled) {
             WebhookMessageBuilder builder = new WebhookMessageBuilder();
-            builder.setUsername(this.author.getUsername());
+            builder.setUsername(this.author.getDisplayName());
             if (!this.author.getAvatar().isEmpty()) {
                 builder.setAvatarUrl(this.author.getAvatar());
             }
@@ -99,7 +99,7 @@ public final class DiscordMessage {
             } else {
                 channel.getLeft().sendMessage(
                                 this.messageType == MessageType.CHAT ?
-                                        SDLinkConfig.INSTANCE.messageFormatting.chat.replace("%player%", author.getUsername()).replace("%message%", message)
+                                        SDLinkConfig.INSTANCE.messageFormatting.chat.replace("%player%", author.getDisplayName()).replace("%message%", message)
                                         : message)
                         .queue(success -> {
                             if (afterSend != null)
@@ -140,7 +140,7 @@ public final class DiscordMessage {
 
         if (withAuthor) {
             builder.setAuthor(
-                    this.author.getUsername(),
+                    this.author.getDisplayName(),
                     null,
                     this.author.getAvatar().isEmpty() ? null : this.author.getAvatar()
             );

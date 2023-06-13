@@ -10,6 +10,7 @@ import com.hypherionmc.sdlink.core.discord.BotController;
 import com.hypherionmc.sdlink.core.managers.RoleManager;
 import com.hypherionmc.sdlink.core.messaging.Result;
 import com.hypherionmc.sdlink.core.services.SDLinkPlatform;
+import com.mojang.authlib.GameProfile;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
@@ -78,7 +79,7 @@ public class MinecraftAccount {
      * Convert a username to an offline account
      * @param username The Username to search for
      */
-    public static MinecraftAccount offline(String username) {
+    private static MinecraftAccount offline(String username) {
         Pair<String, UUID> player = offlinePlayer(username);
         return new MinecraftAccount(
                 player.getLeft(),
@@ -86,6 +87,14 @@ public class MinecraftAccount {
                 true,
                 true
         );
+    }
+
+    /**
+     * Convert GameProfile to Minecraft account
+     * @param profile The profile of the player
+     */
+    public static MinecraftAccount fromGameProfile(GameProfile profile) {
+        return standard(profile.getName());
     }
 
     public String getUsername() {
