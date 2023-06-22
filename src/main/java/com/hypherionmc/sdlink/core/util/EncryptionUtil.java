@@ -6,6 +6,7 @@ package com.hypherionmc.sdlink.core.util;
 
 import com.hypherionmc.sdlink.core.discord.BotController;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 
@@ -46,9 +47,8 @@ public final class EncryptionUtil {
             File encKey = new File(storageDir.getAbsolutePath() + File.separator + "sdlink.enc");
             if (!encKey.exists()) {
                 FileUtils.writeStringToFile(encKey, getSaltString(), StandardCharsets.UTF_8);
-            } else {
-                encCode = FileUtils.readFileToString(encKey, StandardCharsets.UTF_8);
             }
+            encCode = FileUtils.readFileToString(encKey, StandardCharsets.UTF_8);
         } catch (Exception e) {
             BotController.INSTANCE.getLogger().error("Failed to initialize Encryption", e);
         }
@@ -113,14 +113,7 @@ public final class EncryptionUtil {
 
     // Generate Random codes for encryption/decryption
     private String getSaltString() {
-        String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-        StringBuilder salt = new StringBuilder();
-        Random rnd = new Random();
-        while (salt.length() < 18) {
-            int index = (int) (rnd.nextFloat() * SALTCHARS.length());
-            salt.append(SALTCHARS.charAt(index));
-        }
-        return salt.toString();
+        return RandomStringUtils.random(new Random().nextInt(40), true, true);
     }
 
 }
