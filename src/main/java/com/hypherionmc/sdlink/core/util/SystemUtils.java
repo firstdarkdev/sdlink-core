@@ -92,10 +92,11 @@ public class SystemUtils {
         return new Random().ints(1000, 9999).findFirst().getAsInt();
     }
 
-    /*public static boolean hasPermission(BotController controller, Member member) {
-        if (controller.getAdminRole() != null) {
-            return member.getRoles().stream().anyMatch(r -> r.getIdLong() == controller.getAdminRole().getIdLong());
-        }
-        return member.hasPermission(Permission.ADMINISTRATOR) || member.hasPermission(Permission.KICK_MEMBERS);
-    }*/
+    public static boolean isLong(String input) {
+        try {
+            Long.parseLong(input);
+            return true;
+        } catch (NumberFormatException ignored){}
+        return false;
+    }
 }

@@ -6,6 +6,7 @@ package com.hypherionmc.sdlink.core.managers;
 
 import com.hypherionmc.sdlink.core.config.SDLinkConfig;
 import com.hypherionmc.sdlink.core.discord.BotController;
+import com.hypherionmc.sdlink.core.util.SystemUtils;
 import net.dv8tion.jda.api.entities.Role;
 
 import java.util.HashMap;
@@ -63,7 +64,10 @@ public class RoleManager {
      * @return The role that matched or NULL
      */
     private static Role getRole(AtomicInteger errCount, StringBuilder builder, String roleIdentifier, String roleID) {
-        Role role = BotController.INSTANCE.getJDA().getRoleById(roleID);
+        Role role = null;
+        if (SystemUtils.isLong(roleID)) {
+            role = BotController.INSTANCE.getJDA().getRoleById(roleID);
+        }
 
         if (role != null) {
             return role;
