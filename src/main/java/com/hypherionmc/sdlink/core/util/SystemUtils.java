@@ -4,6 +4,10 @@
  */
 package com.hypherionmc.sdlink.core.util;
 
+import com.hypherionmc.sdlink.core.managers.RoleManager;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Member;
+
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
 import java.util.Arrays;

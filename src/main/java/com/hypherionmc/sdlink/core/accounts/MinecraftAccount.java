@@ -10,6 +10,7 @@ import com.hypherionmc.sdlink.core.discord.BotController;
 import com.hypherionmc.sdlink.core.managers.RoleManager;
 import com.hypherionmc.sdlink.core.messaging.Result;
 import com.hypherionmc.sdlink.core.services.SDLinkPlatform;
+import com.hypherionmc.sdlink.core.util.SystemUtils;
 import com.mojang.authlib.GameProfile;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
@@ -144,8 +145,12 @@ public class MinecraftAccount {
             try {
                 member.modifyNickname(nickname).queue();
 
-                if (RoleManager.getLinkedRole() != null) {
-                    guild.addRoleToMember(UserSnowflake.fromId(member.getId()), RoleManager.getLinkedRole()).queue();
+                try {
+                    if (RoleManager.getLinkedRole() != null) {
+                        guild.addRoleToMember(UserSnowflake.fromId(member.getId()), RoleManager.getLinkedRole()).queue();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             } catch (Exception e) {
                 if (SDLinkConfig.INSTANCE.generalConfig.debugging) {
@@ -216,9 +221,18 @@ public class MinecraftAccount {
                 if (SDLinkConfig.INSTANCE.whitelistingAndLinking.whitelisting.linkedWhitelist) {
                     this.linkAccount(member, guild);
                 }
-            }
 
-            return Result.success("Your account has been whitelisted");
+                try {
+                    if (RoleManager.getWhitelistedRole() != null) {
+                        guild.addRoleToMember(member, RoleManager.getWhitelistedRole()).queue();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return Result.success("Your account has been whitelisted");
+            } else {
+                return Result.error("Account is already whitelisted on the Minecraft server");
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
