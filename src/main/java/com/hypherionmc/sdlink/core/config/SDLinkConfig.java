@@ -62,6 +62,10 @@ public class SDLinkConfig extends ModuleConfig {
     @SpecComment("Execute Minecraft commands in Discord")
     public LinkedCommandsConfig linkedCommands = new LinkedCommandsConfig();
 
+    @Path("ignoredMessages")
+    @SpecComment("Configure messages that will be ignored when relaying to discord")
+    public MessageIgnoreConfig ignoreConfig = new MessageIgnoreConfig();
+
     public SDLinkConfig() {
         super("sdlink", "simple-discord-link");
         registerAndSetup(this);

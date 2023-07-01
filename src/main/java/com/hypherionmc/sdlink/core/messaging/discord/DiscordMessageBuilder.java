@@ -5,7 +5,11 @@
 package com.hypherionmc.sdlink.core.messaging.discord;
 
 import com.hypherionmc.sdlink.core.accounts.DiscordAuthor;
+import com.hypherionmc.sdlink.core.config.SDLinkConfig;
+import com.hypherionmc.sdlink.core.config.impl.MessageIgnoreConfig;
 import com.hypherionmc.sdlink.core.messaging.MessageType;
+
+import java.util.Optional;
 
 /**
  * @author HypherionSA
@@ -43,9 +47,40 @@ public final class DiscordMessageBuilder {
      * The Actual message that will be sent
      */
     public DiscordMessageBuilder message(String message) {
-        message = message.replace("<@", "");
-        message = message.replace("@everyone", "");
-        message = message.replace("@here", "");
+        if (this.messageType == MessageType.CHAT) {
+            message = message.replace("<@", "");
+            message = message.replace("@everyone", "");
+            message = message.replace("@here", "");
+        }
+
+        if (SDLinkConfig.INSTANCE.ignoreConfig.enabled) {
+            for (MessageIgnoreConfig.Ignore i : SDLinkConfig.INSTANCE.ignoreConfig.entires) {
+                if (i.searchMode == MessageIgnoreConfig.FilterMode.MATCHES && message.equalsIgnoreCase(i.search)) {
+                    if (i.action == MessageIgnoreConfig.ActionMode.REPLACE) {
+                        message = message.replace(i.search, i.replace);
+                    } else {
+                        message = "";
+                    }
+                }
+
+                if (i.searchMode == MessageIgnoreConfig.FilterMode.CONTAINS && message.contains(i.search)) {
+                    if (i.action == MessageIgnoreConfig.ActionMode.REPLACE) {
+                        message = message.replace(i.search, i.replace);
+                    } else {
+                        message = "";
+                    }
+                }
+
+                if (i.searchMode == MessageIgnoreConfig.FilterMode.STARTS_WITH && message.startsWith(i.search)) {
+                    if (i.action == MessageIgnoreConfig.ActionMode.REPLACE) {
+                        message = message.replace(i.search, i.replace);
+                    } else {
+                        message = "";
+                    }
+                }
+            }
+        }
+
         this.message = message;
         return this;
     }

@@ -48,6 +48,9 @@ public final class DiscordMessage {
         if (!BotController.INSTANCE.isBotReady())
             return;
 
+        if (message.isEmpty())
+            return;
+
         try {
             if (messageType == MessageType.CONSOLE) {
                 sendConsoleMessage();
