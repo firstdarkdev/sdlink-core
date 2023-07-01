@@ -6,6 +6,7 @@ package com.hypherionmc.sdlink.core.services.helpers;
 
 import com.hypherionmc.sdlink.core.accounts.MinecraftAccount;
 import com.hypherionmc.sdlink.core.messaging.Result;
+import net.dv8tion.jda.api.entities.Member;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.List;
  */
 public interface IMinecraftHelper {
 
-    void discordMessageReceived(String username, String message);
+    void discordMessageReceived(Member member, String message);
     Result checkWhitelisting();
     Result isPlayerWhitelisted(MinecraftAccount account);
     Result whitelistPlayer(MinecraftAccount account);

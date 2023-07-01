@@ -31,7 +31,7 @@ public class DiscordMessageHooks {
             if (SDLinkConfig.INSTANCE.generalConfig.debugging) {
                 BotController.INSTANCE.getLogger().info("Sending Message from {}: {}", event.getAuthor().getName(), event.getMessage().getContentStripped());
             }
-            SDLinkPlatform.minecraftHelper.discordMessageReceived(event.getMember().getEffectiveName(), event.getMessage().getContentRaw());
+            SDLinkPlatform.minecraftHelper.discordMessageReceived(event.getMember(), event.getMessage().getContentRaw());
         } catch (Exception e) {
             if (SDLinkConfig.INSTANCE.generalConfig.debugging) {
                 e.printStackTrace();
