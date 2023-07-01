@@ -12,10 +12,7 @@ import com.hypherionmc.sdlink.core.messaging.Result;
 import com.hypherionmc.sdlink.core.services.SDLinkPlatform;
 import com.hypherionmc.sdlink.core.util.SystemUtils;
 import com.mojang.authlib.GameProfile;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.entities.UserSnowflake;
+import net.dv8tion.jda.api.entities.*;
 import org.apache.commons.lang3.tuple.Pair;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -169,13 +166,22 @@ public class MinecraftAccount {
     /**
      * Unlink a previously linked Discord and Minecraft Account
      */
-    public Result unlinkAccount() {
+    public Result unlinkAccount(Member member, Guild guild) {
         SDLinkAccount account = getStoredAccount();
         if (account == null)
             return Result.error("No such account found in database");
 
         try {
             sdlinkDatabase.remove(account, SDLinkAccount.class);
+
+            try {
+                if (RoleManager.getLinkedRole() != null && member.getRoles().contains(RoleManager.getLinkedRole())) {
+                    guild.removeRoleFromMember(member, RoleManager.getLinkedRole()).queue();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             return Result.success("Your discord and Minecraft accounts are no longer linked");
         } catch (Exception e) {
             e.printStackTrace();
@@ -243,7 +249,7 @@ public class MinecraftAccount {
     /**
      * Remove a previously whitelisted account from Minecraft and the database
      */
-    public Result unwhitelistAccount() {
+    public Result unwhitelistAccount(Member member, Guild guild) {
         SDLinkAccount account = getStoredAccount();
         if (account == null)
             return Result.error("No such account found in database");
@@ -259,7 +265,15 @@ public class MinecraftAccount {
 
                 // Auto Linking is enabled. So we unlink the account
                 if (SDLinkConfig.INSTANCE.whitelistingAndLinking.whitelisting.linkedWhitelist) {
-                    this.unlinkAccount();
+                    this.unlinkAccount(member, guild);
+                }
+
+                try {
+                    if (RoleManager.getWhitelistedRole() != null && member.getRoles().contains(RoleManager.getWhitelistedRole())) {
+                        guild.removeRoleFromMember(member, RoleManager.getWhitelistedRole()).queue();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
 
                 return Result.success("Your account has been removed from the whitelist");

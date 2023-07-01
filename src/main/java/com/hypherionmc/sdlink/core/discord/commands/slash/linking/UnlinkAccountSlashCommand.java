@@ -38,7 +38,7 @@ public class UnlinkAccountSlashCommand extends SDLinkSlashCommand {
         for (SDLinkAccount account : accounts) {
             if (account.getDiscordID() != null && account.getDiscordID().equalsIgnoreCase(event.getMember().getId())) {
                 MinecraftAccount minecraftAccount = MinecraftAccount.standard(account.getUsername());
-                Result result = minecraftAccount.unlinkAccount();
+                Result result = minecraftAccount.unlinkAccount(event.getMember(), event.getGuild());
                 event.reply(result.getMessage()).setEphemeral(true).queue();
                 break;
             }
