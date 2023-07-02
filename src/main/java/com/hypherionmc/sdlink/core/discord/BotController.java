@@ -107,6 +107,7 @@ public class BotController {
             clientBuilder.setOwnerId("354707828298088459");
             clientBuilder.setHelpWord("help");
             clientBuilder.useHelpBuilder(false);
+            clientBuilder.setActivity(null);
             //clientBuilder.forceGuildOnly(750990873311051786L);
 
             CommandClient commandClient = clientBuilder.build();

@@ -19,7 +19,7 @@ public class BotConfigSettings {
     public String botToken = "";
 
     @Path("statusUpdateInterval")
-    @SpecComment("How often the Bot Status will update on Discord (in Seconds)")
+    @SpecComment("How often the Bot Status will update on Discord (in Seconds). Set to 0 to disable")
     public int statusUpdateInterval = 30;
 
     @Path("staffRole")

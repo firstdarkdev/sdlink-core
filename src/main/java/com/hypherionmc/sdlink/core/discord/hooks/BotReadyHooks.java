@@ -28,28 +28,30 @@ public class BotReadyHooks {
      * @param event The {@link ReadyEvent}
      */
     public static void startActivityUpdates(ReadyEvent event) {
-        BotController.taskManager.scheduleAtFixedRate(() -> {
-            try {
-                if (event.getJDA().getStatus() == JDA.Status.CONNECTED) {
-                    Activity act = Activity.of(SDLinkConfig.INSTANCE.botConfig.botStatus.botStatusType, SDLinkConfig.INSTANCE.botConfig.botStatus.botStatus
-                            .replace("%players%", String.valueOf(SDLinkPlatform.minecraftHelper.getPlayerCounts().getLeft()))
-                            .replace("%maxplayers%", String.valueOf(SDLinkPlatform.minecraftHelper.getPlayerCounts().getRight())));
+        if (SDLinkConfig.INSTANCE.botConfig.statusUpdateInterval > 0) {
+            BotController.taskManager.scheduleAtFixedRate(() -> {
+                try {
+                    if (event.getJDA().getStatus() == JDA.Status.CONNECTED) {
+                        Activity act = Activity.of(SDLinkConfig.INSTANCE.botConfig.botStatus.botStatusType, SDLinkConfig.INSTANCE.botConfig.botStatus.botStatus
+                                .replace("%players%", String.valueOf(SDLinkPlatform.minecraftHelper.getPlayerCounts().getLeft()))
+                                .replace("%maxplayers%", String.valueOf(SDLinkPlatform.minecraftHelper.getPlayerCounts().getRight())));
 
-                    if (SDLinkConfig.INSTANCE.botConfig.botStatus.botStatusType == Activity.ActivityType.STREAMING) {
-                        act = Activity.of(SDLinkConfig.INSTANCE.botConfig.botStatus.botStatusType, SDLinkConfig.INSTANCE.botConfig.botStatus.botStatus
-                                        .replace("%players%", String.valueOf(SDLinkPlatform.minecraftHelper.getPlayerCounts().getLeft()))
-                                        .replace("%maxplayers%", String.valueOf(SDLinkPlatform.minecraftHelper.getPlayerCounts().getRight())),
-                                SDLinkConfig.INSTANCE.botConfig.botStatus.botStatusStreamingURL);
+                        if (SDLinkConfig.INSTANCE.botConfig.botStatus.botStatusType == Activity.ActivityType.STREAMING) {
+                            act = Activity.of(SDLinkConfig.INSTANCE.botConfig.botStatus.botStatusType, SDLinkConfig.INSTANCE.botConfig.botStatus.botStatus
+                                            .replace("%players%", String.valueOf(SDLinkPlatform.minecraftHelper.getPlayerCounts().getLeft()))
+                                            .replace("%maxplayers%", String.valueOf(SDLinkPlatform.minecraftHelper.getPlayerCounts().getRight())),
+                                    SDLinkConfig.INSTANCE.botConfig.botStatus.botStatusStreamingURL);
+                        }
+
+                        event.getJDA().getPresence().setActivity(act);
                     }
-
-                    event.getJDA().getPresence().setActivity(act);
+                } catch (Exception e) {
+                    if (SDLinkConfig.INSTANCE.generalConfig.debugging) {
+                        BotController.INSTANCE.getLogger().info(e.getMessage());
+                    }
                 }
-            } catch (Exception e) {
-                if (SDLinkConfig.INSTANCE.generalConfig.debugging) {
-                    BotController.INSTANCE.getLogger().info(e.getMessage());
-                }
-            }
-        }, SDLinkConfig.INSTANCE.botConfig.statusUpdateInterval, SDLinkConfig.INSTANCE.botConfig.statusUpdateInterval, TimeUnit.SECONDS);
+            }, SDLinkConfig.INSTANCE.botConfig.statusUpdateInterval, SDLinkConfig.INSTANCE.botConfig.statusUpdateInterval, TimeUnit.SECONDS);
+        }
     }
 
     /**
