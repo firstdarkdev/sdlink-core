@@ -48,9 +48,12 @@ public final class DiscordMessageBuilder {
      */
     public DiscordMessageBuilder message(String message) {
         if (this.messageType == MessageType.CHAT) {
-            message = message.replace("<@", "");
             message = message.replace("@everyone", "");
             message = message.replace("@here", "");
+
+            if (!SDLinkConfig.INSTANCE.chatConfig.allowMentionsFromChat) {
+                message = message.replace("<@", "");
+            }
         }
 
         if (SDLinkConfig.INSTANCE.ignoreConfig.enabled) {
