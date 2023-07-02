@@ -24,7 +24,7 @@ public class SDLinkConfig extends ModuleConfig {
     // DO NOT REMOVE TRANSIENT HERE... OTHERWISE, THE STUPID CONFIG LIBRARY
     // WILL TRY TO WRITE THESE TO THE CONFIG
     public transient static SDLinkConfig INSTANCE;
-    public transient static int configVer = 1;
+    public transient static int configVer = 3;
 
     @Path("general")
     @SpecComment("General Mod Config")
@@ -98,6 +98,7 @@ public class SDLinkConfig extends ModuleConfig {
 
         new ObjectConverter().toConfig(conf, newConfig);
         this.updateConfigValues(config, newConfig, newConfig, "");
+        newConfig.set("general.configVersion", configVer);
         newConfig.save();
 
         newConfig.close();
