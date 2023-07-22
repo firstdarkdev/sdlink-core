@@ -68,7 +68,7 @@ public final class DiscordMessage {
      * Send a Non Console relay message to discord
      */
     private void sendNormalMessage() {
-        Triple<StandardGuildMessageChannel, WebhookClient, Boolean> channel = resolveDestination();
+        Triple<StandardGuildMessageChannel, WebhookClient, MessageChannelConfig.DestinationObject> channel = resolveDestination();
 
         // Check if a webhook is configured, and use that instead
         if (channel.getMiddle() != null && SDLinkConfig.INSTANCE.channelsAndWebhooks.webhooks.enabled) {
@@ -79,8 +79,8 @@ public final class DiscordMessage {
             }
 
             // Message must be an Embed
-            if (channel.getRight()) {
-                EmbedBuilder eb = buildEmbed(false);
+            if (channel.getRight().useEmbed) {
+                EmbedBuilder eb = buildEmbed(false, channel.getRight().embedLayout);
                 WebhookEmbed web = WebhookEmbedBuilder.fromJDA(eb.build()).build();
                 builder.addEmbeds(web);
             } else {
@@ -93,8 +93,8 @@ public final class DiscordMessage {
             });
         } else {
             // Use the configured channel instead
-            if (channel.getRight()) {
-                EmbedBuilder eb = buildEmbed(true);
+            if (channel.getRight().useEmbed) {
+                EmbedBuilder eb = buildEmbed(true, channel.getRight().embedLayout);
                 channel.getLeft().sendMessageEmbeds(eb.build()).queue(success -> {
                     if (afterSend != null)
                         afterSend.run();
@@ -138,7 +138,7 @@ public final class DiscordMessage {
      * Build an embed with the supplied information
      * @param withAuthor Should the author be appended to the embed. Not used for Webhooks
      */
-    private EmbedBuilder buildEmbed(boolean withAuthor) {
+    private EmbedBuilder buildEmbed(boolean withAuthor, String embedLayout) {
         EmbedBuilder builder = new EmbedBuilder();
 
         if (withAuthor) {
@@ -156,14 +156,14 @@ public final class DiscordMessage {
     /**
      * Figure out where the message must be delivered to, based on the config values
      */
-    private Triple<StandardGuildMessageChannel, WebhookClient, Boolean> resolveDestination() {
+    private Triple<StandardGuildMessageChannel, WebhookClient, MessageChannelConfig.DestinationObject> resolveDestination() {
         switch (messageType) {
             case CHAT -> {
                 MessageChannelConfig.DestinationObject chat = SDLinkConfig.INSTANCE.messageDestinations.chat;
                 return Triple.of(
                         ChannelManager.getDestinationChannel(chat.channel),
                         WebhookManager.getWebhookClient(chat.channel),
-                        chat.useEmbed
+                        chat
                 );
             }
             case START_STOP -> {
@@ -171,7 +171,7 @@ public final class DiscordMessage {
                 return Triple.of(
                         ChannelManager.getDestinationChannel(startStop.channel),
                         WebhookManager.getWebhookClient(startStop.channel),
-                        startStop.useEmbed
+                        startStop
                 );
             }
             case JOIN_LEAVE -> {
@@ -179,7 +179,7 @@ public final class DiscordMessage {
                 return Triple.of(
                         ChannelManager.getDestinationChannel(joinLeave.channel),
                         WebhookManager.getWebhookClient(joinLeave.channel),
-                        joinLeave.useEmbed
+                        joinLeave
                 );
             }
             case ADVANCEMENT -> {
@@ -187,7 +187,7 @@ public final class DiscordMessage {
                 return Triple.of(
                         ChannelManager.getDestinationChannel(advancement.channel),
                         WebhookManager.getWebhookClient(advancement.channel),
-                        advancement.useEmbed
+                        advancement
                 );
             }
             case DEATH -> {
@@ -195,7 +195,7 @@ public final class DiscordMessage {
                 return Triple.of(
                         ChannelManager.getDestinationChannel(death.channel),
                         WebhookManager.getWebhookClient(death.channel),
-                        death.useEmbed
+                        death
                 );
             }
             case COMMAND -> {
@@ -203,13 +203,21 @@ public final class DiscordMessage {
                 return Triple.of(
                         ChannelManager.getDestinationChannel(command.channel),
                         WebhookManager.getWebhookClient(command.channel),
-                        command.useEmbed
+                        command
+                );
+            }
+            case CUSTOM -> {
+                MessageChannelConfig.DestinationObject custom = SDLinkConfig.INSTANCE.messageDestinations.custom;
+                return Triple.of(
+                        ChannelManager.getDestinationChannel(custom.channel),
+                        WebhookManager.getWebhookClient(custom.channel),
+                        custom
                 );
             }
         }
 
         // This code should never be reached, but it's added here as a fail-safe
         MessageChannelConfig.DestinationObject chat = SDLinkConfig.INSTANCE.messageDestinations.chat;
-        return Triple.of(ChannelManager.getDestinationChannel(chat.channel), WebhookManager.getWebhookClient(chat.channel), chat.useEmbed);
+        return Triple.of(ChannelManager.getDestinationChannel(chat.channel), WebhookManager.getWebhookClient(chat.channel), chat);
     }
 }

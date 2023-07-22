@@ -20,8 +20,10 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 
+import java.io.File;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -62,8 +64,23 @@ public class BotController {
         INSTANCE = this;
         this.logger = logger;
 
+        File newConfigDir = new File("./config/simple-discord-link");
+        if (!newConfigDir.exists())
+            newConfigDir.mkdirs();
+
+        File oldConfig = new File("./config/simple-discord-link.toml");
+        if (oldConfig.exists()) {
+            try {
+                FileUtils.moveFile(oldConfig, new File(newConfigDir.getAbsolutePath() + File.separator + "simple-discord-link.toml"));
+            } catch (Exception e) {
+                logger.error("Failed to move config file to new location", e);
+            }
+        }
+
+        // Initialize Config
         new SDLinkConfig();
 
+        // Initialize Account Storage
         DatabaseManager.initialize();
 
         // Initialize Webhook Clients

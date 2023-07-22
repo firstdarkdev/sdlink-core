@@ -9,8 +9,6 @@ import com.hypherionmc.sdlink.core.config.SDLinkConfig;
 import com.hypherionmc.sdlink.core.config.impl.MessageIgnoreConfig;
 import com.hypherionmc.sdlink.core.messaging.MessageType;
 
-import java.util.Optional;
-
 /**
  * @author HypherionSA
  * Used to construct a {@link DiscordMessage} to be sent back to discord

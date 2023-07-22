@@ -24,7 +24,7 @@ public class SDLinkConfig extends ModuleConfig {
     // DO NOT REMOVE TRANSIENT HERE... OTHERWISE, THE STUPID CONFIG LIBRARY
     // WILL TRY TO WRITE THESE TO THE CONFIG
     public transient static SDLinkConfig INSTANCE;
-    public transient static int configVer = 3;
+    public transient static int configVer = 5;
 
     @Path("general")
     @SpecComment("General Mod Config")
@@ -67,7 +67,7 @@ public class SDLinkConfig extends ModuleConfig {
     public MessageIgnoreConfig ignoreConfig = new MessageIgnoreConfig();
 
     public SDLinkConfig() {
-        super("sdlink", "simple-discord-link");
+        super("sdlink", "simple-discord-link", "simple-discord-link");
         registerAndSetup(this);
     }
 
