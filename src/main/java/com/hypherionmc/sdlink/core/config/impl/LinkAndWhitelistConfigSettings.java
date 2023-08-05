@@ -33,6 +33,14 @@ public class LinkAndWhitelistConfigSettings {
         @Path("requireLinking")
         @SpecComment("Require users to link their Discord and Minecraft accounts before joining the server")
         public boolean requireLinking = false;
+
+        @Path("changeNickname")
+        @SpecComment("Allow nickname changes on account linking")
+        public boolean changeNickname = true;
+
+        @Path("nicknameFormat")
+        @SpecComment("The nickname format to use for linked accounts, when changeNickname is enabled. %nick% for current nickname/name and %mcname% for the minecraft name")
+        public String nicknameFormat = "%nick% [MC:%mcname%]";
     }
 
     public static class Whitelisting {

@@ -28,7 +28,6 @@ public class PermissionChecker {
     // Base Permissions required by the bot to operate
     private static final List<Permission> BOT_PERMS = new ArrayList<>() {{
        add(Permission.NICKNAME_CHANGE);
-       add(Permission.NICKNAME_MANAGE);
        add(Permission.MANAGE_WEBHOOKS);
        add(Permission.MESSAGE_SEND);
        add(Permission.MESSAGE_EMBED_LINKS);
@@ -50,6 +49,10 @@ public class PermissionChecker {
      * Run the permission checker to see if the bot has all the required permissions
      */
     public static void checkBotSetup() {
+        if (SDLinkConfig.INSTANCE.whitelistingAndLinking.accountLinking.changeNickname) {
+            BOT_PERMS.add(Permission.NICKNAME_MANAGE);
+        }
+
         StringBuilder builder = new StringBuilder();
         builder.append("\r\n").append("******************* Simple Discord Link Errors *******************").append("\r\n");
         AtomicInteger errCount = new AtomicInteger();

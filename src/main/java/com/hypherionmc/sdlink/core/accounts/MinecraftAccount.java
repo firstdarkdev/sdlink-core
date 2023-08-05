@@ -131,7 +131,7 @@ public class MinecraftAccount {
         try {
             sdlinkDatabase.upsert(account);
 
-            String suffix = " [MC: " + this.username + "]";
+            String suffix = this.username;
             int availableChars = 32 - suffix.length();
             String nickname = member.getEffectiveName();
 
@@ -139,21 +139,23 @@ public class MinecraftAccount {
                 nickname = nickname.substring(0, availableChars - 3) + "...";
             }
 
-            nickname += suffix;
+            String finalnickname = SDLinkConfig.INSTANCE.whitelistingAndLinking.accountLinking.nicknameFormat.replace("%nick%", nickname).replace("%mcname%", suffix);
 
-            try {
-                member.modifyNickname(nickname).queue();
-
+            if (SDLinkConfig.INSTANCE.whitelistingAndLinking.accountLinking.changeNickname) {
                 try {
-                    if (RoleManager.getLinkedRole() != null) {
-                        guild.addRoleToMember(UserSnowflake.fromId(member.getId()), RoleManager.getLinkedRole()).queue();
+                    member.modifyNickname(finalnickname).queue();
+
+                    try {
+                        if (RoleManager.getLinkedRole() != null) {
+                            guild.addRoleToMember(UserSnowflake.fromId(member.getId()), RoleManager.getLinkedRole()).queue();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            } catch (Exception e) {
-                if (SDLinkConfig.INSTANCE.generalConfig.debugging) {
-                    e.printStackTrace();
+                    if (SDLinkConfig.INSTANCE.generalConfig.debugging) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
