@@ -303,6 +303,15 @@ public class MinecraftAccount {
         if (account == null)
             return false;
 
+        return !SDLinkPlatform.minecraftHelper.isPlayerWhitelisted(MinecraftAccount.standard(account.getUsername())).isError() && account.isWhitelisted();
+    }
+
+    public boolean isAutoWhitelisted() {
+        SDLinkAccount account = getStoredAccount();
+
+        if (account == null)
+            return false;
+
         if (SDLinkConfig.INSTANCE.whitelistingAndLinking.accountLinking.accountLinking) {
             User discordUser = getDiscordUser();
 
@@ -312,7 +321,7 @@ public class MinecraftAccount {
             }
         }
 
-        return !SDLinkPlatform.minecraftHelper.isPlayerWhitelisted(MinecraftAccount.standard(account.getUsername())).isError() && account.isWhitelisted();
+        return false;
     }
 
     /**
