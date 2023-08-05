@@ -14,12 +14,13 @@ import com.hypherionmc.sdlink.core.services.SDLinkPlatform;
 public class DiscordAuthor {
 
     // User used for Server Messages
-    public static final DiscordAuthor SERVER = new DiscordAuthor(SDLinkConfig.INSTANCE.channelsAndWebhooks.serverName, SDLinkConfig.INSTANCE.channelsAndWebhooks.serverAvatar, "server", true);
+    public static final DiscordAuthor SERVER = new DiscordAuthor(SDLinkConfig.INSTANCE.channelsAndWebhooks.serverName, SDLinkConfig.INSTANCE.channelsAndWebhooks.serverAvatar, "server", true, "");
 
     private final String displayName;
     private final String avatar;
     private final boolean isServer;
     private final String username;
+    private final String uuid;
 
     /**
      * Internal. Use {@link #of(String, String, String)}
@@ -27,11 +28,12 @@ public class DiscordAuthor {
      * @param avatar The avatar URL of the Author
      * @param isServer Is the Author the Minecraft Server
      */
-    private DiscordAuthor(String displayName, String avatar, String username, boolean isServer) {
+    private DiscordAuthor(String displayName, String avatar, String username, boolean isServer, String uuid) {
         this.displayName = displayName;
         this.avatar = avatar;
         this.username = username;
         this.isServer = isServer;
+        this.uuid = uuid;
     }
 
     /**
@@ -45,7 +47,8 @@ public class DiscordAuthor {
                 displayName,
                 SDLinkConfig.INSTANCE.chatConfig.playerAvatarType.resolve(SDLinkPlatform.minecraftHelper.isOnlineMode() ? uuid : username),
                 username,
-                false
+                false,
+                SDLinkPlatform.minecraftHelper.isOnlineMode() ? uuid : username
         );
     }
 
@@ -63,5 +66,9 @@ public class DiscordAuthor {
 
     public String getAvatar() {
         return avatar;
+    }
+
+    public String getUuid() {
+        return uuid;
     }
 }

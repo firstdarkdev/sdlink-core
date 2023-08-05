@@ -5,6 +5,7 @@
 package com.hypherionmc.sdlink.core.messaging.discord;
 
 import com.hypherionmc.sdlink.core.accounts.DiscordAuthor;
+import com.hypherionmc.sdlink.core.accounts.MinecraftAccount;
 import com.hypherionmc.sdlink.core.config.SDLinkConfig;
 import com.hypherionmc.sdlink.core.config.impl.MessageIgnoreConfig;
 import com.hypherionmc.sdlink.core.messaging.MessageType;
@@ -36,6 +37,14 @@ public final class DiscordMessageBuilder {
 
         if (author.getRawUsername().equalsIgnoreCase("server")) {
             this.author = DiscordAuthor.SERVER;
+        }
+
+        if (SDLinkConfig.INSTANCE.chatConfig.useLinkedNames && this.author != DiscordAuthor.SERVER) {
+            MinecraftAccount account = MinecraftAccount.standard(author.getRawUsername());
+
+            if (account != null && account.getDiscordUser() != null) {
+                this.author = DiscordAuthor.of(account.getDiscordName(), author.getUuid(), author.getRawUsername());
+            }
         }
 
         return this;

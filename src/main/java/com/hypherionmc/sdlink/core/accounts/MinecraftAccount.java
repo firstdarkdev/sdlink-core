@@ -97,6 +97,10 @@ public class MinecraftAccount {
         return standard(profile.getName());
     }
 
+    public static SDLinkAccount getStoredFromUUID(String uuid) {
+        return sdlinkDatabase.findById(uuid, SDLinkAccount.class);
+    }
+
     public String getUsername() {
         return username;
     }

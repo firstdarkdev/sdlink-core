@@ -17,6 +17,10 @@ import java.util.List;
  */
 public class ChatSettingsConfig {
 
+    @Path("useLinkedNames")
+    @SpecComment("Use linked account names in Discord/Minecraft messages, instead of the default ones")
+    public boolean useLinkedNames = true;
+
     @Path("formatting")
     @SpecComment("Convert Discord to MC, and MC to Discord Formatting")
     public boolean formatting = true;
