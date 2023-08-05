@@ -299,6 +299,14 @@ public class MinecraftAccount {
         if (account == null)
             return false;
 
+        User discordUser = getDiscordUser();
+
+        if (discordUser != null) {
+            Member m = BotController.INSTANCE.getJDA().getGuilds().get(0).getMemberById(discordUser.getId());
+            if (m != null)
+                return m.getRoles().stream().anyMatch(r -> RoleManager.getAutoWhitelistRoles().contains(r));
+        }
+
         return !SDLinkPlatform.minecraftHelper.isPlayerWhitelisted(MinecraftAccount.standard(account.getUsername())).isError() && account.isWhitelisted();
     }
 

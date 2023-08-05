@@ -7,6 +7,9 @@ package com.hypherionmc.sdlink.core.config.impl;
 import me.hypherionmc.moonconfig.core.conversion.Path;
 import me.hypherionmc.moonconfig.core.conversion.SpecComment;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author HypherionSA
  * Config Structure to control Whitelisting and Account Linking
@@ -51,6 +54,10 @@ public class LinkAndWhitelistConfigSettings {
         @Path("linkedWhitelist")
         @SpecComment("Automatically link Minecraft and Discord Accounts when a user is whitelisted")
         public boolean linkedWhitelist = false;
+
+        @Path("autoWhitelistRoles")
+        @SpecComment("Users with linked discord accounts, that contain any of these roles will be automatically whitelisted")
+        public List<String> autoWhitelistRoles = new ArrayList<>();
 
         @Path("autoWhitelistRole")
         @SpecComment("If a role ID (or name) is defined here, it will be assigned to players when they are whitelisted")

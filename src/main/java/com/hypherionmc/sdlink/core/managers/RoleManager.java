@@ -10,7 +10,9 @@ import com.hypherionmc.sdlink.core.util.SystemUtils;
 import net.dv8tion.jda.api.entities.Role;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -22,6 +24,7 @@ public class RoleManager {
     private static Role whitelistedRole;
     private static Role linkedRole;
     private static final HashMap<String, Role> commandRoles = new HashMap<>();
+    private static final Set<Role> autoWhitelistRoles = new HashSet<>();
 
     /**
      * Check and load the roles required by the bot
@@ -35,6 +38,15 @@ public class RoleManager {
 
         if (!SDLinkConfig.INSTANCE.whitelistingAndLinking.accountLinking.linkedRole.isEmpty()) {
             linkedRole = getRole(errCount, builder, "Linked Account", SDLinkConfig.INSTANCE.whitelistingAndLinking.accountLinking.linkedRole);
+        }
+
+        if (SDLinkConfig.INSTANCE.whitelistingAndLinking.whitelisting.whitelisting) {
+            SDLinkConfig.INSTANCE.whitelistingAndLinking.whitelisting.autoWhitelistRoles.forEach(r -> {
+                Role role = getRole(errCount, builder, "Auto Whitelist Role", r);
+
+                if (role != null)
+                    autoWhitelistRoles.add(role);
+            });
         }
 
         if (SDLinkConfig.INSTANCE.linkedCommands.enabled) {
@@ -96,5 +108,9 @@ public class RoleManager {
 
     public static HashMap<String, Role> getCommandRoles() {
         return commandRoles;
+    }
+
+    public static Set<Role> getAutoWhitelistRoles() {
+        return autoWhitelistRoles;
     }
 }
