@@ -40,6 +40,7 @@ public class ConfirmAccountLinkSlashCommand extends SDLinkSlashCommand {
             return;
         }
 
+        sdlinkDatabase.reloadCollection("accounts");
         List<SDLinkAccount> accounts = sdlinkDatabase.findAll(SDLinkAccount.class);
 
         if (accounts.isEmpty()) {

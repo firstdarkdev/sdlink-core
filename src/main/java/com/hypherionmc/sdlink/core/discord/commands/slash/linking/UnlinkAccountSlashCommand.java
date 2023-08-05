@@ -28,6 +28,7 @@ public class UnlinkAccountSlashCommand extends SDLinkSlashCommand {
 
     @Override
     protected void execute(SlashCommandEvent event) {
+        sdlinkDatabase.reloadCollection("accounts");
         List<SDLinkAccount> accounts = sdlinkDatabase.findAll(SDLinkAccount.class);
 
         if (accounts.isEmpty()) {

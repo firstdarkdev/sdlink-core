@@ -37,7 +37,7 @@ public class ViewWhitelistedAccountsSlashCommand extends SDLinkSlashCommand {
     @Override
     protected void execute(SlashCommandEvent event) {
         EmbedPaginator.Builder paginator = MessageUtil.defaultPaginator(event);
-
+        sdlinkDatabase.reloadCollection("accounts");
         List<SDLinkAccount> accounts = sdlinkDatabase.findAll(SDLinkAccount.class).stream().filter(SDLinkAccount::isWhitelisted).toList();
 
         EmbedBuilder builder = new EmbedBuilder();

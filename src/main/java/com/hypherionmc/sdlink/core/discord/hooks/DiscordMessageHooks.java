@@ -37,14 +37,14 @@ public class DiscordMessageHooks {
                 message = (long) event.getMessage().getAttachments().size() + " attachments";
             }
 
-            if (!message.isEmpty() && !event.getMessage().getAttachments().isEmpty()) {
+            if (!event.getMessage().getContentRaw().isEmpty() && !event.getMessage().getAttachments().isEmpty()) {
                 message = message + " (+" + (long) event.getMessage().getAttachments().size() + " attachments)";
             }
 
             if (message.isEmpty())
                 return;
 
-            SDLinkPlatform.minecraftHelper.discordMessageReceived(event.getMember(), event.getMessage().getContentRaw());
+            SDLinkPlatform.minecraftHelper.discordMessageReceived(event.getMember(), message);
         } catch (Exception e) {
             if (SDLinkConfig.INSTANCE.generalConfig.debugging) {
                 e.printStackTrace();

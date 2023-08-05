@@ -37,6 +37,7 @@ public class ViewLinkedAccountsCommand extends SDLinkSlashCommand {
     protected void execute(SlashCommandEvent event) {
         EmbedPaginator.Builder paginator = MessageUtil.defaultPaginator(event);
 
+        sdlinkDatabase.reloadCollection("accounts");
         List<SDLinkAccount> accounts = sdlinkDatabase.findAll(SDLinkAccount.class);
 
         EmbedBuilder builder = new EmbedBuilder();

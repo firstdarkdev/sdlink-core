@@ -98,6 +98,7 @@ public class MinecraftAccount {
     }
 
     public static SDLinkAccount getStoredFromUUID(String uuid) {
+        sdlinkDatabase.reloadCollection("accounts");
         return sdlinkDatabase.findById(uuid, SDLinkAccount.class);
     }
 
@@ -315,13 +316,27 @@ public class MinecraftAccount {
         if (SDLinkConfig.INSTANCE.whitelistingAndLinking.accountLinking.accountLinking) {
             User discordUser = getDiscordUser();
 
+            if (SDLinkConfig.INSTANCE.generalConfig.debugging) {
+                System.out.println("[AutoWhiteList] Discord User Null: " + (discordUser == null));
+            }
+
             if (discordUser != null) {
                 Member m = BotController.INSTANCE.getJDA().getGuilds().get(0).getMemberById(discordUser.getId());
+
+                if (SDLinkConfig.INSTANCE.generalConfig.debugging) {
+                    System.out.println("[AutoWhiteList] Discord Member Null: " + (m == null));
+                }
 
                 if (m == null)
                     return false;
 
-                return m.getRoles().stream().anyMatch(r -> RoleManager.getAutoWhitelistRoles().contains(r));
+                boolean hasAutoRole = m.getRoles().stream().anyMatch(r -> RoleManager.getAutoWhitelistRoles().contains(r));
+
+                if (SDLinkConfig.INSTANCE.generalConfig.debugging) {
+                    System.out.println("[AutoWhiteList] Has Auto Role: " + hasAutoRole);
+                }
+
+                return hasAutoRole;
             }
         }
 
@@ -332,6 +347,7 @@ public class MinecraftAccount {
      * Retrieve the stored account from the database
      */
     public SDLinkAccount getStoredAccount() {
+        sdlinkDatabase.reloadCollection("accounts");
         return sdlinkDatabase.findById(this.uuid.toString(), SDLinkAccount.class);
     }
 
@@ -353,7 +369,7 @@ public class MinecraftAccount {
      * Get the Discord Account name this player is linked to
      */
     public String getDiscordName() {
-        SDLinkAccount storedAccount = sdlinkDatabase.findById(this.uuid, SDLinkAccount.class);
+        SDLinkAccount storedAccount = getStoredAccount();
         if (storedAccount == null || storedAccount.getDiscordID() == null || storedAccount.getDiscordID().isEmpty())
             return "Unlinked";
 
@@ -365,7 +381,7 @@ public class MinecraftAccount {
      * Get the Discord User this player is linked to
      */
     public User getDiscordUser() {
-        SDLinkAccount storedAccount = sdlinkDatabase.findById(this.uuid, SDLinkAccount.class);
+        SDLinkAccount storedAccount = getStoredAccount();
         if (storedAccount == null || storedAccount.getDiscordID() == null || storedAccount.getDiscordID().isEmpty())
             return null;
 
