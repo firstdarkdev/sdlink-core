@@ -13,11 +13,22 @@ import com.hypherionmc.sdlink.core.config.SDLinkConfig;
 import com.hypherionmc.sdlink.core.config.impl.MessageChannelConfig;
 import com.hypherionmc.sdlink.core.discord.BotController;
 import com.hypherionmc.sdlink.core.managers.ChannelManager;
+import com.hypherionmc.sdlink.core.managers.EmbedManager;
 import com.hypherionmc.sdlink.core.managers.WebhookManager;
 import com.hypherionmc.sdlink.core.messaging.MessageType;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.channel.middleman.StandardGuildMessageChannel;
+import net.dv8tion.jda.api.utils.data.DataArray;
+import net.dv8tion.jda.api.utils.data.DataObject;
+import net.dv8tion.jda.internal.utils.Checks;
 import org.apache.commons.lang3.tuple.Triple;
+
+import javax.annotation.Nonnull;
+import java.awt.*;
+import java.time.OffsetDateTime;
+
+import static net.dv8tion.jda.api.EmbedBuilder.ZERO_WIDTH_SPACE;
 
 /**
  * @author HypherionSA
@@ -138,19 +149,32 @@ public final class DiscordMessage {
      * Build an embed with the supplied information
      * @param withAuthor Should the author be appended to the embed. Not used for Webhooks
      */
-    private EmbedBuilder buildEmbed(boolean withAuthor, String embedLayout) {
-        EmbedBuilder builder = new EmbedBuilder();
+    private EmbedBuilder buildEmbed(boolean withAuthor, String key) {
+        String embedJson = EmbedManager.getEmbed(key);
 
-        if (withAuthor) {
-            builder.setAuthor(
-                    this.author.getDisplayName(),
-                    null,
-                    this.author.getAvatar().isEmpty() ? null : this.author.getAvatar()
-            );
+        if (embedJson == null || embedJson.isEmpty()) {
+            EmbedBuilder builder = new EmbedBuilder();
+
+            if (withAuthor) {
+                builder.setAuthor(
+                        this.author.getDisplayName(),
+                        null,
+                        this.author.getAvatar().isEmpty() ? null : this.author.getAvatar()
+                );
+            }
+
+            builder.setDescription(message);
+            return builder;
         }
 
-        builder.setDescription(message);
-        return builder;
+        embedJson = embedJson
+                .replace("%author%", this.author.getDisplayName())
+                .replace("%avatar%", this.author.getAvatar())
+                .replace("%message_contents%", this.message)
+                .replace("%username%", this.author.getRawUsername());
+
+        DataObject object = DataObject.fromJson(embedJson);
+        return fromData(object);
     }
 
     /**
@@ -219,5 +243,61 @@ public final class DiscordMessage {
         // This code should never be reached, but it's added here as a fail-safe
         MessageChannelConfig.DestinationObject chat = SDLinkConfig.INSTANCE.messageDestinations.chat;
         return Triple.of(ChannelManager.getDestinationChannel(chat.channel), WebhookManager.getWebhookClient(chat.channel), chat);
+    }
+
+    @Nonnull
+    private EmbedBuilder fromData(@Nonnull DataObject data)
+    {
+        Checks.notNull(data, "DataObject");
+        EmbedBuilder builder = new EmbedBuilder();
+
+        builder.setTitle(data.getString("title", null));
+        builder.setUrl(data.getString("url", null));
+        builder.setDescription(data.getString("description", ""));
+
+        if (!data.isNull("timestamp") && !data.getString("timestamp").equalsIgnoreCase("0")) {
+            builder.setTimestamp(OffsetDateTime.parse(data.getString("timestamp")));
+        }
+
+        if (data.getString("color", "#000000").startsWith("#")) {
+            builder.setColor(Color.decode(data.getString("color", "#000000")));
+        } else {
+            builder.setColor(data.getInt("color", Role.DEFAULT_COLOR_RAW));
+        }
+
+        data.optObject("thumbnail").ifPresent(thumbnail ->
+                builder.setThumbnail(thumbnail.getString("url"))
+        );
+
+        data.optObject("author").ifPresent(author ->
+                builder.setAuthor(
+                        author.getString("name", ""),
+                        author.getString("url", null),
+                        author.getString("icon_url", null)
+                )
+        );
+
+        data.optObject("footer").ifPresent(footer ->
+                builder.setFooter(
+                        footer.getString("text", ""),
+                        footer.getString("icon_url", null)
+                )
+        );
+
+        data.optObject("image").ifPresent(image ->
+                builder.setImage(image.getString("url"))
+        );
+
+        data.optArray("fields").ifPresent(arr ->
+                arr.stream(DataArray::getObject).forEach(field ->
+                        builder.addField(
+                                field.getString("name", ZERO_WIDTH_SPACE),
+                                field.getString("value", ZERO_WIDTH_SPACE),
+                                field.getBoolean("inline", false)
+                        )
+                )
+        );
+
+        return builder;
     }
 }

@@ -8,6 +8,7 @@ import com.hypherionmc.sdlink.core.config.SDLinkConfig;
 import com.hypherionmc.sdlink.core.discord.commands.CommandManager;
 import com.hypherionmc.sdlink.core.discord.events.DiscordEventHandler;
 import com.hypherionmc.sdlink.core.managers.DatabaseManager;
+import com.hypherionmc.sdlink.core.managers.EmbedManager;
 import com.hypherionmc.sdlink.core.managers.WebhookManager;
 import com.hypherionmc.sdlink.core.services.SDLinkPlatform;
 import com.hypherionmc.sdlink.core.util.EncryptionUtil;
@@ -85,6 +86,9 @@ public class BotController {
 
         // Initialize Webhook Clients
         WebhookManager.init();
+
+        // Initialize Embeds
+        EmbedManager.init();
     }
 
     /**
