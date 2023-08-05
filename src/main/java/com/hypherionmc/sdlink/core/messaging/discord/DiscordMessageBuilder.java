@@ -55,7 +55,7 @@ public final class DiscordMessageBuilder {
         }
 
         if (SDLinkConfig.INSTANCE.ignoreConfig.enabled) {
-            for (MessageIgnoreConfig.Ignore i : SDLinkConfig.INSTANCE.ignoreConfig.entires) {
+            for (MessageIgnoreConfig.Ignore i : SDLinkConfig.INSTANCE.ignoreConfig.entries) {
                 if (i.searchMode == MessageIgnoreConfig.FilterMode.MATCHES && message.equalsIgnoreCase(i.search)) {
                     if (i.action == MessageIgnoreConfig.ActionMode.REPLACE) {
                         message = message.replace(i.search, i.replace);

@@ -5,7 +5,6 @@
 package com.hypherionmc.sdlink.core.discord.commands.slash.whitelist;
 
 import com.hypherionmc.sdlink.core.accounts.MinecraftAccount;
-import com.hypherionmc.sdlink.core.config.SDLinkConfig;
 import com.hypherionmc.sdlink.core.database.SDLinkAccount;
 import com.hypherionmc.sdlink.core.discord.commands.slash.SDLinkSlashCommand;
 import com.hypherionmc.sdlink.core.services.SDLinkPlatform;
@@ -28,7 +27,7 @@ import static com.hypherionmc.sdlink.core.managers.DatabaseManager.sdlinkDatabas
 public class WhitelistAccountCommand extends SDLinkSlashCommand {
 
     public WhitelistAccountCommand() {
-        super(SDLinkConfig.INSTANCE.whitelistingAndLinking.whitelisting.staffOnlyWhitelist);
+        super(false);
 
         this.name = "whitelist";
         this.help = "Start the process of Whitelisting your Minecraft Account";

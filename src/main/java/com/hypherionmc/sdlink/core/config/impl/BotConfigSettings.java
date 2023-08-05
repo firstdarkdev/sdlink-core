@@ -22,10 +22,6 @@ public class BotConfigSettings {
     @SpecComment("How often the Bot Status will update on Discord (in Seconds). Set to 0 to disable")
     public int statusUpdateInterval = 30;
 
-    @Path("staffRole")
-    @SpecComment("Role Name or ID that is allowed to use Staff Functions. If not defined, it will default back to Admin/Kick Perms")
-    public String staffRole = "";
-
     @Path("botStatus")
     @SpecComment("Control what the Discord Bot will display as it's status message")
     public BotStatus botStatus = new BotStatus();

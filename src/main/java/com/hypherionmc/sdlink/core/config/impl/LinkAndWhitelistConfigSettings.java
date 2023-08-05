@@ -44,10 +44,6 @@ public class LinkAndWhitelistConfigSettings {
         @SpecComment("Automatically link Minecraft and Discord Accounts when a user is whitelisted")
         public boolean linkedWhitelist = false;
 
-        @Path("staffOnlyWhitelist")
-        @SpecComment("Should only staff be allowed to whitelist players")
-        public boolean staffOnlyWhitelist = false;
-
         @Path("autoWhitelistRole")
         @SpecComment("If a role ID (or name) is defined here, it will be assigned to players when they are whitelisted")
         public String autoWhitelistRole = "";

@@ -1,3 +1,7 @@
+/*
+ * This file is part of sdlink-core, licensed under the MIT License (MIT).
+ * Copyright HypherionSA and Contributors
+ */
 package com.hypherionmc.sdlink.core.config.impl;
 
 import me.hypherionmc.moonconfig.core.conversion.Path;
@@ -14,7 +18,7 @@ public class MessageIgnoreConfig {
 
     @Path("entries")
     @SpecComment("List of entries to process")
-    public List<Ignore> entires = new ArrayList<>();
+    public List<Ignore> entries = new ArrayList<>();
 
     @Path("ignoredThreads")
     @SpecComment("Ignore messages sent from certain threads")

@@ -19,7 +19,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class RoleManager {
 
-    private static Role staffRole;
     private static Role whitelistedRole;
     private static Role linkedRole;
     private static final HashMap<String, Role> commandRoles = new HashMap<>();
@@ -30,10 +29,6 @@ public class RoleManager {
      * @param builder
      */
     public static void loadRequiredRoles(AtomicInteger errCount, StringBuilder builder) {
-        if (!SDLinkConfig.INSTANCE.botConfig.staffRole.isEmpty()) {
-            staffRole = getRole(errCount, builder, "Staff", SDLinkConfig.INSTANCE.botConfig.staffRole);
-        }
-
         if (!SDLinkConfig.INSTANCE.whitelistingAndLinking.whitelisting.autoWhitelistRole.isEmpty()) {
             whitelistedRole = getRole(errCount, builder, "Whitelist", SDLinkConfig.INSTANCE.whitelistingAndLinking.whitelisting.autoWhitelistRole);
         }
@@ -93,10 +88,6 @@ public class RoleManager {
 
     public static Role getLinkedRole() {
         return linkedRole;
-    }
-
-    public static Role getStaffRole() {
-        return staffRole;
     }
 
     public static Role getWhitelistedRole() {
