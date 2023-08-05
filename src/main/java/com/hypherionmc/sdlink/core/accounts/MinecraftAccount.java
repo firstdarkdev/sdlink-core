@@ -317,11 +317,15 @@ public class MinecraftAccount {
 
             if (discordUser != null) {
                 Member m = BotController.INSTANCE.getJDA().getGuilds().get(0).getMemberById(discordUser.getId());
-                return m != null && m.getRoles().stream().anyMatch(r -> RoleManager.getAutoWhitelistRoles().contains(r));
+
+                if (m == null)
+                    return false;
+
+                return m.getRoles().stream().anyMatch(r -> RoleManager.getAutoWhitelistRoles().contains(r));
             }
         }
 
-        return false;
+        return !SDLinkConfig.INSTANCE.whitelistingAndLinking.accountLinking.accountLinking;
     }
 
     /**
