@@ -25,5 +25,7 @@ public class DatabaseManager {
         if (!sdlinkDatabase.collectionExists(SDLinkAccount.class)) {
             sdlinkDatabase.createCollection(SDLinkAccount.class);
         }
+
+        sdlinkDatabase.reloadCollection("accounts");
     }
 }
