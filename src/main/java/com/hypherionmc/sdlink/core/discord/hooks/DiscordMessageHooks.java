@@ -31,6 +31,19 @@ public class DiscordMessageHooks {
             if (SDLinkConfig.INSTANCE.generalConfig.debugging) {
                 BotController.INSTANCE.getLogger().info("Sending Message from {}: {}", event.getAuthor().getName(), event.getMessage().getContentStripped());
             }
+
+            String message = event.getMessage().getContentRaw();
+            if (message.isEmpty() && !event.getMessage().getAttachments().isEmpty()) {
+                message = (long) event.getMessage().getAttachments().size() + " attachments";
+            }
+
+            if (!message.isEmpty() && !event.getMessage().getAttachments().isEmpty()) {
+                message = message + " (+" + (long) event.getMessage().getAttachments().size() + " attachments)";
+            }
+
+            if (message.isEmpty())
+                return;
+
             SDLinkPlatform.minecraftHelper.discordMessageReceived(event.getMember(), event.getMessage().getContentRaw());
         } catch (Exception e) {
             if (SDLinkConfig.INSTANCE.generalConfig.debugging) {
