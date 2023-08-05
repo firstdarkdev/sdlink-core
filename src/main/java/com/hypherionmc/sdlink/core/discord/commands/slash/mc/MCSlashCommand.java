@@ -11,6 +11,7 @@ import com.hypherionmc.sdlink.core.managers.RoleManager;
 import com.hypherionmc.sdlink.core.messaging.Result;
 import com.hypherionmc.sdlink.core.services.SDLinkPlatform;
 import com.jagrosh.jdautilities.command.SlashCommandEvent;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
@@ -69,12 +70,12 @@ public class MCSlashCommand extends SDLinkSlashCommand {
 
                     boolean userRole = role != null && event.getMember().getRoles().stream().anyMatch(r -> r.getIdLong() == role.getIdLong());
                     if (userRole) {
-                        executeCommand(event, command, args.toString());
+                        executeCommand(event, command, args.toString(), event.getMember());
                     } else {
                         event.reply("You need the " + role.getName() + " role to perform this action").setEphemeral(true).queue();
                     }
                 } else {
-                    executeCommand(event, command, args.toString());
+                    executeCommand(event, command, args.toString(), event.getMember());
                 }
             });
 
@@ -87,8 +88,8 @@ public class MCSlashCommand extends SDLinkSlashCommand {
         }
     }
 
-    private void executeCommand(SlashCommandEvent event, LinkedCommandsConfig.Command mcCommand, String args) {
-        Result result = SDLinkPlatform.minecraftHelper.executeMinecraftCommand(mcCommand.mcCommand, args);
+    private void executeCommand(SlashCommandEvent event, LinkedCommandsConfig.Command mcCommand, String args, Member member) {
+        Result result = SDLinkPlatform.minecraftHelper.executeMinecraftCommand(mcCommand.mcCommand, args, member);
         event.reply(result.getMessage()).setEphemeral(true).queue();
     }
 }

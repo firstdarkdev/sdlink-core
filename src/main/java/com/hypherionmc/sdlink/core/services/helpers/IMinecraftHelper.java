@@ -27,7 +27,7 @@ public interface IMinecraftHelper {
     List<MinecraftAccount> getOnlinePlayers();
     long getServerUptime();
     String getServerVersion();
-    Result executeMinecraftCommand(String command, String args);
+    Result executeMinecraftCommand(String command, String args, Member member);
     boolean isOnlineMode();
 
 }
