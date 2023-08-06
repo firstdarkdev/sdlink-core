@@ -49,6 +49,10 @@ public class MessageFormatting {
     @SpecComment("Chat Messages. THIS DOES NOT APPLY TO EMBED OR WEBHOOK MESSAGES. Available variables: %player%, %message%")
     public String chat = "%player%: %message%";
 
+    @Path("death")
+    @SpecComment("Death Messages. Available variables: %player%, %message%")
+    public String death = "%player% %message%";
+
     @Path("commands")
     @SpecComment("Command Messages. Available variables: %player%, %command%")
     public String commands = "%player% **executed command**: *%command%*";
