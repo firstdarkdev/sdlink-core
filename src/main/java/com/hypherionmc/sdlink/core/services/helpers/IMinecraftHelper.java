@@ -5,9 +5,12 @@
 package com.hypherionmc.sdlink.core.services.helpers;
 
 import com.hypherionmc.sdlink.core.accounts.MinecraftAccount;
+import com.hypherionmc.sdlink.core.database.SDLinkAccount;
 import com.hypherionmc.sdlink.core.messaging.Result;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -27,7 +30,7 @@ public interface IMinecraftHelper {
     List<MinecraftAccount> getOnlinePlayers();
     long getServerUptime();
     String getServerVersion();
-    Result executeMinecraftCommand(String command, String args, Member member);
+    void executeMinecraftCommand(String command, int permLevel, MessageReceivedEvent event, @Nullable SDLinkAccount account);
     boolean isOnlineMode();
 
 }

@@ -12,7 +12,6 @@ import com.hypherionmc.sdlink.core.discord.commands.slash.linking.ConfirmAccount
 import com.hypherionmc.sdlink.core.discord.commands.slash.linking.LinkAccountCommand;
 import com.hypherionmc.sdlink.core.discord.commands.slash.linking.UnlinkAccountSlashCommand;
 import com.hypherionmc.sdlink.core.discord.commands.slash.linking.ViewLinkedAccountsCommand;
-import com.hypherionmc.sdlink.core.discord.commands.slash.mc.MCSlashCommand;
 import com.hypherionmc.sdlink.core.discord.commands.slash.whitelist.ConfirmWhitelistSlashCommand;
 import com.hypherionmc.sdlink.core.discord.commands.slash.whitelist.UnWhitelistAccountSlashCommand;
 import com.hypherionmc.sdlink.core.discord.commands.slash.whitelist.ViewWhitelistedAccountsSlashCommand;
@@ -70,7 +69,7 @@ public class CommandManager {
         }
 
         if (SDLinkConfig.INSTANCE.linkedCommands.enabled) {
-            commands.add(new MCSlashCommand());
+            //commands.add(new MCSlashCommand());
         }
     }
 

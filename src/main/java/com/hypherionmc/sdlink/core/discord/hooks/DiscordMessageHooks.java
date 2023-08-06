@@ -28,6 +28,9 @@ public class DiscordMessageHooks {
             if (event.getAuthor().isBot() && SDLinkConfig.INSTANCE.chatConfig.ignoreBots)
                 return;
 
+            if (SDLinkConfig.INSTANCE.linkedCommands.enabled && !SDLinkConfig.INSTANCE.linkedCommands.permissions.isEmpty() && event.getMessage().getContentRaw().startsWith(SDLinkConfig.INSTANCE.linkedCommands.prefix))
+                return;
+
             if (SDLinkConfig.INSTANCE.generalConfig.debugging) {
                 BotController.INSTANCE.getLogger().info("Sending Message from {}: {}", event.getAuthor().getName(), event.getMessage().getContentStripped());
             }

@@ -4,8 +4,10 @@
  */
 package com.hypherionmc.sdlink.core.discord.commands.slash.mc;
 
+/*import com.hypherionmc.sdlink.core.accounts.MinecraftAccount;
 import com.hypherionmc.sdlink.core.config.SDLinkConfig;
 import com.hypherionmc.sdlink.core.config.impl.LinkedCommandsConfig;
+import com.hypherionmc.sdlink.core.database.SDLinkAccount;
 import com.hypherionmc.sdlink.core.discord.commands.slash.SDLinkSlashCommand;
 import com.hypherionmc.sdlink.core.managers.RoleManager;
 import com.hypherionmc.sdlink.core.messaging.Result;
@@ -17,7 +19,10 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+
+import static com.hypherionmc.sdlink.core.managers.DatabaseManager.sdlinkDatabase;
 
 public class MCSlashCommand extends SDLinkSlashCommand {
 
@@ -64,18 +69,22 @@ public class MCSlashCommand extends SDLinkSlashCommand {
             if (!args5.isEmpty())
                 args.append(" ").append(args5);
 
+            sdlinkDatabase.reloadCollection("accounts");
+            List<SDLinkAccount> accounts = sdlinkDatabase.findAll(SDLinkAccount.class);
+            Optional<SDLinkAccount> account = accounts.stream().filter(u -> u.getDiscordID().equals(event.getMember().getId())).findFirst();
+
             linkedCommand.ifPresent(command -> {
                 if (!command.discordRole.isEmpty()) {
                     Role role = RoleManager.getCommandRoles().isEmpty() ? null : RoleManager.getCommandRoles().get(command.discordCommand);
 
                     boolean userRole = role != null && event.getMember().getRoles().stream().anyMatch(r -> r.getIdLong() == role.getIdLong());
                     if (userRole) {
-                        executeCommand(event, command, args.toString(), event.getMember());
+                        executeCommand(event, command, args.toString(), event.getMember(), account.orElse(null));
                     } else {
                         event.reply("You need the " + role.getName() + " role to perform this action").setEphemeral(true).queue();
                     }
                 } else {
-                    executeCommand(event, command, args.toString(), event.getMember());
+                    executeCommand(event, command, args.toString(), event.getMember(), account.orElse(null));
                 }
             });
 
@@ -88,8 +97,8 @@ public class MCSlashCommand extends SDLinkSlashCommand {
         }
     }
 
-    private void executeCommand(SlashCommandEvent event, LinkedCommandsConfig.Command mcCommand, String args, Member member) {
-        Result result = SDLinkPlatform.minecraftHelper.executeMinecraftCommand(mcCommand.mcCommand, args, member);
+    private void executeCommand(SlashCommandEvent event, LinkedCommandsConfig.Command mcCommand, String args, Member member, SDLinkAccount account) {
+        Result result = SDLinkPlatform.minecraftHelper.executeMinecraftCommand(mcCommand.mcCommand, args, member, account);
         event.reply(result.getMessage()).setEphemeral(true).queue();
     }
-}
+}*/

@@ -4,17 +4,11 @@
  */
 package com.hypherionmc.sdlink.core.config.impl;
 
-import me.hypherionmc.moonconfig.core.conversion.Path;
-import me.hypherionmc.moonconfig.core.conversion.SpecComment;
-
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author HypherionSA
  * Main Config Structure to control Discord -> MC Commands
  */
-public class LinkedCommandsConfig {
+/*public class LinkedCommandsConfig {
 
     @Path("enabled")
     @SpecComment("Should linked commands be enabled")
@@ -39,3 +33,4 @@ public class LinkedCommandsConfig {
     }
 
 }
+*/

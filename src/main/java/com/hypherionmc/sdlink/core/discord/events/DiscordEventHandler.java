@@ -9,6 +9,7 @@ import com.hypherionmc.sdlink.core.discord.BotController;
 import com.hypherionmc.sdlink.core.discord.commands.slash.general.ServerStatusSlashCommand;
 import com.hypherionmc.sdlink.core.discord.hooks.BotReadyHooks;
 import com.hypherionmc.sdlink.core.discord.hooks.DiscordMessageHooks;
+import com.hypherionmc.sdlink.core.discord.hooks.MinecraftCommandHook;
 import com.hypherionmc.sdlink.core.events.SDLinkReadyEvent;
 import com.hypherionmc.sdlink.core.managers.CacheManager;
 import com.hypherionmc.sdlink.core.managers.ChannelManager;
@@ -48,6 +49,7 @@ public class DiscordEventHandler extends ListenerAdapter {
         if (!event.isFromGuild())
             return;
 
+        MinecraftCommandHook.discordMessageEvent(event);
         DiscordMessageHooks.discordMessageEvent(event);
     }
 

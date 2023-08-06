@@ -9,7 +9,6 @@ import com.hypherionmc.sdlink.core.discord.BotController;
 import com.hypherionmc.sdlink.core.util.SystemUtils;
 import net.dv8tion.jda.api.entities.Role;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -23,7 +22,7 @@ public class RoleManager {
 
     private static Role whitelistedRole;
     private static Role linkedRole;
-    private static final HashMap<String, Role> commandRoles = new HashMap<>();
+    //private static final HashMap<String, Role> commandRoles = new HashMap<>();
     private static final Set<Role> autoWhitelistRoles = new HashSet<>();
 
     /**
@@ -49,17 +48,17 @@ public class RoleManager {
             });
         }
 
-        if (SDLinkConfig.INSTANCE.linkedCommands.enabled) {
+        /*if (SDLinkConfig.INSTANCE.linkedCommands.enabled) {
             commandRoles.clear();
-            SDLinkConfig.INSTANCE.linkedCommands.commands.forEach(cmd -> {
-                if (!cmd.discordRole.isEmpty()) {
-                    Role role = getRole(errCount, builder, cmd.discordCommand + " usage", cmd.discordRole);
+            SDLinkConfig.INSTANCE.linkedCommands.permissions.forEach(cmd -> {
+                if (!cmd.role.isEmpty() && !cmd.role.equals("0")) {
+                    Role role = getRole(errCount, builder, "Command Usage", cmd.role);
                     if (role != null) {
-                        commandRoles.putIfAbsent(cmd.discordCommand, role);
+                        cmd.commands.forEach(c -> commandRoles.putIfAbsent(c, role));
                     }
                 }
             });
-        }
+        }*/
     }
 
     /**
@@ -106,9 +105,9 @@ public class RoleManager {
         return whitelistedRole;
     }
 
-    public static HashMap<String, Role> getCommandRoles() {
-        return commandRoles;
-    }
+    //public static HashMap<String, Role> getCommandRoles() {
+        //return commandRoles;
+    //}
 
     public static Set<Role> getAutoWhitelistRoles() {
         return autoWhitelistRoles;
