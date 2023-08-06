@@ -24,7 +24,7 @@ public class SDLinkConfig extends ModuleConfig {
     // DO NOT REMOVE TRANSIENT HERE... OTHERWISE, THE STUPID CONFIG LIBRARY
     // WILL TRY TO WRITE THESE TO THE CONFIG
     public transient static SDLinkConfig INSTANCE;
-    public transient static int configVer = 8;
+    public transient static int configVer = 9;
 
     @Path("general")
     @SpecComment("General Mod Config")
@@ -53,10 +53,6 @@ public class SDLinkConfig extends ModuleConfig {
     @Path("whitelistingAndLinking")
     @SpecComment("Configure Whitelisting and Account Linking through the bot")
     public LinkAndWhitelistConfigSettings whitelistingAndLinking = new LinkAndWhitelistConfigSettings();
-
-    @Path("botCommands")
-    @SpecComment("Enable or Disable certain bot commands")
-    public BotCommandsConfig botCommands = new BotCommandsConfig();
 
     @Path("minecraftCommands")
     @SpecComment("Execute Minecraft commands in Discord")

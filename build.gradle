@@ -4,8 +4,9 @@ plugins {
     id 'maven-publish'
     id "com.diffplug.spotless" version "6.13.0"
 }
+
 apply plugin: 'java'
-java.toolchain.languageVersion = JavaLanguageVersion.of(16)
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 group 'com.hypherionmc.sdlink'
 version = "${version_major}.${version_minor}.${version_patch}"
@@ -144,7 +145,7 @@ spotless {
 
 tasks.withType(JavaCompile).configureEach {
     it.options.encoding = 'UTF-8'
-    it.options.release = 16
+    it.options.release = 17
 }
 
 tasks.withType(GenerateModuleMetadata) {

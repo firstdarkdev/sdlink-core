@@ -47,18 +47,6 @@ public class RoleManager {
                     autoWhitelistRoles.add(role);
             });
         }
-
-        /*if (SDLinkConfig.INSTANCE.linkedCommands.enabled) {
-            commandRoles.clear();
-            SDLinkConfig.INSTANCE.linkedCommands.permissions.forEach(cmd -> {
-                if (!cmd.role.isEmpty() && !cmd.role.equals("0")) {
-                    Role role = getRole(errCount, builder, "Command Usage", cmd.role);
-                    if (role != null) {
-                        cmd.commands.forEach(c -> commandRoles.putIfAbsent(c, role));
-                    }
-                }
-            });
-        }*/
     }
 
     /**

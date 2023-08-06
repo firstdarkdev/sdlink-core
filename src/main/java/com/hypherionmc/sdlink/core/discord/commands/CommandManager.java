@@ -54,23 +54,13 @@ public class CommandManager {
         }
 
         // Enable the Server Status command
-        if (SDLinkConfig.INSTANCE.botCommands.allowServerStatus) {
-            commands.add(new ServerStatusSlashCommand());
-        }
+        commands.add(new ServerStatusSlashCommand());
 
         // Enable the Player List command
-        if (SDLinkConfig.INSTANCE.botCommands.allowPlayerList) {
-            commands.add(new PlayerListSlashCommand());
-        }
+        commands.add(new PlayerListSlashCommand());
 
         // Enable the Help command
-        if (SDLinkConfig.INSTANCE.botCommands.allowHelpCommand) {
-            commands.add(new HelpSlashCommand());
-        }
-
-        if (SDLinkConfig.INSTANCE.linkedCommands.enabled) {
-            //commands.add(new MCSlashCommand());
-        }
+        commands.add(new HelpSlashCommand());
     }
 
     /**

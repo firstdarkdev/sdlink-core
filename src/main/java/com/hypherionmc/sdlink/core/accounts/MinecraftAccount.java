@@ -102,22 +102,6 @@ public class MinecraftAccount {
         return sdlinkDatabase.findById(uuid, SDLinkAccount.class);
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public UUID getUuid() {
-        return uuid;
-    }
-
-    public boolean isValid() {
-        return isValid;
-    }
-
-    public boolean isOffline() {
-        return isOffline;
-    }
-
     /**
      * Link a Minecraft account to a discord account
      * @param member The discord user
@@ -336,11 +320,11 @@ public class MinecraftAccount {
                     System.out.println("[AutoWhiteList] Has Auto Role: " + hasAutoRole);
                 }
 
-                return hasAutoRole;
+                return hasAutoRole && !account.getDiscordID().isEmpty();
             }
         }
 
-        return !SDLinkConfig.INSTANCE.whitelistingAndLinking.accountLinking.accountLinking;
+        return false;
     }
 
     /**
@@ -388,7 +372,23 @@ public class MinecraftAccount {
         return BotController.INSTANCE.getJDA().getUserById(storedAccount.getDiscordID());
     }
 
-    // Helper Methods
+    public String getUsername() {
+        return username;
+    }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public boolean isValid() {
+        return isValid;
+    }
+
+    public boolean isOffline() {
+        return isOffline;
+    }
+
+    //<editor-fold desc="Helper Methods">
     private static Pair<String, UUID> fetchPlayer(String name) {
         try {
             BufferedReader read = new BufferedReader(new InputStreamReader(new URL("https://api.mojang.com/users/profiles/minecraft/" + name).openStream()));
@@ -425,5 +425,5 @@ public class MinecraftAccount {
     private static Pair<String, UUID> offlinePlayer(String offlineName) {
         return Pair.of(offlineName, UUID.nameUUIDFromBytes(("OfflinePlayer:" + offlineName).getBytes(StandardCharsets.UTF_8)));
     }
-
+    //</editor-fold>
 }

@@ -4,8 +4,10 @@
  */
 package com.hypherionmc.sdlink.core.discord.commands.slash.whitelist;
 
+import com.hypherionmc.sdlink.core.accounts.MinecraftAccount;
 import com.hypherionmc.sdlink.core.database.SDLinkAccount;
 import com.hypherionmc.sdlink.core.discord.commands.slash.SDLinkSlashCommand;
+import com.hypherionmc.sdlink.core.services.SDLinkPlatform;
 import com.hypherionmc.sdlink.core.util.MessageUtil;
 import com.jagrosh.jdautilities.command.SlashCommandEvent;
 import com.jagrosh.jdautilities.menu.EmbedPaginator;
@@ -38,29 +40,29 @@ public class ViewWhitelistedAccountsSlashCommand extends SDLinkSlashCommand {
     protected void execute(SlashCommandEvent event) {
         EmbedPaginator.Builder paginator = MessageUtil.defaultPaginator(event);
         sdlinkDatabase.reloadCollection("accounts");
-        List<SDLinkAccount> accounts = sdlinkDatabase.findAll(SDLinkAccount.class).stream().filter(SDLinkAccount::isWhitelisted).toList();
+        List<MinecraftAccount> players = SDLinkPlatform.minecraftHelper.getWhitelistedPlayers();
 
         EmbedBuilder builder = new EmbedBuilder();
         ArrayList<MessageEmbed> pages = new ArrayList<>();
         AtomicInteger count = new AtomicInteger();
 
-        if (accounts.isEmpty()) {
+        if (players.isEmpty()) {
             event.reply("There are no whitelisted accounts for this discord").setEphemeral(true).queue();
             return;
         }
 
-        MessageUtil.listBatches(accounts, 10).forEach(itm -> {
+        MessageUtil.listBatches(players, 10).forEach(itm -> {
             count.getAndIncrement();
             builder.clear();
-            builder.setTitle("Whitelisted Accounts - Page " + count + "/" + (int)Math.ceil(((float)accounts.size() / 10)));
+            builder.setTitle("Whitelisted Accounts - Page " + count + "/" + (int)Math.ceil(((float)players.size() / 10)));
             builder.setColor(Color.GREEN);
             StringBuilder sBuilder = new StringBuilder();
 
             itm.forEach(v -> {
                 Member member = null;
 
-                if (v.getDiscordID() != null && !v.getDiscordID().isEmpty()) {
-                    member = event.getGuild().getMemberById(v.getDiscordID());
+                if (v.getDiscordUser() != null) {
+                    member = event.getGuild().getMemberById(v.getDiscordUser().getId());
                 }
 
                 sBuilder.append(v.getUsername()).append(" -> ").append(member == null ? "Unlinked" : member.getAsMention()).append("\r\n");
