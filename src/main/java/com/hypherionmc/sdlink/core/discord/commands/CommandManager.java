@@ -8,14 +8,8 @@ import com.hypherionmc.sdlink.core.config.SDLinkConfig;
 import com.hypherionmc.sdlink.core.discord.commands.slash.general.HelpSlashCommand;
 import com.hypherionmc.sdlink.core.discord.commands.slash.general.PlayerListSlashCommand;
 import com.hypherionmc.sdlink.core.discord.commands.slash.general.ServerStatusSlashCommand;
-import com.hypherionmc.sdlink.core.discord.commands.slash.linking.ConfirmAccountLinkSlashCommand;
-import com.hypherionmc.sdlink.core.discord.commands.slash.linking.LinkAccountCommand;
-import com.hypherionmc.sdlink.core.discord.commands.slash.linking.UnlinkAccountSlashCommand;
-import com.hypherionmc.sdlink.core.discord.commands.slash.linking.ViewLinkedAccountsCommand;
-import com.hypherionmc.sdlink.core.discord.commands.slash.whitelist.ConfirmWhitelistSlashCommand;
-import com.hypherionmc.sdlink.core.discord.commands.slash.whitelist.UnWhitelistAccountSlashCommand;
-import com.hypherionmc.sdlink.core.discord.commands.slash.whitelist.ViewWhitelistedAccountsSlashCommand;
-import com.hypherionmc.sdlink.core.discord.commands.slash.whitelist.WhitelistAccountCommand;
+import com.hypherionmc.sdlink.core.discord.commands.slash.linking.*;
+import com.hypherionmc.sdlink.core.discord.commands.slash.whitelist.*;
 import com.jagrosh.jdautilities.command.CommandClient;
 import com.jagrosh.jdautilities.command.SlashCommand;
 
@@ -61,6 +55,12 @@ public class CommandManager {
 
         // Enable the Help command
         commands.add(new HelpSlashCommand());
+
+        // Staff commands
+        commands.add(new StaffLinkCommand());
+        commands.add(new StaffUnlinkCommand());
+        commands.add(new StaffWhitelist());
+        commands.add(new StaffUnwhitelist());
     }
 
     /**

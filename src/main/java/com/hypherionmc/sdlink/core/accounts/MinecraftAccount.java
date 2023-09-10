@@ -108,6 +108,10 @@ public class MinecraftAccount {
      * @param guild The server the command is run from
      */
     public Result linkAccount(Member member, Guild guild) {
+        return this.linkAccount(member, guild, true);
+    }
+
+    public Result linkAccount(Member member, Guild guild, boolean updateNick) {
         if (getStoredAccount() == null) {
             return Result.error("We couldn't link your Minecraft and Discord Accounts together. If this error persists, please ask a staff member for help");
         }
@@ -130,7 +134,7 @@ public class MinecraftAccount {
 
             String finalnickname = SDLinkConfig.INSTANCE.whitelistingAndLinking.accountLinking.nicknameFormat.replace("%nick%", nickname).replace("%mcname%", suffix);
 
-            if (SDLinkConfig.INSTANCE.whitelistingAndLinking.accountLinking.changeNickname) {
+            if (SDLinkConfig.INSTANCE.whitelistingAndLinking.accountLinking.changeNickname && updateNick) {
                 try {
                     member.modifyNickname(finalnickname).queue();
 
@@ -332,7 +336,9 @@ public class MinecraftAccount {
      */
     public SDLinkAccount getStoredAccount() {
         sdlinkDatabase.reloadCollection("accounts");
-        return sdlinkDatabase.findById(this.uuid.toString(), SDLinkAccount.class);
+        SDLinkAccount account = sdlinkDatabase.findById(this.uuid.toString(), SDLinkAccount.class);
+
+        return account == null ? newDBEntry() : account;
     }
 
     /**
