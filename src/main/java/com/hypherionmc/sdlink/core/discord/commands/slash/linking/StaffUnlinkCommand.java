@@ -11,7 +11,6 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static com.hypherionmc.sdlink.core.managers.DatabaseManager.sdlinkDatabase;
