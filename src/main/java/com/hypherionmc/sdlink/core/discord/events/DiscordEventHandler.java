@@ -5,6 +5,9 @@
 package com.hypherionmc.sdlink.core.discord.events;
 
 import com.hypherionmc.craterlib.core.event.CraterEventBus;
+import com.hypherionmc.sdlink.core.accounts.MinecraftAccount;
+import com.hypherionmc.sdlink.core.config.SDLinkConfig;
+import com.hypherionmc.sdlink.core.database.SDLinkAccount;
 import com.hypherionmc.sdlink.core.discord.BotController;
 import com.hypherionmc.sdlink.core.discord.commands.slash.general.ServerStatusSlashCommand;
 import com.hypherionmc.sdlink.core.discord.hooks.BotReadyHooks;
@@ -13,10 +16,13 @@ import com.hypherionmc.sdlink.core.discord.hooks.MinecraftCommandHook;
 import com.hypherionmc.sdlink.core.events.SDLinkReadyEvent;
 import com.hypherionmc.sdlink.core.managers.CacheManager;
 import com.hypherionmc.sdlink.core.managers.ChannelManager;
+import com.hypherionmc.sdlink.core.managers.DatabaseManager;
 import com.hypherionmc.sdlink.core.managers.PermissionChecker;
+import com.hypherionmc.sdlink.core.services.SDLinkPlatform;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.events.channel.ChannelCreateEvent;
 import net.dv8tion.jda.api.events.channel.ChannelDeleteEvent;
+import net.dv8tion.jda.api.events.guild.GuildBanEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
@@ -26,6 +32,11 @@ import net.dv8tion.jda.api.events.role.RoleDeleteEvent;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+import java.util.Optional;
+
+import static com.hypherionmc.sdlink.core.managers.DatabaseManager.sdlinkDatabase;
 
 /**
  * @author HypherionSA
@@ -120,6 +131,34 @@ public class DiscordEventHandler extends ListenerAdapter {
     public void onChannelDelete(@NotNull ChannelDeleteEvent event) {
         if (event.getJDA().getStatus() == JDA.Status.CONNECTED) {
             CacheManager.loadChannelCache();
+        }
+    }
+
+    @Override
+    public void onGuildBan(@NotNull GuildBanEvent event) {
+        if (event.getUser().isBot())
+            return;
+
+        if (!SDLinkConfig.INSTANCE.whitelistingAndLinking.whitelisting.whitelisting)
+            return;
+
+        try {
+            List<SDLinkAccount> accounts = DatabaseManager.sdlinkDatabase.getCollection(SDLinkAccount.class);
+            Optional<SDLinkAccount> account = accounts.stream().filter(a -> a.getDiscordID().equalsIgnoreCase(event.getUser().getId())).findFirst();
+
+            account.ifPresent(a -> {
+                MinecraftAccount acc = MinecraftAccount.standard(a.getUsername());
+
+                if (acc != null) {
+                    DatabaseManager.sdlinkDatabase.remove(a, SDLinkAccount.class);
+                    SDLinkPlatform.minecraftHelper.banPlayer(acc);
+                    sdlinkDatabase.reloadCollection("accounts");
+                }
+            });
+        } catch (Exception e) {
+            if (SDLinkConfig.INSTANCE.generalConfig.debugging) {
+                e.printStackTrace();
+            }
         }
     }
 }
