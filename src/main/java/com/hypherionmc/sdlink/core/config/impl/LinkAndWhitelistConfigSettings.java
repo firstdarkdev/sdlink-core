@@ -56,7 +56,7 @@ public class LinkAndWhitelistConfigSettings {
         public boolean linkedWhitelist = false;
 
         @Path("autoWhitelist")
-        @SpecComment("Allow automatically whitelisting and de-whitelisting users with autoWhitelistRoles")
+        @SpecComment("Allow automatically whitelisting and de-whitelisting users with autoWhitelistRoles. WARNING: You cannot use the regular whitelist commands if this is enabled")
         public boolean autoWhitelist = false;
 
         @Path("autoWhitelistRoles")

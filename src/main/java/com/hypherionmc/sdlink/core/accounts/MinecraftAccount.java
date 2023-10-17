@@ -134,22 +134,26 @@ public class MinecraftAccount {
 
             String finalnickname = SDLinkConfig.INSTANCE.whitelistingAndLinking.accountLinking.nicknameFormat.replace("%nick%", nickname).replace("%mcname%", suffix);
 
+            if (finalnickname.length() > 32) {
+                finalnickname = finalnickname.substring(0, 28) + "...";
+            }
+
             if (SDLinkConfig.INSTANCE.whitelistingAndLinking.accountLinking.changeNickname && updateNick) {
                 try {
                     member.modifyNickname(finalnickname).queue();
-
-                    try {
-                        if (RoleManager.getLinkedRole() != null) {
-                            guild.addRoleToMember(UserSnowflake.fromId(member.getId()), RoleManager.getLinkedRole()).queue();
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
                 } catch (Exception e) {
                     if (SDLinkConfig.INSTANCE.generalConfig.debugging) {
                         e.printStackTrace();
                     }
                 }
+            }
+
+            try {
+                if (RoleManager.getLinkedRole() != null) {
+                    guild.addRoleToMember(UserSnowflake.fromId(member.getId()), RoleManager.getLinkedRole()).queue();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
             return Result.success("Your Discord and MC accounts have been linked");

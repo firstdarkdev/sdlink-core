@@ -39,7 +39,7 @@ public class ChannelWebhookConfig {
         public long eventsChannelID = 0;
 
         @Path("consoleChannelID")
-        @SpecComment("If this ID is set, console messages sent after the bot started will be relayed here, and you can execute minecraft commands here")
+        @SpecComment("If this ID is set, console messages sent after the bot started will be relayed here")
         public long consoleChannelID = 0;
     }
 
@@ -53,11 +53,11 @@ public class ChannelWebhookConfig {
         public String chatWebhook = "";
 
         @Path("eventsWebhook")
-        @SpecComment("The URL of the channel webhook to use for Server Messages Will be encrypted on first run")
+        @SpecComment("The URL of the channel webhook to use for Server Messages. Will be encrypted on first run")
         public String eventsWebhook = "";
 
         @Path("consoleWebhook")
-        @SpecComment("The URL of the channel webhook to use for Console Messages Will be encrypted on first run")
+        @SpecComment("The URL of the channel webhook to use for Console Messages. DOES NOT WORK FOR CONSOLE RELAY! Will be encrypted on first run")
         public String consoleWebhook = "";
     }
 

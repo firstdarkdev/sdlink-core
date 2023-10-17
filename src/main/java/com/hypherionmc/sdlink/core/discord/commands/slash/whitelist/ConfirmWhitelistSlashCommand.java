@@ -5,6 +5,7 @@
 package com.hypherionmc.sdlink.core.discord.commands.slash.whitelist;
 
 import com.hypherionmc.sdlink.core.accounts.MinecraftAccount;
+import com.hypherionmc.sdlink.core.config.SDLinkConfig;
 import com.hypherionmc.sdlink.core.database.SDLinkAccount;
 import com.hypherionmc.sdlink.core.discord.commands.slash.SDLinkSlashCommand;
 import com.hypherionmc.sdlink.core.messaging.Result;
@@ -33,6 +34,11 @@ public class ConfirmWhitelistSlashCommand extends SDLinkSlashCommand {
 
     @Override
     protected void execute(SlashCommandEvent event) {
+        if (SDLinkConfig.INSTANCE.whitelistingAndLinking.whitelisting.autoWhitelist) {
+            event.reply("Sorry, but this server uses auto-whitelisting based on roles. This command cannot be used").setEphemeral(true).queue();
+            return;
+        }
+
         int mcCode = event.getOption("code") != null ? event.getOption("code").getAsInt() : 0;
 
         if (mcCode == 0) {

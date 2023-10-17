@@ -90,7 +90,7 @@ public class ChatSettingsConfig {
     public boolean broadcastCommands = true;
 
     @Path("ignoredCommands")
-    @SpecComment("Commands that should not be broadcasted to discord")
+    @SpecComment("Commands that should not be broadcast to discord")
     public List<String> ignoredCommands = new ArrayList<String>() {{ add("particle"); add("login"); add("execute"); }};
 
     @Path("allowMentionsFromChat")
