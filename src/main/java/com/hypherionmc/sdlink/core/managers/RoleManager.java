@@ -4,7 +4,6 @@
  */
 package com.hypherionmc.sdlink.core.managers;
 
-import com.hypherionmc.sdlink.core.config.SDLinkConfig;
 import com.hypherionmc.sdlink.core.discord.BotController;
 import com.hypherionmc.sdlink.core.util.SystemUtils;
 import net.dv8tion.jda.api.entities.Role;
@@ -20,9 +19,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class RoleManager {
 
-    private static Role whitelistedRole;
-    private static Role linkedRole;
-    //private static final HashMap<String, Role> commandRoles = new HashMap<>();
     private static final Set<Role> autoWhitelistRoles = new HashSet<>();
 
     /**
@@ -31,22 +27,7 @@ public class RoleManager {
      * @param builder
      */
     public static void loadRequiredRoles(AtomicInteger errCount, StringBuilder builder) {
-        if (!SDLinkConfig.INSTANCE.whitelistingAndLinking.whitelisting.autoWhitelistRole.isEmpty()) {
-            whitelistedRole = getRole(errCount, builder, "Whitelist", SDLinkConfig.INSTANCE.whitelistingAndLinking.whitelisting.autoWhitelistRole);
-        }
-
-        if (!SDLinkConfig.INSTANCE.whitelistingAndLinking.accountLinking.linkedRole.isEmpty()) {
-            linkedRole = getRole(errCount, builder, "Linked Account", SDLinkConfig.INSTANCE.whitelistingAndLinking.accountLinking.linkedRole);
-        }
-
-        if (SDLinkConfig.INSTANCE.whitelistingAndLinking.whitelisting.whitelisting) {
-            SDLinkConfig.INSTANCE.whitelistingAndLinking.whitelisting.autoWhitelistRoles.forEach(r -> {
-                Role role = getRole(errCount, builder, "Auto Whitelist Role", r);
-
-                if (role != null)
-                    autoWhitelistRoles.add(role);
-            });
-        }
+        // TODO Verification Roles
     }
 
     /**
@@ -83,21 +64,5 @@ public class RoleManager {
                 .append("\r\n");
 
         return null;
-    }
-
-    public static Role getLinkedRole() {
-        return linkedRole;
-    }
-
-    public static Role getWhitelistedRole() {
-        return whitelistedRole;
-    }
-
-    //public static HashMap<String, Role> getCommandRoles() {
-        //return commandRoles;
-    //}
-
-    public static Set<Role> getAutoWhitelistRoles() {
-        return autoWhitelistRoles;
     }
 }

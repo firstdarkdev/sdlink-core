@@ -4,12 +4,9 @@
  */
 package com.hypherionmc.sdlink.core.discord.commands;
 
-import com.hypherionmc.sdlink.core.config.SDLinkConfig;
 import com.hypherionmc.sdlink.core.discord.commands.slash.general.HelpSlashCommand;
 import com.hypherionmc.sdlink.core.discord.commands.slash.general.PlayerListSlashCommand;
 import com.hypherionmc.sdlink.core.discord.commands.slash.general.ServerStatusSlashCommand;
-import com.hypherionmc.sdlink.core.discord.commands.slash.linking.*;
-import com.hypherionmc.sdlink.core.discord.commands.slash.whitelist.*;
 import com.jagrosh.jdautilities.command.CommandClient;
 import com.jagrosh.jdautilities.command.SlashCommand;
 
@@ -31,21 +28,7 @@ public class CommandManager {
     }
 
     private void addCommands() {
-        // Register Account Linking commands, if linking is enabled
-        if (SDLinkConfig.INSTANCE.whitelistingAndLinking.accountLinking.accountLinking) {
-            commands.add(new LinkAccountCommand());
-            commands.add(new ConfirmAccountLinkSlashCommand());
-            commands.add(new UnlinkAccountSlashCommand());
-            commands.add(new ViewLinkedAccountsCommand());
-        }
-
-        // Register Whitelist commands, if whitelisting is enabled
-        if (SDLinkConfig.INSTANCE.whitelistingAndLinking.whitelisting.whitelisting) {
-            commands.add(new WhitelistAccountCommand());
-            commands.add(new ConfirmWhitelistSlashCommand());
-            commands.add(new ViewWhitelistedAccountsSlashCommand());
-            commands.add(new UnWhitelistAccountSlashCommand());
-        }
+        // TODO Verification
 
         // Enable the Server Status command
         commands.add(new ServerStatusSlashCommand());
@@ -55,12 +38,6 @@ public class CommandManager {
 
         // Enable the Help command
         commands.add(new HelpSlashCommand());
-
-        // Staff commands
-        commands.add(new StaffLinkCommand());
-        commands.add(new StaffUnlinkCommand());
-        commands.add(new StaffWhitelist());
-        commands.add(new StaffUnwhitelist());
     }
 
     /**

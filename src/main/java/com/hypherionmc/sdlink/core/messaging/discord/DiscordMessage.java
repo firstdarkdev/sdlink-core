@@ -246,8 +246,9 @@ public final class DiscordMessage {
     }
 
     @Nonnull
-    private EmbedBuilder fromData(@Nonnull DataObject data)
-    {
+    private EmbedBuilder fromData(@Nonnull DataObject data) {
+        // TODO Fix Error with empty URL links
+
         Checks.notNull(data, "DataObject");
         EmbedBuilder builder = new EmbedBuilder();
 
