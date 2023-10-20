@@ -16,6 +16,7 @@ import com.hypherionmc.sdlink.core.managers.ChannelManager;
 import com.hypherionmc.sdlink.core.managers.EmbedManager;
 import com.hypherionmc.sdlink.core.managers.WebhookManager;
 import com.hypherionmc.sdlink.core.messaging.MessageType;
+import com.hypherionmc.sdlink.core.util.SDLinkUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.channel.middleman.StandardGuildMessageChannel;
@@ -247,8 +248,6 @@ public final class DiscordMessage {
 
     @Nonnull
     private EmbedBuilder fromData(@Nonnull DataObject data) {
-        // TODO Fix Error with empty URL links
-
         Checks.notNull(data, "DataObject");
         EmbedBuilder builder = new EmbedBuilder();
 
@@ -267,26 +266,26 @@ public final class DiscordMessage {
         }
 
         data.optObject("thumbnail").ifPresent(thumbnail ->
-                builder.setThumbnail(thumbnail.getString("url"))
+                builder.setThumbnail(SDLinkUtils.isNullOrEmpty(thumbnail.getString("url")) ? null : thumbnail.getString("url"))
         );
 
         data.optObject("author").ifPresent(author ->
                 builder.setAuthor(
                         author.getString("name", ""),
-                        author.getString("url", null),
-                        author.getString("icon_url", null)
+                        SDLinkUtils.isNullOrEmpty(author.getString("url", null)) ? null : author.getString("url", null),
+                        SDLinkUtils.isNullOrEmpty(author.getString("icon_url", null)) ? null : author.getString("icon_url", null)
                 )
         );
 
         data.optObject("footer").ifPresent(footer ->
                 builder.setFooter(
                         footer.getString("text", ""),
-                        footer.getString("icon_url", null)
+                        SDLinkUtils.isNullOrEmpty(footer.getString("icon_url", null)) ? null : footer.getString("icon_url", null)
                 )
         );
 
         data.optObject("image").ifPresent(image ->
-                builder.setImage(image.getString("url"))
+                builder.setImage(SDLinkUtils.isNullOrEmpty(image.getString("url")) ? null : image.getString("url"))
         );
 
         data.optArray("fields").ifPresent(arr ->
