@@ -7,6 +7,7 @@ package com.hypherionmc.sdlink.core.discord.commands;
 import com.hypherionmc.sdlink.core.discord.commands.slash.general.HelpSlashCommand;
 import com.hypherionmc.sdlink.core.discord.commands.slash.general.PlayerListSlashCommand;
 import com.hypherionmc.sdlink.core.discord.commands.slash.general.ServerStatusSlashCommand;
+import com.hypherionmc.sdlink.core.discord.commands.slash.verification.*;
 import com.jagrosh.jdautilities.command.CommandClient;
 import com.jagrosh.jdautilities.command.SlashCommand;
 
@@ -28,7 +29,11 @@ public class CommandManager {
     }
 
     private void addCommands() {
-        // TODO Verification
+        commands.add(new VerifyAccountCommand());
+        commands.add(new UnverifyAccountSlashCommand());
+        commands.add(new StaffUnverifyCommand());
+        commands.add(new StaffVerifyAccountCommand());
+        commands.add(new ViewVerifiedAccounts());
 
         // Enable the Server Status command
         commands.add(new ServerStatusSlashCommand());

@@ -4,8 +4,20 @@
  */
 package com.hypherionmc.sdlink.core.accounts;
 
+import com.hypherionmc.sdlink.core.config.SDLinkConfig;
+import com.hypherionmc.sdlink.core.database.SDLinkAccount;
+import com.hypherionmc.sdlink.core.discord.BotController;
+import com.hypherionmc.sdlink.core.managers.RoleManager;
+import com.hypherionmc.sdlink.core.messaging.Result;
+import com.hypherionmc.sdlink.core.util.SDLinkUtils;
 import com.mojang.authlib.GameProfile;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.UserSnowflake;
 import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -18,6 +30,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import static com.hypherionmc.sdlink.core.managers.DatabaseManager.sdlinkDatabase;
 
 /**
  * @author HypherionSA
@@ -85,7 +100,174 @@ public class MinecraftAccount {
         return standard(profile.getName());
     }
 
-    // TODO Verification
+    public static SDLinkAccount getStoredFromUUID(String uuid) {
+        sdlinkDatabase.reloadCollection("verifiedaccounts");
+        return sdlinkDatabase.findById(uuid, SDLinkAccount.class);
+    }
+
+    public boolean isAccountVerified() {
+        SDLinkAccount account = getStoredAccount();
+
+        if (account == null)
+            return false;
+
+        return !SDLinkUtils.isNullOrEmpty(account.getDiscordID());
+    }
+
+    public SDLinkAccount getStoredAccount() {
+        sdlinkDatabase.reloadCollection("verifiedaccounts");
+        SDLinkAccount account = sdlinkDatabase.findById(this.uuid.toString(), SDLinkAccount.class);
+
+        return account == null ? newDBEntry() : account;
+    }
+
+    @NotNull
+    public SDLinkAccount newDBEntry() {
+        SDLinkAccount account = new SDLinkAccount();
+        account.setUsername(this.username);
+        account.setUuid(this.uuid.toString());
+        account.setDiscordID(null);
+        account.setVerifyCode(null);
+        account.setOffline(this.isOffline);
+
+        sdlinkDatabase.upsert(account);
+        sdlinkDatabase.reloadCollection("verifiedaccounts");
+
+        return account;
+    }
+
+    @NotNull
+    public String getDiscordName() {
+        SDLinkAccount account = getStoredAccount();
+        if (account == null || SDLinkUtils.isNullOrEmpty(account.getDiscordID()))
+            return "Unlinked";
+
+        User discordUser = BotController.INSTANCE.getJDA().getUserById(account.getDiscordID());
+        return discordUser == null ? "Unlinked" : discordUser.getEffectiveName();
+    }
+
+    @Nullable
+    public User getDiscordUser() {
+        SDLinkAccount storedAccount = getStoredAccount();
+        if (storedAccount == null || SDLinkUtils.isNullOrEmpty(storedAccount.getDiscordID()))
+            return null;
+
+        return BotController.INSTANCE.getJDA().getUserById(storedAccount.getDiscordID());
+    }
+
+    public Result verifyAccount(Member member, Guild guild) {
+        SDLinkAccount account = getStoredAccount();
+
+        if (account == null)
+            return Result.error("We couldn't find your Minecraft account. Please ask the staff for assistance");
+
+        account.setDiscordID(member.getId());
+        account.setVerifyCode(null);
+
+        try {
+            sdlinkDatabase.upsert(account);
+            sdlinkDatabase.reloadCollection("verifiedaccounts");
+        } catch (Exception e) {
+            if (SDLinkConfig.INSTANCE.generalConfig.debugging) {
+                e.printStackTrace();
+            }
+        }
+
+        if (RoleManager.getVerifiedRole() != null) {
+            try {
+                guild.addRoleToMember(UserSnowflake.fromId(member.getId()), RoleManager.getVerifiedRole()).queue();
+            } catch (Exception e) {
+                if (SDLinkConfig.INSTANCE.generalConfig.debugging) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return Result.success("Your account has been verified");
+    }
+
+    public Result unverifyAccount(Member member, Guild guild) {
+        SDLinkAccount account = getStoredAccount();
+
+        if (account == null)
+            return Result.error("We couldn't find your Minecraft account. Please ask the staff for assistance");
+
+        account.setDiscordID(null);
+        account.setVerifyCode(null);
+
+        try {
+            sdlinkDatabase.upsert(account);
+            sdlinkDatabase.reloadCollection("verifiedaccounts");
+        } catch (Exception e) {
+            if (SDLinkConfig.INSTANCE.generalConfig.debugging) {
+                e.printStackTrace();
+            }
+        }
+
+        if (RoleManager.getVerifiedRole() != null) {
+            try {
+                guild.removeRoleFromMember(UserSnowflake.fromId(member.getId()), RoleManager.getVerifiedRole()).queue();
+            } catch (Exception e) {
+                if (SDLinkConfig.INSTANCE.generalConfig.debugging) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return Result.success("Your account has been un-verified");
+    }
+
+    public Result checkAccessControl() {
+        if (!SDLinkConfig.INSTANCE.accessControl.enabled) {
+            return Result.success("pass");
+        }
+
+        SDLinkAccount account = getStoredAccount();
+        if (account == null)
+            return Result.error("notFound");
+
+        if (SDLinkUtils.isNullOrEmpty(account.getDiscordID()))
+            return Result.error("notVerified");
+
+        if (SDLinkConfig.INSTANCE.accessControl.requireDiscordMembership) {
+            Guild guild = BotController.INSTANCE.getJDA().getGuilds().get(0);
+
+            if (guild == null)
+                return Result.error("noGuildFound");
+
+            Member member = guild.getMemberById(account.getDiscordID());
+
+            if (member == null)
+                return Result.error("memberNotFound");
+        }
+
+        if (!SDLinkConfig.INSTANCE.accessControl.requiredRoles.isEmpty() && !RoleManager.getVerificationRoles().isEmpty()) {
+            AtomicBoolean anyFound = new AtomicBoolean(false);
+
+            Guild guild = BotController.INSTANCE.getJDA().getGuilds().get(0);
+
+            if (guild == null)
+                return Result.error("noGuildFound");
+
+            Member member = guild.getMemberById(account.getDiscordID());
+            if (member != null) {
+                member.getRoles().forEach(r -> {
+                    if (RoleManager.getVerificationRoles().stream().anyMatch(role -> role.getIdLong() == r.getIdLong())) {
+                        if (!anyFound.get()) {
+                            anyFound.set(true);
+                        }
+                    }
+                });
+
+                if (!anyFound.get())
+                    return Result.error("rolesNotFound");
+            } else {
+                return Result.error("memberNotFound");
+            }
+        }
+
+        return Result.success("pass");
+    }
 
     public String getUsername() {
         return username;

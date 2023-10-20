@@ -10,6 +10,7 @@ import com.hypherionmc.sdlink.core.discord.events.DiscordEventHandler;
 import com.hypherionmc.sdlink.core.managers.DatabaseManager;
 import com.hypherionmc.sdlink.core.managers.EmbedManager;
 import com.hypherionmc.sdlink.core.managers.WebhookManager;
+import com.hypherionmc.sdlink.core.services.SDLinkPlatform;
 import com.hypherionmc.sdlink.core.util.EncryptionUtil;
 import com.hypherionmc.sdlink.core.util.ThreadedEventManager;
 import com.jagrosh.jdautilities.command.CommandClient;
@@ -192,7 +193,9 @@ public class BotController {
      * Ensure that whitelisting is set up properly, so the bot can use the feature
      */
     public void checkWhiteListing() {
-        // TODO Verification
+        if (SDLinkConfig.INSTANCE.accessControl.enabled && !SDLinkPlatform.minecraftHelper.checkWhitelisting().isError()) {
+            getLogger().error("SDLink Access Control is enabled, but so is whitelisting on your server. You need to disable whitelisting to use the AccessControl feature");
+        }
     }
 
     public Logger getLogger() {

@@ -50,7 +50,9 @@ public class SDLinkConfig extends ModuleConfig {
     @SpecComment("Change in which channel messages appear")
     public MessageChannelConfig messageDestinations = new MessageChannelConfig();
 
-    // TODO Verification Config
+    @Path("accessControl")
+    @SpecComment("Manage access to your server, similar to whitelisting")
+    public AccessControl accessControl = new AccessControl();
 
     @Path("minecraftCommands")
     @SpecComment("Execute Minecraft commands in Discord")

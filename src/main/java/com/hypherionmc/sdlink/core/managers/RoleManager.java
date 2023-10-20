@@ -4,7 +4,9 @@
  */
 package com.hypherionmc.sdlink.core.managers;
 
+import com.hypherionmc.sdlink.core.config.SDLinkConfig;
 import com.hypherionmc.sdlink.core.discord.BotController;
+import com.hypherionmc.sdlink.core.util.SDLinkUtils;
 import com.hypherionmc.sdlink.core.util.SystemUtils;
 import net.dv8tion.jda.api.entities.Role;
 
@@ -19,7 +21,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class RoleManager {
 
-    private static final Set<Role> autoWhitelistRoles = new HashSet<>();
+    private static final Set<Role> verificationRoles = new HashSet<>();
+    private static Role verifiedRole = null;
 
     /**
      * Check and load the roles required by the bot
@@ -27,7 +30,18 @@ public class RoleManager {
      * @param builder
      */
     public static void loadRequiredRoles(AtomicInteger errCount, StringBuilder builder) {
-        // TODO Verification Roles
+        if (SDLinkConfig.INSTANCE.accessControl.enabled) {
+            SDLinkConfig.INSTANCE.accessControl.requiredRoles.forEach(r -> {
+                Role role = getRole(errCount, builder, "Access Control Role", r);
+
+                if (role != null)
+                    verificationRoles.add(role);
+            });
+
+            if (!SDLinkUtils.isNullOrEmpty(SDLinkConfig.INSTANCE.accessControl.verifiedRole)) {
+                verifiedRole = getRole(errCount, builder, "Verified Player Role", SDLinkConfig.INSTANCE.accessControl.verifiedRole);
+            }
+        }
     }
 
     /**
@@ -64,5 +78,13 @@ public class RoleManager {
                 .append("\r\n");
 
         return null;
+    }
+
+    public static Set<Role> getVerificationRoles() {
+        return verificationRoles;
+    }
+
+    public static Role getVerifiedRole() {
+        return verifiedRole;
     }
 }

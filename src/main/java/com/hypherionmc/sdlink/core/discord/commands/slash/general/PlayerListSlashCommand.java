@@ -63,7 +63,9 @@ public class PlayerListSlashCommand extends SDLinkSlashCommand {
             p.forEach(account -> {
                 sb.append("`").append(account.getUsername()).append("`");
 
-                // TODO Verification
+                if (account.getDiscordUser() != null) {
+                    sb.append(" - ").append(account.getDiscordUser().getAsMention());
+                }
                 sb.append("\r\n");
             });
 
