@@ -6,6 +6,7 @@ package com.hypherionmc.sdlink.core.accounts;
 
 import com.hypherionmc.sdlink.core.config.SDLinkConfig;
 import com.hypherionmc.sdlink.core.services.SDLinkPlatform;
+import lombok.Getter;
 
 /**
  * @author HypherionSA
@@ -16,10 +17,19 @@ public class DiscordAuthor {
     // User used for Server Messages
     public static final DiscordAuthor SERVER = new DiscordAuthor(SDLinkConfig.INSTANCE.channelsAndWebhooks.serverName, SDLinkConfig.INSTANCE.channelsAndWebhooks.serverAvatar, "server", true, "");
 
+    @Getter
     private final String displayName;
+
+    @Getter
     private final String avatar;
+
+    @Getter
     private final boolean isServer;
+
+    @Getter
     private final String username;
+
+    @Getter
     private final String uuid;
 
     /**
@@ -52,23 +62,13 @@ public class DiscordAuthor {
         );
     }
 
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public String getRawUsername() {
-        return username;
-    }
-
-    public boolean isServer() {
-        return isServer;
-    }
-
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public String getUuid() {
-        return uuid;
+    public static DiscordAuthor of(String displayName, String avatar, String username, boolean server) {
+        return new DiscordAuthor(
+                displayName,
+                avatar,
+                username,
+                server,
+                username
+        );
     }
 }

@@ -138,6 +138,8 @@ public class DiscordEventHandler extends ListenerAdapter {
         if (event.getUser().isBot())
             return;
 
+        CacheManager.loadUserCache();
+
         if (!SDLinkConfig.INSTANCE.accessControl.enabled)
             return;
 

@@ -1,3 +1,7 @@
+/*
+ * This file is part of sdlink-core, licensed under the MIT License (MIT).
+ * Copyright HypherionSA and Contributors
+ */
 package com.hypherionmc.sdlink.core.discord.commands.slash.verification;
 
 import com.hypherionmc.sdlink.core.accounts.MinecraftAccount;
@@ -18,7 +22,7 @@ import static com.hypherionmc.sdlink.core.managers.DatabaseManager.sdlinkDatabas
 public class StaffUnverifyCommand extends SDLinkSlashCommand {
 
     public StaffUnverifyCommand() {
-        super(false);
+        super(true);
         this.name = "staffunverify";
         this.help = "Unverify another player's Minecraft account";
 

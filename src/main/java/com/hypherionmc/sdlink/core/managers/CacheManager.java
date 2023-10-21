@@ -6,15 +6,19 @@ package com.hypherionmc.sdlink.core.managers;
 
 import com.hypherionmc.sdlink.core.discord.BotController;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 public class CacheManager {
 
     private static final HashMap<String, String> serverChannels = new HashMap<>();
     private static final HashMap<String, String> serverRoles = new HashMap<>();
     private static final HashMap<String, String> userCache = new HashMap<>();
+    private static Set<Member> discordMembers = new HashSet<>();
 
     public static void loadCache() {
         loadChannelCache();
@@ -54,6 +58,7 @@ public class CacheManager {
 
     public static void loadUserCache() {
         userCache.clear();
+        discordMembers.clear();
 
         JDA jda = BotController.INSTANCE.getJDA();
 
@@ -62,6 +67,7 @@ public class CacheManager {
 
         jda.getGuilds().get(0).getMembers().forEach(r -> {
             userCache.put("@" + r.getEffectiveName(), r.getAsMention());
+            discordMembers.add(r);
         });
     }
 
@@ -75,5 +81,9 @@ public class CacheManager {
 
     public static HashMap<String, String> getUserCache() {
         return userCache;
+    }
+
+    public static Set<Member> getDiscordMembers() {
+        return discordMembers;
     }
 }

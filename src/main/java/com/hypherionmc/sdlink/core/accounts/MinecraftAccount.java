@@ -7,6 +7,7 @@ package com.hypherionmc.sdlink.core.accounts;
 import com.hypherionmc.sdlink.core.config.SDLinkConfig;
 import com.hypherionmc.sdlink.core.database.SDLinkAccount;
 import com.hypherionmc.sdlink.core.discord.BotController;
+import com.hypherionmc.sdlink.core.managers.CacheManager;
 import com.hypherionmc.sdlink.core.managers.RoleManager;
 import com.hypherionmc.sdlink.core.messaging.Result;
 import com.hypherionmc.sdlink.core.util.SDLinkUtils;
@@ -29,6 +30,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -142,17 +144,24 @@ public class MinecraftAccount {
         if (account == null || SDLinkUtils.isNullOrEmpty(account.getDiscordID()))
             return "Unlinked";
 
-        User discordUser = BotController.INSTANCE.getJDA().getUserById(account.getDiscordID());
-        return discordUser == null ? "Unlinked" : discordUser.getEffectiveName();
+        DiscordUser user = getDiscordUser();
+
+        return user == null ? "Unlinked" : user.getEffectiveName();
     }
 
     @Nullable
-    public User getDiscordUser() {
+    public DiscordUser getDiscordUser() {
         SDLinkAccount storedAccount = getStoredAccount();
         if (storedAccount == null || SDLinkUtils.isNullOrEmpty(storedAccount.getDiscordID()))
             return null;
 
-        return BotController.INSTANCE.getJDA().getUserById(storedAccount.getDiscordID());
+        if (CacheManager.getDiscordMembers().isEmpty()) {
+            User user = BotController.INSTANCE.getJDA().getUserById(storedAccount.getDiscordID());
+            return user == null ? null : DiscordUser.of(user.getEffectiveName(), user.getEffectiveAvatarUrl(), user.getIdLong(), user.getAsMention());
+        }
+
+        Optional<Member> member = CacheManager.getDiscordMembers().stream().filter(m -> m.getId().equalsIgnoreCase(storedAccount.getDiscordID())).findFirst();
+        return member.map(value -> DiscordUser.of(value.getEffectiveName(), value.getEffectiveAvatarUrl(), value.getIdLong(), value.getAsMention())).orElse(null);
     }
 
     public Result verifyAccount(Member member, Guild guild) {
@@ -230,40 +239,29 @@ public class MinecraftAccount {
             return Result.error("notVerified");
 
         if (SDLinkConfig.INSTANCE.accessControl.requireDiscordMembership) {
-            Guild guild = BotController.INSTANCE.getJDA().getGuilds().get(0);
-
-            if (guild == null)
-                return Result.error("noGuildFound");
-
-            Member member = guild.getMemberById(account.getDiscordID());
-
-            if (member == null)
+            DiscordUser user = getDiscordUser();
+            if (user == null)
                 return Result.error("memberNotFound");
         }
 
         if (!SDLinkConfig.INSTANCE.accessControl.requiredRoles.isEmpty() && !RoleManager.getVerificationRoles().isEmpty()) {
             AtomicBoolean anyFound = new AtomicBoolean(false);
 
-            Guild guild = BotController.INSTANCE.getJDA().getGuilds().get(0);
-
-            if (guild == null)
-                return Result.error("noGuildFound");
-
-            Member member = guild.getMemberById(account.getDiscordID());
-            if (member != null) {
-                member.getRoles().forEach(r -> {
-                    if (RoleManager.getVerificationRoles().stream().anyMatch(role -> role.getIdLong() == r.getIdLong())) {
-                        if (!anyFound.get()) {
-                            anyFound.set(true);
-                        }
+            Optional<Member> member = CacheManager.getDiscordMembers().stream().filter(m -> m.getId().equals(account.getDiscordID())).findFirst();
+            member.ifPresent(m -> m.getRoles().forEach(r -> {
+                if (RoleManager.getVerificationRoles().stream().anyMatch(role -> role.getIdLong() == r.getIdLong())) {
+                    if (!anyFound.get()) {
+                        anyFound.set(true);
                     }
-                });
+                }
+            }));
 
-                if (!anyFound.get())
-                    return Result.error("rolesNotFound");
-            } else {
+
+            if (!anyFound.get())
+                return Result.error("rolesNotFound");
+
+            if (member.isEmpty())
                 return Result.error("memberNotFound");
-            }
         }
 
         return Result.success("pass");

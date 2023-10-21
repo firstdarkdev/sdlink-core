@@ -117,7 +117,7 @@ shadowJar {
         relocate 'org.reflections', shade_group + 'org.reflections'
     }
     exclude 'META-INF/**'
-    setArchiveClassifier('verification')
+    setArchiveClassifier('')
 }
 
 publishing {

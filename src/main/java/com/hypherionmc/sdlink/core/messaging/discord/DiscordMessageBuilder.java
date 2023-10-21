@@ -5,11 +5,11 @@
 package com.hypherionmc.sdlink.core.messaging.discord;
 
 import com.hypherionmc.sdlink.core.accounts.DiscordAuthor;
+import com.hypherionmc.sdlink.core.accounts.DiscordUser;
 import com.hypherionmc.sdlink.core.accounts.MinecraftAccount;
 import com.hypherionmc.sdlink.core.config.SDLinkConfig;
 import com.hypherionmc.sdlink.core.config.impl.MessageIgnoreConfig;
 import com.hypherionmc.sdlink.core.messaging.MessageType;
-import net.dv8tion.jda.api.entities.User;
 
 /**
  * @author HypherionSA
@@ -36,16 +36,16 @@ public final class DiscordMessageBuilder {
     public DiscordMessageBuilder author(DiscordAuthor author) {
         this.author = author;
 
-        if (author.getRawUsername().equalsIgnoreCase("server")) {
+        if (author.getUsername().equalsIgnoreCase("server")) {
             this.author = DiscordAuthor.SERVER;
         }
 
         if (SDLinkConfig.INSTANCE.chatConfig.useLinkedNames && this.author != DiscordAuthor.SERVER) {
-            MinecraftAccount account = MinecraftAccount.standard(author.getRawUsername());
-            User discordUser = account.getDiscordUser();
+            MinecraftAccount account = MinecraftAccount.standard(author.getUsername());
+            DiscordUser discordUser = account.getDiscordUser();
 
             if (account != null && discordUser != null) {
-                this.author = DiscordAuthor.of(discordUser.getEffectiveName(), author.getUuid(), author.getRawUsername());
+                this.author = DiscordAuthor.of(discordUser.getEffectiveName(), discordUser.getAvatarUrl(), author.getUsername(), false);
             }
         }
 
