@@ -23,7 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class PermissionChecker {
 
     // Invite URL for bot shown in server logs
-    private static final String DISCORD_INVITE = "https://discord.com/api/oauth2/authorize?client_id={bot_id}&permissions=31546030240&scope=bot%20applications.commands";
+    private static final String DISCORD_INVITE = "https://discord.com/api/oauth2/authorize?client_id={bot_id}&permissions=2953276432&scope=bot%20applications.commands";
 
     // Base Permissions required by the bot to operate
     private static final List<Permission> BOT_PERMS = new ArrayList<>() {{
