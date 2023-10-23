@@ -40,7 +40,9 @@ public class Profiler {
         }
 
         long stopTime = System.nanoTime();
-        BotController.INSTANCE.getLogger().info("[Profiler (" + this.profilerName + ")] " + message + " took " + TimeUnit.SECONDS.toSeconds(stopTime - startTime) + " seconds");
+        double seconds = (double) (stopTime - startTime) / 1_000_000_000;
+
+        BotController.INSTANCE.getLogger().info("[Profiler (" + this.profilerName + ")] " + message + " took " + seconds + " seconds");
         hasStarted = false;
     }
 
