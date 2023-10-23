@@ -3,8 +3,6 @@ package com.hypherionmc.sdlink.core.util;
 import com.hypherionmc.sdlink.core.config.SDLinkConfig;
 import com.hypherionmc.sdlink.core.discord.BotController;
 
-import java.util.concurrent.TimeUnit;
-
 public class Profiler {
 
     private long startTime;
@@ -40,9 +38,9 @@ public class Profiler {
         }
 
         long stopTime = System.nanoTime();
-        double seconds = (double) (stopTime - startTime) / 1_000_000_000;
+        double seconds = (double) (stopTime - startTime) / 1_000_000;
 
-        BotController.INSTANCE.getLogger().info("[Profiler (" + this.profilerName + ")] " + message + " took " + seconds + " seconds");
+        BotController.INSTANCE.getLogger().info("[Profiler (" + this.profilerName + ")] " + message + " took " + seconds + " ms");
         hasStarted = false;
     }
 
