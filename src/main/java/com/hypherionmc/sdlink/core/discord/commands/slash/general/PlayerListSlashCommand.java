@@ -5,6 +5,7 @@
 package com.hypherionmc.sdlink.core.discord.commands.slash.general;
 
 import com.hypherionmc.sdlink.core.accounts.MinecraftAccount;
+import com.hypherionmc.sdlink.core.config.SDLinkConfig;
 import com.hypherionmc.sdlink.core.discord.commands.slash.SDLinkSlashCommand;
 import com.hypherionmc.sdlink.core.services.SDLinkPlatform;
 import com.hypherionmc.sdlink.core.util.MessageUtil;
@@ -63,7 +64,7 @@ public class PlayerListSlashCommand extends SDLinkSlashCommand {
             p.forEach(account -> {
                 sb.append("`").append(account.getUsername()).append("`");
 
-                if (account.getDiscordUser() != null) {
+                if (SDLinkConfig.INSTANCE.accessControl.enabled && account.getDiscordUser() != null) {
                     sb.append(" - ").append(account.getDiscordUser().getAsMention());
                 }
                 sb.append("\r\n");

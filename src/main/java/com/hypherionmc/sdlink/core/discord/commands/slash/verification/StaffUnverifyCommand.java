@@ -26,12 +26,10 @@ public class StaffUnverifyCommand extends SDLinkSlashCommand {
         this.name = "staffunverify";
         this.help = "Unverify another player's Minecraft account";
 
-        List<OptionData> options = new ArrayList<>() {{
+        this.options = new ArrayList<>() {{
             add(new OptionData(OptionType.USER, "discorduser", "The discord user the minecraft account belongs to").setRequired(true));
             add(new OptionData(OptionType.STRING, "mcname", "The minecraft account of the linked user").setRequired(true));
         }};
-
-        this.options = options;
     }
 
     @Override

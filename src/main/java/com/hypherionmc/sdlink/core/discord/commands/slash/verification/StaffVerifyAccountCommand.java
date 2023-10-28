@@ -14,7 +14,6 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class StaffVerifyAccountCommand extends SDLinkSlashCommand {
 
@@ -23,12 +22,10 @@ public class StaffVerifyAccountCommand extends SDLinkSlashCommand {
         this.name = "staffverify";
         this.help = "Allow staff members verify minecraft players, without verification";
 
-        List<OptionData> options = new ArrayList<>() {{
+        this.options = new ArrayList<>() {{
             add(new OptionData(OptionType.USER, "discorduser", "The discord user the minecraft account belongs to").setRequired(true));
             add(new OptionData(OptionType.STRING, "mcname", "The minecraft account to link to the user").setRequired(true));
         }};
-
-        this.options = options;
     }
 
     @Override
