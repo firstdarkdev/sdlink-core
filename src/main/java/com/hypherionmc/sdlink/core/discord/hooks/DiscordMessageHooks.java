@@ -47,6 +47,10 @@ public class DiscordMessageHooks {
             if (message.isEmpty())
                 return;
 
+            if (event.getMessage().getReferencedMessage() != null && event.getMessage().getMember() != null) {
+                message = "Replied to " + event.getMessage().getReferencedMessage().getMember().getEffectiveName() + ": " + message;
+            }
+
             SDLinkPlatform.minecraftHelper.discordMessageReceived(event.getMember(), message);
         } catch (Exception e) {
             if (SDLinkConfig.INSTANCE.generalConfig.debugging) {
