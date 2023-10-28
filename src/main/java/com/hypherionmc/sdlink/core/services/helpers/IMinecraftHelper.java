@@ -27,7 +27,7 @@ public interface IMinecraftHelper {
     List<MinecraftAccount> getOnlinePlayers();
     long getServerUptime();
     String getServerVersion();
-    void executeMinecraftCommand(String command, int permLevel, MessageReceivedEvent event, @Nullable SDLinkAccount account);
+    Result executeMinecraftCommand(String command, int permLevel, MessageReceivedEvent event, @Nullable SDLinkAccount account);
     boolean isOnlineMode();
     void banPlayer(MinecraftAccount acc);
 }

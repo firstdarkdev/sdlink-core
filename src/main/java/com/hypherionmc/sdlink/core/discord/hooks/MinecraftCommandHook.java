@@ -6,6 +6,7 @@ package com.hypherionmc.sdlink.core.discord.hooks;
 
 import com.hypherionmc.sdlink.core.config.SDLinkConfig;
 import com.hypherionmc.sdlink.core.database.SDLinkAccount;
+import com.hypherionmc.sdlink.core.messaging.Result;
 import com.hypherionmc.sdlink.core.services.SDLinkPlatform;
 import net.dv8tion.jda.api.entities.ISnowflake;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -13,6 +14,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static com.hypherionmc.sdlink.core.managers.DatabaseManager.sdlinkDatabase;
@@ -40,9 +42,11 @@ public class MinecraftCommandHook {
         String raw = event.getMessage().getContentRaw().substring(SDLinkConfig.INSTANCE.linkedCommands.prefix.length());
 
         if (commands.stream().anyMatch(raw::startsWith)) {
-            SDLinkPlatform.minecraftHelper.executeMinecraftCommand(raw, Integer.MAX_VALUE, event, account.orElse(null));
+            Result res = SDLinkPlatform.minecraftHelper.executeMinecraftCommand(raw, Integer.MAX_VALUE, event, account.orElse(null));
+            event.getMessage().reply(res.getMessage()).mentionRepliedUser(false).queue(s -> s.delete().queueAfter(5, TimeUnit.SECONDS));
         } else {
-            SDLinkPlatform.minecraftHelper.executeMinecraftCommand(raw, permLevel, event, account.orElse(null));
+            Result res = SDLinkPlatform.minecraftHelper.executeMinecraftCommand(raw, permLevel, event, account.orElse(null));
+            event.getMessage().reply(res.getMessage()).mentionRepliedUser(false).queue(s -> s.delete().queueAfter(5, TimeUnit.SECONDS));
         }
     }
 }
