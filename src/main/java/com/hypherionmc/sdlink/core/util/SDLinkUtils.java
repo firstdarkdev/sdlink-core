@@ -10,4 +10,8 @@ public class SDLinkUtils {
         return inString == null || inString.isEmpty();
     }
 
+    public static int intInRange(int min, int max) {
+        return (int) ((Math.random() * (max - min)) + min);
+    }
+
 }

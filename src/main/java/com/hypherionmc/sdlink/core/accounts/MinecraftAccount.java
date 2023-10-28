@@ -14,7 +14,9 @@ import com.hypherionmc.sdlink.core.util.SDLinkUtils;
 import com.mojang.authlib.GameProfile;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.UserSnowflake;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -27,10 +29,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.hypherionmc.sdlink.core.managers.DatabaseManager.sdlinkDatabase;
@@ -109,7 +108,7 @@ public class MinecraftAccount {
     public boolean isAccountVerified() {
         SDLinkAccount account = getStoredAccount();
 
-        if (account == null)
+        if (account == null || account.getDiscordID() == null)
             return false;
 
         return !SDLinkUtils.isNullOrEmpty(account.getDiscordID());
@@ -229,6 +228,56 @@ public class MinecraftAccount {
         return Result.success("Your account has been un-verified");
     }
 
+    public Result canLogin() {
+        if (!SDLinkConfig.INSTANCE.accessControl.enabled)
+            return Result.success("");
+
+        SDLinkAccount account = getStoredAccount();
+
+        if (account == null)
+            return Result.error("Failed to load your account");
+
+        if (!isAccountVerified()) {
+            if (SDLinkUtils.isNullOrEmpty(account.getVerifyCode())) {
+                int code = SDLinkUtils.intInRange(1000, 9999);
+                account.setVerifyCode(String.valueOf(code));
+                sdlinkDatabase.upsert(account);
+                sdlinkDatabase.reloadCollection("verifiedaccounts");
+                return Result.error(SDLinkConfig.INSTANCE.accessControl.verificationMessages.accountVerify.replace("{code}", String.valueOf(code)));
+            } else {
+                return Result.error(SDLinkConfig.INSTANCE.accessControl.verificationMessages.accountVerify.replace("{code}", account.getVerifyCode()));
+            }
+        }
+
+        Result result = checkAccessControl();
+
+        if (result.isError()) {
+            switch (result.getMessage()) {
+                case "notFound" -> {
+                    return Result.error("Account not found in server database");
+                }
+                case "noGuildFound" -> {
+                    return Result.error("No Discord Server Found");
+                }
+                case "memberNotFound" -> {
+                    return Result.error(SDLinkConfig.INSTANCE.accessControl.verificationMessages.nonMember);
+                }
+                case "verificationFailed" -> {
+                    return Result.error("Failed to complete verification checks. Please notify the server owner");
+                }
+                case "rolesNotFound" -> {
+                    return Result.error(SDLinkConfig.INSTANCE
+                            .accessControl
+                            .verificationMessages
+                            .requireRoles
+                            .replace("{roles}", ArrayUtils.toString(RoleManager.getVerificationRoles().stream().map(Role::getName).toList())));
+                }
+            }
+        }
+
+        return Result.error("Failed to complete pre-login checks. Please notify the server owner");
+    }
+
     public Result checkAccessControl() {
         if (!SDLinkConfig.INSTANCE.accessControl.enabled) {
             return Result.success("pass");
@@ -270,7 +319,7 @@ public class MinecraftAccount {
                 return Result.error("memberNotFound");
         }
 
-        return Result.success("pass");
+        return Result.error("verificationFailed");
     }
 
     public String getUsername() {
