@@ -52,7 +52,7 @@ public class StaffUnverifyCommand extends SDLinkSlashCommand {
             return;
         }
 
-        MinecraftAccount minecraftAccount = MinecraftAccount.standard(mcname);
+        MinecraftAccount minecraftAccount = MinecraftAccount.of(mcname);
         Result result = minecraftAccount.unverifyAccount(member, event.getGuild());
         event.reply(result.getMessage()).setEphemeral(true).queue();
     }

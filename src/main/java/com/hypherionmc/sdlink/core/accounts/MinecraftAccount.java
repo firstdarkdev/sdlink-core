@@ -49,7 +49,7 @@ public class MinecraftAccount {
     private final boolean isValid;
 
     /**
-     * Internal. Use {@link #standard(String)} or {@link #offline(String)}
+     * Internal. Use {@link #of(String)} (String)} or {@link #of(GameProfile)}
      * @param username The Username of the Player
      * @param uuid The UUID of the player
      * @param isOffline Is this an OFFLINE/Unauthenticated Account
@@ -63,10 +63,11 @@ public class MinecraftAccount {
     }
 
     /**
-     * Tries to convert a Username to an online user account. If it can not, it will return an offline user
-     * @param username The username to search for
+     * Try to fetch a player from the Mojang API.
+     * Will return an offline player if the request fails, or if they don't have a valid account
+     * @param username The username of the player
      */
-    public static MinecraftAccount standard(String username) {
+    public static MinecraftAccount of(String username) {
         Pair<String, UUID> player = fetchPlayer(username);
 
         if (player.getRight() == null) {
@@ -82,6 +83,14 @@ public class MinecraftAccount {
     }
 
     /**
+     * Convert a GameProfile into a MinecraftAccount for usage inside the mod
+     * @param profile The player GameProfile
+     */
+    public static MinecraftAccount of(GameProfile profile) {
+        return new MinecraftAccount(profile.getName(), profile.getId(), profile.getId().version() == 3, true);
+    }
+
+    /**
      * Convert a username to an offline account
      * @param username The Username to search for
      */
@@ -93,14 +102,6 @@ public class MinecraftAccount {
                 true,
                 true
         );
-    }
-
-    /**
-     * Convert GameProfile to Minecraft account
-     * @param profile The profile of the player
-     */
-    public static MinecraftAccount fromGameProfile(GameProfile profile) {
-        return standard(profile.getName());
     }
 
     public static SDLinkAccount getStoredFromUUID(String uuid) {

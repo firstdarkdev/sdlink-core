@@ -156,7 +156,7 @@ public class DiscordEventHandler extends ListenerAdapter {
             Optional<SDLinkAccount> account = accounts.stream().filter(a -> a.getDiscordID().equalsIgnoreCase(event.getUser().getId())).findFirst();
 
             account.ifPresent(a -> {
-                MinecraftAccount acc = MinecraftAccount.standard(a.getUsername());
+                MinecraftAccount acc = MinecraftAccount.of(a.getUsername());
 
                 if (acc != null) {
                     sdlinkDatabase.remove(a, SDLinkAccount.class);

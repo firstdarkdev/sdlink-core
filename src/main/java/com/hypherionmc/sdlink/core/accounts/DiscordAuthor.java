@@ -6,6 +6,7 @@ package com.hypherionmc.sdlink.core.accounts;
 
 import com.hypherionmc.sdlink.core.config.SDLinkConfig;
 import com.hypherionmc.sdlink.core.services.SDLinkPlatform;
+import com.mojang.authlib.GameProfile;
 import lombok.Getter;
 
 /**
@@ -27,10 +28,13 @@ public class DiscordAuthor {
     private final boolean isServer;
 
     @Getter
-    private final String username;
+    private String username;
 
     @Getter
-    private final String uuid;
+    private String uuid;
+
+    @Getter
+    private GameProfile profile = null;
 
     /**
      * Internal. Use {@link #of(String, String, String)}
@@ -70,5 +74,12 @@ public class DiscordAuthor {
                 server,
                 username
         );
+    }
+
+    public DiscordAuthor setGameProfile(GameProfile profile) {
+        this.profile = profile;
+        this.username = profile.getName();
+        this.uuid = profile.getId().toString();
+        return this;
     }
 }

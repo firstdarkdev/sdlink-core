@@ -49,7 +49,7 @@ public class VerifyAccountCommand extends SDLinkSlashCommand {
                 continue;
 
             if (account.getVerifyCode().equalsIgnoreCase(String.valueOf(mcCode))) {
-                MinecraftAccount minecraftAccount = MinecraftAccount.standard(account.getUsername());
+                MinecraftAccount minecraftAccount = MinecraftAccount.of(account.getUsername());
                 Result result = minecraftAccount.verifyAccount(event.getMember(), event.getGuild());
                 event.reply(result.getMessage()).setEphemeral(true).queue();
                 return;
