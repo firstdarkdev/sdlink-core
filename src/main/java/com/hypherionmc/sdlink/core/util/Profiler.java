@@ -1,8 +1,18 @@
+/*
+ * This file is part of sdlink-core, licensed under the MIT License (MIT).
+ * Copyright HypherionSA and Contributors
+ */
 package com.hypherionmc.sdlink.core.util;
 
 import com.hypherionmc.sdlink.core.config.SDLinkConfig;
 import com.hypherionmc.sdlink.core.discord.BotController;
 
+/**
+ * @author HypherionSA
+ * Profiler to time how long certain tasks take to execute
+ * Used to find bottlenecks in some systems
+ */
+//TODO Remove this on release
 public class Profiler {
 
     private long startTime;
