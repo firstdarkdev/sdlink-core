@@ -266,8 +266,8 @@ public class MinecraftAccount {
                 case "memberNotFound" -> {
                     return Result.error(SDLinkConfig.INSTANCE.accessControl.verificationMessages.nonMember);
                 }
-                case "verificationFailed" -> {
-                    return Result.error("Failed to complete verification checks. Please notify the server owner");
+                case "rolesNotLoaded" -> {
+                    return Result.error("Server has required roles configured, but no discord roles were loaded. Please notify the server owner");
                 }
                 case "rolesNotFound" -> {
                     return Result.error(SDLinkConfig.INSTANCE
@@ -301,7 +301,10 @@ public class MinecraftAccount {
         }
 
 
-        if (!SDLinkConfig.INSTANCE.accessControl.requiredRoles.isEmpty() && !RoleManager.getVerificationRoles().isEmpty()) {
+        if (!SDLinkConfig.INSTANCE.accessControl.requiredRoles.isEmpty()) {
+            if (RoleManager.getVerificationRoles().isEmpty())
+                return Result.error("rolesNotLoaded");
+
             Profiler profiler = Profiler.getProfiler("checkRequiredRoles");
             profiler.start("Checking Required Roles");
             AtomicBoolean anyFound = new AtomicBoolean(false);
@@ -323,7 +326,7 @@ public class MinecraftAccount {
                 return Result.error("memberNotFound");
         }
 
-        return Result.error("verificationFailed");
+        return Result.success("pass");
     }
 
     public String getUsername() {
