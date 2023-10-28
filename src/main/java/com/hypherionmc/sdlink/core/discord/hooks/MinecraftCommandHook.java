@@ -28,6 +28,9 @@ public class MinecraftCommandHook {
         if (!event.getMessage().getContentRaw().startsWith(SDLinkConfig.INSTANCE.linkedCommands.prefix))
             return;
 
+        if (event.getMessage().getContentRaw().equalsIgnoreCase(SDLinkConfig.INSTANCE.linkedCommands.prefix))
+            return;
+
         Set<Long> roles = event.getMember().getRoles().stream().map(ISnowflake::getIdLong).collect(Collectors.toSet());
         roles.add(event.getMember().getIdLong());
         roles.add(0L);
@@ -40,6 +43,13 @@ public class MinecraftCommandHook {
         List<String> commands = SDLinkConfig.INSTANCE.linkedCommands.permissions.stream().filter(c -> roles.contains(Long.parseLong(c.role))).flatMap(c -> c.commands.stream()).filter(s -> !s.isEmpty()).toList();
 
         String raw = event.getMessage().getContentRaw().substring(SDLinkConfig.INSTANCE.linkedCommands.prefix.length());
+
+        if (permLevel == -1) {
+            event.getMessage().reply("Sorry, you don't have permission to execute that command").mentionRepliedUser(false).queue(suc -> {
+                suc.delete().queueAfter(5, TimeUnit.SECONDS);
+            });
+            return;
+        }
 
         if (commands.stream().anyMatch(raw::startsWith)) {
             Result res = SDLinkPlatform.minecraftHelper.executeMinecraftCommand(raw, Integer.MAX_VALUE, event, account.orElse(null));
