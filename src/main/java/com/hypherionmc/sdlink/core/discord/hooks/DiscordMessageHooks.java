@@ -35,12 +35,12 @@ public class DiscordMessageHooks {
                 BotController.INSTANCE.getLogger().info("Sending Message from {}: {}", event.getAuthor().getName(), event.getMessage().getContentStripped());
             }
 
-            String message = event.getMessage().getContentRaw();
+            String message = event.getMessage().getContentDisplay();
             if (message.isEmpty() && !event.getMessage().getAttachments().isEmpty()) {
                 message = (long) event.getMessage().getAttachments().size() + " attachments";
             }
 
-            if (!event.getMessage().getContentRaw().isEmpty() && !event.getMessage().getAttachments().isEmpty()) {
+            if (!event.getMessage().getContentDisplay().isEmpty() && !event.getMessage().getAttachments().isEmpty()) {
                 message = message + " (+" + (long) event.getMessage().getAttachments().size() + " attachments)";
             }
 
