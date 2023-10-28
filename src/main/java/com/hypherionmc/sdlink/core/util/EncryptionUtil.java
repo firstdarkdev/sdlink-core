@@ -53,10 +53,14 @@ public final class EncryptionUtil {
             BotController.INSTANCE.getLogger().error("Failed to initialize Encryption", e);
         }
 
-        encryptor = new StandardPBEStringEncryptor();
-        encryptor.setPassword(encCode);
-
         canRun = !encCode.isEmpty();
+
+        encryptor = new StandardPBEStringEncryptor();
+        if (canRun)
+            encryptor.setPassword(encCode);
+
+        if (!canRun)
+            BotController.INSTANCE.getLogger().error("Failed to initialize encryption system. Your config values will not be encrypted!");
     }
 
     /**
