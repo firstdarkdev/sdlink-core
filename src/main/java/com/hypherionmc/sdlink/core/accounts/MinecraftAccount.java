@@ -279,7 +279,7 @@ public class MinecraftAccount {
             }
         }
 
-        return Result.error("Failed to complete pre-login checks. Please notify the server owner");
+        return Result.success("");
     }
 
     public Result checkAccessControl() {
