@@ -23,7 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class PermissionChecker {
 
     // Invite URL for bot shown in server logs
-    private static final String DISCORD_INVITE = "https://discord.com/api/oauth2/authorize?client_id={bot_id}&permissions=2953276432&scope=bot%20applications.commands";
+    private static final String DISCORD_INVITE = "https://discord.com/api/oauth2/authorize?client_id={bot_id}&permissions=2953276436&scope=bot%20applications.commands";
 
     // Base Permissions required by the bot to operate
     private static final List<Permission> BOT_PERMS = new ArrayList<>() {{
@@ -49,6 +49,10 @@ public class PermissionChecker {
      * Run the permission checker to see if the bot has all the required permissions
      */
     public static void checkBotSetup() {
+        if (SDLinkConfig.INSTANCE.accessControl.banMemberOnMinecraftBan) {
+            BOT_PERMS.add(Permission.BAN_MEMBERS);
+        }
+
         StringBuilder builder = new StringBuilder();
         builder.append("\r\n").append("******************* Simple Discord Link Errors *******************").append("\r\n");
         AtomicInteger errCount = new AtomicInteger();

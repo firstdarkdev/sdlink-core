@@ -6,6 +6,7 @@ package com.hypherionmc.sdlink.core.accounts;
 
 import com.hypherionmc.sdlink.core.config.SDLinkConfig;
 import com.hypherionmc.sdlink.core.database.SDLinkAccount;
+import com.hypherionmc.sdlink.core.discord.BotController;
 import com.hypherionmc.sdlink.core.managers.CacheManager;
 import com.hypherionmc.sdlink.core.managers.RoleManager;
 import com.hypherionmc.sdlink.core.messaging.Result;
@@ -33,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.hypherionmc.sdlink.core.managers.DatabaseManager.sdlinkDatabase;
@@ -269,6 +271,9 @@ public class MinecraftAccount {
                 case "rolesNotLoaded" -> {
                     return Result.error("Server has required roles configured, but no discord roles were loaded. Please notify the server owner");
                 }
+                case "accessDeniedByRole" -> {
+                    return Result.error(SDLinkConfig.INSTANCE.accessControl.verificationMessages.roleDenied);
+                }
                 case "rolesNotFound" -> {
                     return Result.error(SDLinkConfig.INSTANCE
                             .accessControl
@@ -308,9 +313,15 @@ public class MinecraftAccount {
             Profiler profiler = Profiler.getProfiler("checkRequiredRoles");
             profiler.start("Checking Required Roles");
             AtomicBoolean anyFound = new AtomicBoolean(false);
+            AtomicBoolean deniedFound = new AtomicBoolean(false);
 
             Optional<Member> member = CacheManager.getDiscordMembers().stream().filter(m -> m.getId().equals(account.getDiscordID())).findFirst();
             member.ifPresent(m -> m.getRoles().forEach(r -> {
+                if (RoleManager.getDeniedRoles().stream().anyMatch(role -> r.getIdLong() == role.getIdLong())) {
+                    if (!deniedFound.get())
+                        deniedFound.set(true);
+                }
+
                 if (RoleManager.getVerificationRoles().stream().anyMatch(role -> role.getIdLong() == r.getIdLong())) {
                     if (!anyFound.get()) {
                         anyFound.set(true);
@@ -318,6 +329,9 @@ public class MinecraftAccount {
                 }
             }));
             profiler.stop();
+
+            if (deniedFound.get())
+                return Result.error("accessDeniedByRole");
 
             if (!anyFound.get())
                 return Result.error("rolesNotFound");
@@ -327,6 +341,22 @@ public class MinecraftAccount {
         }
 
         return Result.success("pass");
+    }
+
+    public void banDiscordMember() {
+        if (!SDLinkConfig.INSTANCE.accessControl.banMemberOnMinecraftBan)
+            return;
+
+        DiscordUser user = getDiscordUser();
+
+        if (user == null)
+            return;
+
+        try {
+            BotController.INSTANCE.getJDA().getGuilds().get(0).ban(UserSnowflake.fromId(user.getUserId()), 7, TimeUnit.DAYS).queue();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public String getUsername() {

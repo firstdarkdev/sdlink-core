@@ -22,6 +22,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class RoleManager {
 
     private static final Set<Role> verificationRoles = new HashSet<>();
+    private static final Set<Role> deniedRoles = new HashSet<>();
+
     private static Role verifiedRole = null;
 
     /**
@@ -36,6 +38,13 @@ public class RoleManager {
 
                 if (role != null)
                     verificationRoles.add(role);
+            });
+
+            SDLinkConfig.INSTANCE.accessControl.deniedRoles.forEach(r -> {
+                Role role = getRole(errCount, builder, "Access Control Role", r);
+
+                if (role != null)
+                    deniedRoles.add(role);
             });
 
             if (!SDLinkUtils.isNullOrEmpty(SDLinkConfig.INSTANCE.accessControl.verifiedRole)) {
@@ -86,5 +95,9 @@ public class RoleManager {
 
     public static Role getVerifiedRole() {
         return verifiedRole;
+    }
+
+    public static Set<Role> getDeniedRoles() {
+        return deniedRoles;
     }
 }

@@ -160,7 +160,9 @@ public class DiscordEventHandler extends ListenerAdapter {
 
                 if (acc != null) {
                     sdlinkDatabase.remove(a, SDLinkAccount.class);
-                    SDLinkPlatform.minecraftHelper.banPlayer(acc);
+                    if (SDLinkConfig.INSTANCE.accessControl.banPlayerOnDiscordBan) {
+                        SDLinkPlatform.minecraftHelper.banPlayer(acc);
+                    }
                     sdlinkDatabase.reloadCollection("verifiedaccounts");
                 }
             });
