@@ -306,10 +306,7 @@ public class MinecraftAccount {
         }
 
 
-        if (!SDLinkConfig.INSTANCE.accessControl.requiredRoles.isEmpty()) {
-            if (RoleManager.getVerificationRoles().isEmpty())
-                return Result.error("rolesNotLoaded");
-
+        if (!SDLinkConfig.INSTANCE.accessControl.requiredRoles.isEmpty() || ! SDLinkConfig.INSTANCE.accessControl.deniedRoles.isEmpty()) {
             Profiler profiler = Profiler.getProfiler("checkRequiredRoles");
             profiler.start("Checking Required Roles");
             AtomicBoolean anyFound = new AtomicBoolean(false);
@@ -330,10 +327,10 @@ public class MinecraftAccount {
             }));
             profiler.stop();
 
-            if (deniedFound.get())
+            if (deniedFound.get() && !RoleManager.getDeniedRoles().isEmpty())
                 return Result.error("accessDeniedByRole");
 
-            if (!anyFound.get())
+            if (!anyFound.get() && !RoleManager.getVerificationRoles().isEmpty())
                 return Result.error("rolesNotFound");
 
             if (member.isEmpty())
