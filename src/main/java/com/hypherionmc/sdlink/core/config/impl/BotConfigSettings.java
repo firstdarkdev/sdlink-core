@@ -37,11 +37,11 @@ public class BotConfigSettings {
     public static class BotStatus {
         @Path("status")
         @SpecComment("Do not add Playing. A status to display on the bot. You can use %players% and %maxplayers% to show the number of players on the server")
-        public String botStatus = "Minecraft";
+        public String botStatus = "Enjoying Minecraft with %players%/%maxplayers% players";
 
         @Path("botStatusType")
-        @SpecComment("The type of the status displayed on the bot. Valid entries are: PLAYING, STREAMING, WATCHING, LISTENING")
-        public Activity.ActivityType botStatusType = Activity.ActivityType.PLAYING;
+        @SpecComment("The type of the status displayed on the bot. Valid entries are: PLAYING, STREAMING, WATCHING, LISTENING, CUSTOM_STATUS")
+        public Activity.ActivityType botStatusType = Activity.ActivityType.CUSTOM_STATUS;
 
         @Path("botStatusStreamingURL")
         @SpecComment("The URL that will be used when the \"botStatusType\" is set to \"STREAMING\", required to display as \"streaming\".")
