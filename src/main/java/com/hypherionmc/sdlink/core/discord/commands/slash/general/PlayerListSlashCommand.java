@@ -35,49 +35,54 @@ public class PlayerListSlashCommand extends SDLinkSlashCommand {
 
     @Override
     protected void execute(SlashCommandEvent event) {
-        List<MinecraftAccount> players = SDLinkPlatform.minecraftHelper.getOnlinePlayers();
+        try {
+            List<MinecraftAccount> players = SDLinkPlatform.minecraftHelper.getOnlinePlayers();
 
-        EmbedBuilder builder = new EmbedBuilder();
-        List<MessageEmbed> pages = new ArrayList<>();
-        AtomicInteger count = new AtomicInteger();
+            EmbedBuilder builder = new EmbedBuilder();
+            List<MessageEmbed> pages = new ArrayList<>();
+            AtomicInteger count = new AtomicInteger();
 
-        if (players.isEmpty()) {
-            builder.setTitle("Online Players");
-            builder.setColor(Color.RED);
-            builder.setDescription("There are currently no players online");
-            event.replyEmbeds(builder.build()).setEphemeral(true).queue();
-            return;
-        }
+            if (players.isEmpty()) {
+                builder.setTitle("Online Players");
+                builder.setColor(Color.RED);
+                builder.setDescription("There are currently no players online");
+                event.replyEmbeds(builder.build()).setEphemeral(true).queue();
+                return;
+            }
 
-        EmbedPaginator.Builder paginator = MessageUtil.defaultPaginator(event);
+            EmbedPaginator.Builder paginator = MessageUtil.defaultPaginator(event);
 
-        /**
-         * Use Pagination to avoid message limits
-         */
-        MessageUtil.listBatches(players, 10).forEach(p -> {
-            StringBuilder sb = new StringBuilder();
-            count.getAndIncrement();
-            builder.clear();
-            builder.setTitle("Online Players - Page " + count.get() + "/" + (int)Math.ceil(((float)players.size() / 10)));
-            builder.setColor(Color.GREEN);
+            /**
+             * Use Pagination to avoid message limits
+             */
+            MessageUtil.listBatches(players, 10).forEach(p -> {
+                StringBuilder sb = new StringBuilder();
+                count.getAndIncrement();
+                builder.clear();
+                builder.setTitle("Online Players - Page " + count.get() + "/" + (int)Math.ceil(((float)players.size() / 10)));
+                builder.setColor(Color.GREEN);
 
-            p.forEach(account -> {
-                sb.append("`").append(account.getUsername()).append("`");
+                p.forEach(account -> {
+                    sb.append("`").append(account.getUsername()).append("`");
 
-                if (SDLinkConfig.INSTANCE.accessControl.enabled && account.getDiscordUser() != null) {
-                    sb.append(" - ").append(account.getDiscordUser().getAsMention());
-                }
-                sb.append("\r\n");
+                    if (SDLinkConfig.INSTANCE.accessControl.enabled && account.getDiscordUser() != null) {
+                        sb.append(" - ").append(account.getDiscordUser().getAsMention());
+                    }
+                    sb.append("\r\n");
+                });
+
+                builder.setDescription(sb.toString());
+                pages.add(builder.build());
             });
 
-            builder.setDescription(sb.toString());
-            pages.add(builder.build());
-        });
+            paginator.setItems(pages);
+            EmbedPaginator embedPaginator = paginator.build();
 
-        paginator.setItems(pages);
-        EmbedPaginator embedPaginator = paginator.build();
-
-        event.replyEmbeds(pages.get(0)).setEphemeral(false).queue(success ->
-                success.retrieveOriginal().queue(msg -> embedPaginator.paginate(msg, 1)));
+            event.replyEmbeds(pages.get(0)).setEphemeral(false).queue(success ->
+                    success.retrieveOriginal().queue(msg -> embedPaginator.paginate(msg, 1)));
+        } catch (Exception e) {
+            if (SDLinkConfig.INSTANCE.generalConfig.debugging)
+                e.printStackTrace();
+        }
     }
 }
