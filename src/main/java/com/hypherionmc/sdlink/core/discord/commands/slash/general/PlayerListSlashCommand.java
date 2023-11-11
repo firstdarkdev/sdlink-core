@@ -10,7 +10,7 @@ import com.hypherionmc.sdlink.core.discord.commands.slash.SDLinkSlashCommand;
 import com.hypherionmc.sdlink.core.services.SDLinkPlatform;
 import com.hypherionmc.sdlink.core.util.MessageUtil;
 import com.jagrosh.jdautilities.command.SlashCommandEvent;
-import com.jagrosh.jdautilities.menu.EmbedPaginator;
+import com.jagrosh.jdautilities.menu.ButtonEmbedPaginator;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
@@ -50,7 +50,7 @@ public class PlayerListSlashCommand extends SDLinkSlashCommand {
                 return;
             }
 
-            EmbedPaginator.Builder paginator = MessageUtil.defaultPaginator(event);
+            ButtonEmbedPaginator.Builder paginator = MessageUtil.defaultPaginator();
 
             /**
              * Use Pagination to avoid message limits
@@ -76,7 +76,7 @@ public class PlayerListSlashCommand extends SDLinkSlashCommand {
             });
 
             paginator.setItems(pages);
-            EmbedPaginator embedPaginator = paginator.build();
+            ButtonEmbedPaginator embedPaginator = paginator.build();
 
             event.replyEmbeds(pages.get(0)).setEphemeral(false).queue(success ->
                     success.retrieveOriginal().queue(msg -> embedPaginator.paginate(msg, 1)));

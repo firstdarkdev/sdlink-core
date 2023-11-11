@@ -9,7 +9,7 @@ import com.hypherionmc.sdlink.core.database.SDLinkAccount;
 import com.hypherionmc.sdlink.core.discord.commands.slash.SDLinkSlashCommand;
 import com.hypherionmc.sdlink.core.util.MessageUtil;
 import com.jagrosh.jdautilities.command.SlashCommandEvent;
-import com.jagrosh.jdautilities.menu.EmbedPaginator;
+import com.jagrosh.jdautilities.menu.ButtonEmbedPaginator;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -37,7 +37,7 @@ public class ViewVerifiedAccounts extends SDLinkSlashCommand {
     @Override
     protected void execute(SlashCommandEvent event) {
         try {
-            EmbedPaginator.Builder paginator = MessageUtil.defaultPaginator(event);
+            ButtonEmbedPaginator.Builder paginator = MessageUtil.defaultPaginator();
 
             sdlinkDatabase.reloadCollection("verifiedaccounts");
             List<SDLinkAccount> accounts = sdlinkDatabase.findAll(SDLinkAccount.class);
@@ -72,7 +72,7 @@ public class ViewVerifiedAccounts extends SDLinkSlashCommand {
             });
 
             paginator.setItems(pages);
-            EmbedPaginator embedPaginator = paginator.build();
+            ButtonEmbedPaginator embedPaginator = paginator.build();
 
             event.replyEmbeds(pages.get(0)).setEphemeral(false).queue(success -> success.retrieveOriginal().queue(msg -> embedPaginator.paginate(msg, 1)));
         } catch (Exception e) {

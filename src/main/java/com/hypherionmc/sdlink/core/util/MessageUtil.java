@@ -7,14 +7,11 @@ package com.hypherionmc.sdlink.core.util;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.hypherionmc.sdlink.core.discord.BotController;
-import com.jagrosh.jdautilities.command.SlashCommandEvent;
-import com.jagrosh.jdautilities.menu.EmbedPaginator;
-import net.dv8tion.jda.api.exceptions.PermissionException;
+import com.jagrosh.jdautilities.menu.ButtonEmbedPaginator;
 
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -27,23 +24,13 @@ public class MessageUtil {
 
     /**
      * Create an Embed Paginator for use with Slash Commands
-     * @param event The event of the executed command
      */
-    public static EmbedPaginator.Builder defaultPaginator(SlashCommandEvent event) {
-        return new EmbedPaginator.Builder()
+    public static ButtonEmbedPaginator.Builder defaultPaginator() {
+        return new ButtonEmbedPaginator.Builder()
                 .setTimeout(1, TimeUnit.MINUTES)
                 .setEventWaiter(BotController.INSTANCE.getEventWaiter())
-                .waitOnSinglePage(true)
-                .setFinalAction(m -> {
-                    try {
-                        m.clearReactions().queue();
-                        m.delete().queue();
-                    } catch(PermissionException ex) {
-                        ex.printStackTrace();
-                        event.reply(ex.getMessage()).setEphemeral(true).queue();
-                    }
-                })
-                .setText((BiFunction<Integer, Integer, String>) null);
+                .waitOnSinglePage(false)
+                .setFinalAction(m -> m.editMessageComponents().queue());
     }
 
     /**
