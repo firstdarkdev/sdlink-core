@@ -32,15 +32,15 @@ public class ChannelWebhookConfig {
     public static class Channels {
         @Path("chatChannelID")
         @SpecComment("REQUIRED! The ID of the channel to post in and relay messages from. This is still needed, even in webhook mode")
-        public long chatChannelID = 0;
+        public String chatChannelID = "0";
 
         @Path("eventsChannelID")
         @SpecComment("If this ID is set, event messages will be posted in this channel instead of the chat channel")
-        public long eventsChannelID = 0;
+        public String eventsChannelID = "0";
 
         @Path("consoleChannelID")
         @SpecComment("If this ID is set, console messages sent after the bot started will be relayed here")
-        public long consoleChannelID = 0;
+        public String consoleChannelID = "0";
     }
 
     public static class Webhooks {

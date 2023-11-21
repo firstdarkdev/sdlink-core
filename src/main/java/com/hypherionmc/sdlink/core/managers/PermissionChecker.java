@@ -142,8 +142,8 @@ public class PermissionChecker {
         });
     }
 
-    private static void checkChannelPerms(Long channelID, String channelName, AtomicInteger errCount, StringBuilder builder, Member bot, boolean channelRequired, boolean isChat) {
-        if (channelRequired && channelID == 0) {
+    private static void checkChannelPerms(String channelID, String channelName, AtomicInteger errCount, StringBuilder builder, Member bot, boolean channelRequired, boolean isChat) {
+        if (channelRequired && channelID.equalsIgnoreCase("0")) {
             errCount.incrementAndGet();
             builder.append(errCount.get())
                     .append(") ")
