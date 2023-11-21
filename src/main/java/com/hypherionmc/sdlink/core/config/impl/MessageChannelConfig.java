@@ -18,13 +18,21 @@ public class MessageChannelConfig {
     @SpecComment("Control where CHAT messages are delivered")
     public DestinationObject chat = DestinationObject.of(MessageDestination.CHAT, false, "default");
 
-    @Path("startStop")
-    @SpecComment("Control where START/STOP messages are delivered")
-    public DestinationObject startStop = DestinationObject.of(MessageDestination.EVENT, false, "default");
+    @Path("start")
+    @SpecComment("Control where START messages are delivered")
+    public DestinationObject start = DestinationObject.of(MessageDestination.EVENT, false, "default");
 
-    @Path("joinLeave")
-    @SpecComment("Control where JOIN/LEAVE messages are delivered")
-    public DestinationObject joinLeave = DestinationObject.of(MessageDestination.EVENT, false, "default");
+    @Path("stop")
+    @SpecComment("Control where STOP messages are delivered")
+    public DestinationObject stop = DestinationObject.of(MessageDestination.EVENT, false, "default");
+
+    @Path("join")
+    @SpecComment("Control where JOIN messages are delivered")
+    public DestinationObject join = DestinationObject.of(MessageDestination.EVENT, false, "default");
+
+    @Path("leave")
+    @SpecComment("Control where LEAVE messages are delivered")
+    public DestinationObject leave = DestinationObject.of(MessageDestination.EVENT, false, "default");
 
     @Path("advancements")
     @SpecComment("Control where ADVANCEMENT messages are delivered")

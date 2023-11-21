@@ -191,16 +191,32 @@ public final class DiscordMessage {
                         chat
                 );
             }
-            case START_STOP -> {
-                MessageChannelConfig.DestinationObject startStop = SDLinkConfig.INSTANCE.messageDestinations.startStop;
+            case START -> {
+                MessageChannelConfig.DestinationObject startStop = SDLinkConfig.INSTANCE.messageDestinations.start;
                 return Triple.of(
                         ChannelManager.getDestinationChannel(startStop.channel),
                         WebhookManager.getWebhookClient(startStop.channel),
                         startStop
                 );
             }
-            case JOIN_LEAVE -> {
-                MessageChannelConfig.DestinationObject joinLeave = SDLinkConfig.INSTANCE.messageDestinations.joinLeave;
+            case STOP -> {
+                MessageChannelConfig.DestinationObject startStop = SDLinkConfig.INSTANCE.messageDestinations.stop;
+                return Triple.of(
+                        ChannelManager.getDestinationChannel(startStop.channel),
+                        WebhookManager.getWebhookClient(startStop.channel),
+                        startStop
+                );
+            }
+            case JOIN -> {
+                MessageChannelConfig.DestinationObject joinLeave = SDLinkConfig.INSTANCE.messageDestinations.join;
+                return Triple.of(
+                        ChannelManager.getDestinationChannel(joinLeave.channel),
+                        WebhookManager.getWebhookClient(joinLeave.channel),
+                        joinLeave
+                );
+            }
+            case LEAVE -> {
+                MessageChannelConfig.DestinationObject joinLeave = SDLinkConfig.INSTANCE.messageDestinations.leave;
                 return Triple.of(
                         ChannelManager.getDestinationChannel(joinLeave.channel),
                         WebhookManager.getWebhookClient(joinLeave.channel),

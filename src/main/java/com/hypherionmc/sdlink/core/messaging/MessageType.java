@@ -10,8 +10,10 @@ package com.hypherionmc.sdlink.core.messaging;
  */
 public enum MessageType {
     CHAT,
-    START_STOP,
-    JOIN_LEAVE,
+    START,
+    STOP,
+    JOIN,
+    LEAVE,
     ADVANCEMENT,
     DEATH,
     COMMAND,
