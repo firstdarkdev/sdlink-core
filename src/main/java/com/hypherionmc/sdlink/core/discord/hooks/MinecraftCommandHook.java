@@ -39,7 +39,7 @@ public class MinecraftCommandHook {
         List<SDLinkAccount> accounts = sdlinkDatabase.findAll(SDLinkAccount.class);
         Optional<SDLinkAccount> account = accounts.stream().filter(u -> u.getDiscordID().equals(event.getMember().getId())).findFirst();
 
-        Integer permLevel = SDLinkConfig.INSTANCE.linkedCommands.permissions.stream().filter(r -> roles.contains(Long.parseLong(r.role))).map(r -> r.permissionLevel).max(Integer::compareTo).orElse(-1);
+        int permLevel = SDLinkConfig.INSTANCE.linkedCommands.permissions.stream().filter(r -> roles.contains(Long.parseLong(r.role))).map(r -> r.permissionLevel).max(Integer::compareTo).orElse(-1);
         List<String> commands = SDLinkConfig.INSTANCE.linkedCommands.permissions.stream().filter(c -> roles.contains(Long.parseLong(c.role))).flatMap(c -> c.commands.stream()).filter(s -> !s.isEmpty()).toList();
 
         String raw = event.getMessage().getContentRaw().substring(SDLinkConfig.INSTANCE.linkedCommands.prefix.length());
@@ -51,12 +51,17 @@ public class MinecraftCommandHook {
             return;
         }
 
+        if (commands.isEmpty()) {
+            Result res = SDLinkPlatform.minecraftHelper.executeMinecraftCommand(raw, permLevel, event, account.orElse(null));
+            event.getMessage().reply(res.getMessage()).mentionRepliedUser(false).queue(s -> s.delete().queueAfter(5, TimeUnit.SECONDS));
+            return;
+        }
+
         if (commands.stream().anyMatch(raw::startsWith)) {
             Result res = SDLinkPlatform.minecraftHelper.executeMinecraftCommand(raw, Integer.MAX_VALUE, event, account.orElse(null));
             event.getMessage().reply(res.getMessage()).mentionRepliedUser(false).queue(s -> s.delete().queueAfter(5, TimeUnit.SECONDS));
         } else {
-            Result res = SDLinkPlatform.minecraftHelper.executeMinecraftCommand(raw, permLevel, event, account.orElse(null));
-            event.getMessage().reply(res.getMessage()).mentionRepliedUser(false).queue(s -> s.delete().queueAfter(5, TimeUnit.SECONDS));
+            event.getMessage().reply("Sorry, that command is not allowed").mentionRepliedUser(false).queue(s -> s.delete().queueAfter(5, TimeUnit.SECONDS));
         }
     }
 }
