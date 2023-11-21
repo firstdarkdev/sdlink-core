@@ -7,6 +7,7 @@ package com.hypherionmc.sdlink.core.discord.commands;
 import com.hypherionmc.sdlink.core.discord.commands.slash.general.HelpSlashCommand;
 import com.hypherionmc.sdlink.core.discord.commands.slash.general.PlayerListSlashCommand;
 import com.hypherionmc.sdlink.core.discord.commands.slash.general.ServerStatusSlashCommand;
+import com.hypherionmc.sdlink.core.discord.commands.slash.setup.SetChannelCommand;
 import com.hypherionmc.sdlink.core.discord.commands.slash.verification.*;
 import com.jagrosh.jdautilities.command.CommandClient;
 import com.jagrosh.jdautilities.command.SlashCommand;
@@ -29,6 +30,7 @@ public class CommandManager {
     }
 
     private void addCommands() {
+        // Access Control Commands
         commands.add(new VerifyAccountCommand());
         commands.add(new UnverifyAccountSlashCommand());
         commands.add(new StaffUnverifyCommand());
@@ -43,6 +45,9 @@ public class CommandManager {
 
         // Enable the Help command
         commands.add(new HelpSlashCommand());
+
+        // SetChannel config Command
+        commands.add(new SetChannelCommand());
     }
 
     /**
