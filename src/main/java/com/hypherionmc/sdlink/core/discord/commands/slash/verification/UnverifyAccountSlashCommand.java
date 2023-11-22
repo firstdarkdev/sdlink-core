@@ -34,16 +34,20 @@ public class UnverifyAccountSlashCommand extends SDLinkSlashCommand {
             return;
         }
 
+        boolean didUnverify = false;
+
         for (SDLinkAccount account : accounts) {
             if (account.getDiscordID() != null && account.getDiscordID().equalsIgnoreCase(event.getMember().getId())) {
                 MinecraftAccount minecraftAccount = MinecraftAccount.of(account.getUsername());
                 Result result = minecraftAccount.unverifyAccount(event.getMember(), event.getGuild());
                 event.getHook().sendMessage(result.getMessage()).setEphemeral(true).queue();
+                didUnverify = true;
                 break;
             }
         }
 
-        event.getHook().sendMessage("Sorry, we could not un-verify your Minecraft account. Please try again").setEphemeral(true).queue();
+        if (!didUnverify)
+            event.getHook().sendMessage("Sorry, we could not un-verify your Minecraft account. Please try again").setEphemeral(true).queue();
     }
 
 }

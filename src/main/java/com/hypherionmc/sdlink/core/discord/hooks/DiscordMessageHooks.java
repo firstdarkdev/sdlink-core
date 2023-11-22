@@ -47,12 +47,8 @@ public class DiscordMessageHooks {
             if (message.isEmpty())
                 return;
 
-            if (event.getMessage().getReferencedMessage() != null && event.getMessage().getMember() != null) {
-                if (event.getMessage().isWebhookMessage()) {
-                    message = "Replied to " + event.getMessage().getReferencedMessage().getAuthor().getEffectiveName() + ": " + message;
-                } else {
-                    message = "Replied to " + event.getMessage().getReferencedMessage().getMember().getEffectiveName() + ": " + message;
-                }
+            if (event.getMessage().getReferencedMessage() != null && event.getMessage().getMember() != null && !event.getMessage().isWebhookMessage()) {
+                message = "Replied to " + event.getMessage().getReferencedMessage().getMember().getEffectiveName() + ": " + message;
             }
 
             SDLinkPlatform.minecraftHelper.discordMessageReceived(event.getMember(), message);

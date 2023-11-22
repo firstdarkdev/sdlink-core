@@ -47,6 +47,8 @@ public class VerifyAccountCommand extends SDLinkSlashCommand {
             return;
         }
 
+        boolean didVerify = false;
+
         for (SDLinkAccount account : accounts) {
             if (account.getVerifyCode() == null)
                 continue;
@@ -55,11 +57,13 @@ public class VerifyAccountCommand extends SDLinkSlashCommand {
                 MinecraftAccount minecraftAccount = MinecraftAccount.of(account.getUsername());
                 Result result = minecraftAccount.verifyAccount(event.getMember(), event.getGuild());
                 event.getHook().sendMessage(result.getMessage()).setEphemeral(true).queue();
-                return;
+                didVerify = true;
+                break;
             }
         }
 
-        event.getHook().sendMessage("Sorry, we could not verify your Minecraft account. Please try again").setEphemeral(true).queue();
+        if (!didVerify)
+            event.getHook().sendMessage("Sorry, we could not verify your Minecraft account. Please try again").setEphemeral(true).queue();
     }
 
 }
