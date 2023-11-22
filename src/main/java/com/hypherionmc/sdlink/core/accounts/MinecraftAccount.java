@@ -393,7 +393,7 @@ public class MinecraftAccount {
             Response response = client.newCall(request).execute();
 
             if (response.isSuccessful() && response.body() != null) {
-                JSONObject obj = new JSONObject(new JSONTokener(response.body().toString()));
+                JSONObject obj = new JSONObject(new JSONTokener(response.body().string()));
                 String uuid = "";
                 String returnname = name;
 
