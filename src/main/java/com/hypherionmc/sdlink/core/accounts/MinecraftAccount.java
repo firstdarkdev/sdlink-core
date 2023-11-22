@@ -17,6 +17,10 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.UserSnowflake;
+import okhttp3.CacheControl;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
@@ -30,6 +34,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -374,21 +379,34 @@ public class MinecraftAccount {
 
     //<editor-fold desc="Helper Methods">
     private static Pair<String, UUID> fetchPlayer(String name) {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .callTimeout(20, TimeUnit.SECONDS)
+                .readTimeout(20, TimeUnit.SECONDS)
+                .connectTimeout(20, TimeUnit.SECONDS)
+                .build();
+
         try {
-            BufferedReader read = new BufferedReader(new InputStreamReader(new URL("https://api.mojang.com/users/profiles/minecraft/" + name).openStream()));
-            JSONObject obj = new JSONObject(new JSONTokener(read));
-            String uuid = "";
-            String returnname = name;
+            Request request = new Request.Builder()
+                    .url("https://api.mojang.com/users/profiles/minecraft/" + name)
+                    .cacheControl(new CacheControl.Builder().noCache().build())
+                    .build();
+            Response response = client.newCall(request).execute();
 
-            if (!obj.getString("name").isEmpty()) {
-                returnname = obj.getString("name");
-            }
-            if (!obj.getString("id").isEmpty()) {
-                uuid = obj.getString("id");
-            }
+            if (response.isSuccessful() && response.body() != null) {
+                JSONObject obj = new JSONObject(new JSONTokener(response.body().toString()));
+                String uuid = "";
+                String returnname = name;
 
-            read.close();
-            return Pair.of(returnname, uuid.isEmpty() ? null : mojangIdToUUID(uuid));
+                if (obj.has("name") && !obj.getString("name").isEmpty()) {
+                    returnname = obj.getString("name");
+                }
+                if (obj.has("id") && !obj.getString("id").isEmpty()) {
+                    uuid = obj.getString("id");
+                }
+
+                response.close();
+                return Pair.of(returnname, uuid.isEmpty() ? null : mojangIdToUUID(uuid));
+            }
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
