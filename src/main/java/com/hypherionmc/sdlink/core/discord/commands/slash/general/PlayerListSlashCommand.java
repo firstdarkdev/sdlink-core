@@ -35,6 +35,8 @@ public class PlayerListSlashCommand extends SDLinkSlashCommand {
 
     @Override
     protected void execute(SlashCommandEvent event) {
+        event.deferReply(true).queue();
+
         try {
             List<MinecraftAccount> players = SDLinkPlatform.minecraftHelper.getOnlinePlayers();
 
@@ -46,7 +48,7 @@ public class PlayerListSlashCommand extends SDLinkSlashCommand {
                 builder.setTitle("Online Players");
                 builder.setColor(Color.RED);
                 builder.setDescription("There are currently no players online");
-                event.replyEmbeds(builder.build()).setEphemeral(true).queue();
+                event.getHook().sendMessageEmbeds(builder.build()).setEphemeral(true).queue();
                 return;
             }
 
@@ -78,9 +80,9 @@ public class PlayerListSlashCommand extends SDLinkSlashCommand {
             paginator.setItems(pages);
             ButtonEmbedPaginator embedPaginator = paginator.build();
 
-            event.replyEmbeds(pages.get(0)).setEphemeral(false).queue(success ->
-                    success.retrieveOriginal().queue(msg -> embedPaginator.paginate(msg, 1)));
+            event.getHook().sendMessageEmbeds(pages.get(0)).setEphemeral(false).queue(success -> embedPaginator.paginate(success, 1));
         } catch (Exception e) {
+            event.getHook().sendMessage("Failed to execute command. Please see your server log").setEphemeral(true).queue();
             if (SDLinkConfig.INSTANCE.generalConfig.debugging)
                 e.printStackTrace();
         }

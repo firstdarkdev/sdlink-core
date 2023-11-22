@@ -29,10 +29,13 @@ public class VerifyAccountCommand extends SDLinkSlashCommand {
 
     @Override
     protected void execute(SlashCommandEvent event) {
+        event.deferReply(true).queue();
+
+
         int mcCode = event.getOption("code") != null ? event.getOption("code").getAsInt() : 0;
 
         if (mcCode == 0) {
-            event.reply("You need to provide a verification code").setEphemeral(true).queue();
+            event.getHook().sendMessage("You need to provide a verification code").setEphemeral(true).queue();
             return;
         }
 
@@ -40,7 +43,7 @@ public class VerifyAccountCommand extends SDLinkSlashCommand {
         List<SDLinkAccount> accounts = sdlinkDatabase.findAll(SDLinkAccount.class);
 
         if (accounts.isEmpty()) {
-            event.reply("Sorry, but this server does not contain any stored players in its database").setEphemeral(true).queue();
+            event.getHook().sendMessage("Sorry, but this server does not contain any stored players in its database").setEphemeral(true).queue();
             return;
         }
 
@@ -51,12 +54,12 @@ public class VerifyAccountCommand extends SDLinkSlashCommand {
             if (account.getVerifyCode().equalsIgnoreCase(String.valueOf(mcCode))) {
                 MinecraftAccount minecraftAccount = MinecraftAccount.of(account.getUsername());
                 Result result = minecraftAccount.verifyAccount(event.getMember(), event.getGuild());
-                event.reply(result.getMessage()).setEphemeral(true).queue();
+                event.getHook().sendMessage(result.getMessage()).setEphemeral(true).queue();
                 return;
             }
         }
 
-        event.reply("Sorry, we could not verify your Minecraft account. Please try again").setEphemeral(true).queue();
+        event.getHook().sendMessage("Sorry, we could not verify your Minecraft account. Please try again").setEphemeral(true).queue();
     }
 
 }

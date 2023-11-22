@@ -32,8 +32,9 @@ public class ServerStatusSlashCommand extends SDLinkSlashCommand {
 
     @Override
     protected void execute(SlashCommandEvent event) {
+        event.deferReply(true).queue();
         Button refreshBtn  = Button.danger("sdrefreshbtn", "Refresh");
-        event.replyEmbeds(runStatusCommand()).addActionRow(refreshBtn).queue();
+        event.getHook().sendMessageEmbeds(runStatusCommand()).addActionRow(refreshBtn).queue();
     }
 
     public static MessageEmbed runStatusCommand() {

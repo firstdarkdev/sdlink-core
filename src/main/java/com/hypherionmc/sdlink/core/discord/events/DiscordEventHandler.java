@@ -87,8 +87,7 @@ public class DiscordEventHandler extends ListenerAdapter {
     @Override
     public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
         if (event.getComponentId().equals("sdrefreshbtn")) {
-            event.getMessage().editMessageEmbeds(ServerStatusSlashCommand.runStatusCommand()).queue();
-            event.reply("Success!").setEphemeral(true).queue();
+            event.deferEdit().queue(s -> s.editOriginalEmbeds(ServerStatusSlashCommand.runStatusCommand()).queue());
         }
     }
 

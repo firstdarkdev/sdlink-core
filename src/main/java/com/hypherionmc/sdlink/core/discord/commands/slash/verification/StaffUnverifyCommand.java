@@ -34,11 +34,13 @@ public class StaffUnverifyCommand extends SDLinkSlashCommand {
 
     @Override
     protected void execute(SlashCommandEvent event) {
+        event.deferReply(true).queue();
+
         sdlinkDatabase.reloadCollection("verifiedaccounts");
         List<SDLinkAccount> accounts = sdlinkDatabase.findAll(SDLinkAccount.class);
 
         if (accounts.isEmpty()) {
-            event.reply("Sorry, but this server does not contain any stored players in its database").setEphemeral(true).queue();
+            event.getHook().sendMessage("Sorry, but this server does not contain any stored players in its database").setEphemeral(true).queue();
             return;
         }
 
@@ -48,13 +50,13 @@ public class StaffUnverifyCommand extends SDLinkSlashCommand {
         Member member = event.getGuild().getMemberById(user.getId());
 
         if (member == null) {
-            event.reply(user.getEffectiveName() + " is not a member of this discord server").setEphemeral(true).queue();
+            event.getHook().sendMessage(user.getEffectiveName() + " is not a member of this discord server").setEphemeral(true).queue();
             return;
         }
 
         MinecraftAccount minecraftAccount = MinecraftAccount.of(mcname);
         Result result = minecraftAccount.unverifyAccount(member, event.getGuild());
-        event.reply(result.getMessage()).setEphemeral(true).queue();
+        event.getHook().sendMessage(result.getMessage()).setEphemeral(true).queue();
     }
 
 }

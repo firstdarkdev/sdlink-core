@@ -30,20 +30,22 @@ public class StaffVerifyAccountCommand extends SDLinkSlashCommand {
 
     @Override
     protected void execute(SlashCommandEvent event) {
+        event.deferReply(true).queue();
+
         String mcname = event.getOption("mcname").getAsString();
         User user = event.getOption("discorduser").getAsUser();
 
         Member member = event.getGuild().getMemberById(user.getId());
 
         if (member == null) {
-            event.reply(user.getEffectiveName() + " is not a member of this discord server").setEphemeral(true).queue();
+            event.getHook().sendMessage(user.getEffectiveName() + " is not a member of this discord server").setEphemeral(true).queue();
             return;
         }
 
         MinecraftAccount minecraftAccount = MinecraftAccount.of(mcname);
 
         Result result = minecraftAccount.verifyAccount(member, event.getGuild());
-        event.reply(result.getMessage()).setEphemeral(true).queue();
+        event.getHook().sendMessage(result.getMessage()).setEphemeral(true).queue();
     }
 
 }

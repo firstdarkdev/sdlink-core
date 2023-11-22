@@ -24,11 +24,13 @@ public class UnverifyAccountSlashCommand extends SDLinkSlashCommand {
 
     @Override
     protected void execute(SlashCommandEvent event) {
+        event.deferReply(true).queue();
+
         sdlinkDatabase.reloadCollection("verifiedaccounts");
         List<SDLinkAccount> accounts = sdlinkDatabase.findAll(SDLinkAccount.class);
 
         if (accounts.isEmpty()) {
-            event.reply("Sorry, but this server does not contain any stored players in its database").setEphemeral(true).queue();
+            event.getHook().sendMessage("Sorry, but this server does not contain any stored players in its database").setEphemeral(true).queue();
             return;
         }
 
@@ -36,12 +38,12 @@ public class UnverifyAccountSlashCommand extends SDLinkSlashCommand {
             if (account.getDiscordID() != null && account.getDiscordID().equalsIgnoreCase(event.getMember().getId())) {
                 MinecraftAccount minecraftAccount = MinecraftAccount.of(account.getUsername());
                 Result result = minecraftAccount.unverifyAccount(event.getMember(), event.getGuild());
-                event.reply(result.getMessage()).setEphemeral(true).queue();
+                event.getHook().sendMessage(result.getMessage()).setEphemeral(true).queue();
                 break;
             }
         }
 
-        event.reply("Sorry, we could not un-verify your Minecraft account. Please try again").setEphemeral(true).queue();
+        event.getHook().sendMessage("Sorry, we could not un-verify your Minecraft account. Please try again").setEphemeral(true).queue();
     }
 
 }

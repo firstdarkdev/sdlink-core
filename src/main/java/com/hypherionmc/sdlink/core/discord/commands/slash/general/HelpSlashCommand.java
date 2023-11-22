@@ -27,6 +27,7 @@ public class HelpSlashCommand extends SDLinkSlashCommand {
 
     @Override
     protected void execute(SlashCommandEvent event) {
+        event.deferReply(true).queue();
         Set<SlashCommand> commands = CommandManager.INSTANCE.getCommands();
 
         EmbedBuilder builder = new EmbedBuilder();
@@ -34,6 +35,6 @@ public class HelpSlashCommand extends SDLinkSlashCommand {
         builder.setColor(Color.BLUE);
 
         commands.forEach(cmd -> builder.addField(cmd.getName(), cmd.getHelp(), false));
-        event.replyEmbeds(builder.build()).setEphemeral(true).queue();
+        event.getHook().sendMessageEmbeds(builder.build()).setEphemeral(true).queue();
     }
 }

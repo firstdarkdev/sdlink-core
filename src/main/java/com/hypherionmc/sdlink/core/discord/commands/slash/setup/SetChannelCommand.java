@@ -41,12 +41,14 @@ public class SetChannelCommand extends SDLinkSlashCommand {
 
     @Override
     protected void execute(SlashCommandEvent event) {
+        event.deferReply(true).queue();
+
         StandardGuildMessageChannel channel = event.getOption("channel").getAsChannel().asStandardGuildMessageChannel();
         String type = event.getOption("type").getAsString();
         boolean webhook = event.getOption("webhook").getAsBoolean();
 
         if (!channel.canTalk()) {
-            event.reply("I do not have permission to send messages in " + channel.getAsMention()).setEphemeral(true).queue();
+            event.getHook().sendMessage("I do not have permission to send messages in " + channel.getAsMention()).setEphemeral(true).queue();
             return;
         }
 
@@ -58,7 +60,7 @@ public class SetChannelCommand extends SDLinkSlashCommand {
             result = setChannel(channel, type);
         }
 
-        event.reply(result.getMessage()).setEphemeral(true).queue();
+        event.getHook().sendMessage(result.getMessage()).setEphemeral(true).queue();
     }
 
     private Result setChannel(StandardGuildMessageChannel channel, String type) {

@@ -36,6 +36,7 @@ public class ViewVerifiedAccounts extends SDLinkSlashCommand {
 
     @Override
     protected void execute(SlashCommandEvent event) {
+        event.deferReply(true).queue();
         try {
             ButtonEmbedPaginator.Builder paginator = MessageUtil.defaultPaginator();
 
@@ -47,7 +48,7 @@ public class ViewVerifiedAccounts extends SDLinkSlashCommand {
             AtomicInteger count = new AtomicInteger();
 
             if (accounts.isEmpty()) {
-                event.reply("There are no verified accounts for this discord").setEphemeral(true).queue();
+                event.getHook().sendMessage("There are no verified accounts for this discord").setEphemeral(true).queue();
                 return;
             }
 
@@ -74,8 +75,9 @@ public class ViewVerifiedAccounts extends SDLinkSlashCommand {
             paginator.setItems(pages);
             ButtonEmbedPaginator embedPaginator = paginator.build();
 
-            event.replyEmbeds(pages.get(0)).setEphemeral(false).queue(success -> success.retrieveOriginal().queue(msg -> embedPaginator.paginate(msg, 1)));
+            event.getHook().sendMessageEmbeds(pages.get(0)).setEphemeral(false).queue(success -> embedPaginator.paginate(success, 1));
         } catch (Exception e) {
+            event.getHook().sendMessage("Failed to execute command. Please see your server log").setEphemeral(true).queue();
             if (SDLinkConfig.INSTANCE.generalConfig.debugging)
                 e.printStackTrace();
         }
