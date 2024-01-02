@@ -95,7 +95,7 @@ public class BotController {
      * Start the bot and handle all the startup work
      */
     public void initializeBot() {
-        if (SDLinkConfig.INSTANCE == null) {
+        if (SDLinkConfig.INSTANCE == null || !SDLinkConfig.hasConfigLoaded) {
             logger.error("Failed to load config. Check your log for errors");
             return;
         }

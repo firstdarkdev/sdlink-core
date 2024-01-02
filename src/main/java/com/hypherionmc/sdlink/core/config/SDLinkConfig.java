@@ -25,6 +25,7 @@ public class SDLinkConfig extends ModuleConfig {
     // WILL TRY TO WRITE THESE TO THE CONFIG
     public transient static SDLinkConfig INSTANCE;
     public transient static int configVer = 13;
+    public transient static boolean hasConfigLoaded = false;
 
     @Path("general")
     @SpecComment("General Mod Config")
@@ -104,6 +105,7 @@ public class SDLinkConfig extends ModuleConfig {
     @Override
     public void configReloaded() {
         INSTANCE = loadConfig(this);
+        hasConfigLoaded = true;
     }
 
     /**
