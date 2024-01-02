@@ -10,6 +10,7 @@ import com.hypherionmc.sdlink.core.discord.BotController;
 import com.hypherionmc.sdlink.core.managers.CacheManager;
 import com.hypherionmc.sdlink.core.managers.RoleManager;
 import com.hypherionmc.sdlink.core.messaging.Result;
+import com.hypherionmc.sdlink.core.services.SDLinkPlatform;
 import com.hypherionmc.sdlink.core.util.Profiler;
 import com.hypherionmc.sdlink.core.util.SDLinkUtils;
 import com.mojang.authlib.GameProfile;
@@ -75,6 +76,10 @@ public class MinecraftAccount {
      * @param username The username of the player
      */
     public static MinecraftAccount of(String username) {
+        if (!SDLinkPlatform.minecraftHelper.isOnlineMode()) {
+            return offline(username);
+        }
+
         Pair<String, UUID> player = fetchPlayer(username);
 
         if (player.getRight() == null) {
