@@ -37,7 +37,7 @@ public class MinecraftCommandHook {
 
         sdlinkDatabase.reloadCollection("verifiedaccounts");
         List<SDLinkAccount> accounts = sdlinkDatabase.findAll(SDLinkAccount.class);
-        Optional<SDLinkAccount> account = accounts.stream().filter(u -> u.getDiscordID().equals(event.getMember().getId())).findFirst();
+        Optional<SDLinkAccount> account = accounts.stream().filter(u -> u.getDiscordID() != null && u.getDiscordID().equals(event.getMember().getId())).findFirst();
 
         int permLevel = SDLinkConfig.INSTANCE.linkedCommands.permissions.stream().filter(r -> roles.contains(Long.parseLong(r.role))).map(r -> r.permissionLevel).max(Integer::compareTo).orElse(-1);
         List<String> commands = SDLinkConfig.INSTANCE.linkedCommands.permissions.stream().filter(c -> roles.contains(Long.parseLong(c.role))).flatMap(c -> c.commands.stream()).filter(s -> !s.isEmpty()).toList();
