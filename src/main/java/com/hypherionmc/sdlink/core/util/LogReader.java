@@ -35,9 +35,9 @@ import java.util.Date;
 public class LogReader extends AbstractAppender {
 
     public static String logs = "";
+    private static boolean isDevEnv = false;
     private long time;
     private Thread messageScheduler;
-    private static boolean isDevEnv = false;
 
     protected LogReader(String name, Filter filter) {
         super(name, filter, null, true, new Property[0]);

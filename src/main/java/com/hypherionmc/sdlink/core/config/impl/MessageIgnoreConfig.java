@@ -24,6 +24,17 @@ public class MessageIgnoreConfig {
     @SpecComment("Ignore messages sent from certain threads")
     public List<String> ignoredThread = new ArrayList<>();
 
+    public enum FilterMode {
+        STARTS_WITH,
+        MATCHES,
+        CONTAINS
+    }
+
+    public enum ActionMode {
+        REPLACE,
+        IGNORE
+    }
+
     public static class Ignore {
         @Path("search")
         @SpecComment("The text to search for in the message")
@@ -40,17 +51,6 @@ public class MessageIgnoreConfig {
         @Path("action")
         @SpecComment("How should `replace` be treated, when `search` is found using `searchMode`")
         public ActionMode action = ActionMode.REPLACE;
-    }
-
-    public enum FilterMode {
-        STARTS_WITH,
-        MATCHES,
-        CONTAINS
-    }
-
-    public enum ActionMode {
-        REPLACE,
-        IGNORE
     }
 
 }

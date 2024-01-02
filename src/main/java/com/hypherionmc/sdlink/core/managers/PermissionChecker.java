@@ -27,22 +27,22 @@ public class PermissionChecker {
 
     // Base Permissions required by the bot to operate
     private static final List<Permission> BOT_PERMS = new ArrayList<>() {{
-       add(Permission.NICKNAME_CHANGE);
-       add(Permission.MANAGE_WEBHOOKS);
-       add(Permission.MESSAGE_SEND);
-       add(Permission.MESSAGE_EMBED_LINKS);
-       add(Permission.MESSAGE_HISTORY);
-       add(Permission.MESSAGE_EXT_EMOJI);
-       add(Permission.MANAGE_ROLES);
-       add(Permission.MESSAGE_MANAGE);
+        add(Permission.NICKNAME_CHANGE);
+        add(Permission.MANAGE_WEBHOOKS);
+        add(Permission.MESSAGE_SEND);
+        add(Permission.MESSAGE_EMBED_LINKS);
+        add(Permission.MESSAGE_HISTORY);
+        add(Permission.MESSAGE_EXT_EMOJI);
+        add(Permission.MANAGE_ROLES);
+        add(Permission.MESSAGE_MANAGE);
     }};
 
     // Basic channel permissions required by all channels
     private static final List<Permission> BASE_CHANNEL_PERMS = new ArrayList<>() {{
-       add(Permission.VIEW_CHANNEL);
-       add(Permission.MESSAGE_SEND);
-       add(Permission.MESSAGE_EMBED_LINKS);
-       add(Permission.MANAGE_WEBHOOKS);
+        add(Permission.VIEW_CHANNEL);
+        add(Permission.MESSAGE_SEND);
+        add(Permission.MESSAGE_EMBED_LINKS);
+        add(Permission.MANAGE_WEBHOOKS);
     }};
 
     /**

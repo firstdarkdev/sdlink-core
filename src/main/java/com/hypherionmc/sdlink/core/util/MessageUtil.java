@@ -35,6 +35,7 @@ public class MessageUtil {
 
     /**
      * Split a large list of items into smaller sublists. This is to help with Discord limits on pagination
+     *
      * @param source The list of objects to split
      * @param length How many entries are allowed per sub-list
      */

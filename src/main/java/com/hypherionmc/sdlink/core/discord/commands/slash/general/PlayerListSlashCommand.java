@@ -61,7 +61,7 @@ public class PlayerListSlashCommand extends SDLinkSlashCommand {
                 StringBuilder sb = new StringBuilder();
                 count.getAndIncrement();
                 builder.clear();
-                builder.setTitle("Online Players - Page " + count.get() + "/" + (int)Math.ceil(((float)players.size() / 10)));
+                builder.setTitle("Online Players - Page " + count.get() + "/" + (int) Math.ceil(((float) players.size() / 10)));
                 builder.setColor(Color.GREEN);
 
                 p.forEach(account -> {

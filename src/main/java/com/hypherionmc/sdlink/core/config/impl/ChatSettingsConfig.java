@@ -91,7 +91,11 @@ public class ChatSettingsConfig {
 
     @Path("ignoredCommands")
     @SpecComment("Commands that should not be broadcast to discord")
-    public List<String> ignoredCommands = new ArrayList<String>() {{ add("particle"); add("login"); add("execute"); }};
+    public List<String> ignoredCommands = new ArrayList<String>() {{
+        add("particle");
+        add("login");
+        add("execute");
+    }};
 
     @Path("allowMentionsFromChat")
     @SpecComment("Allow mentioning discord roles, users and channels from Minecraft Chat")

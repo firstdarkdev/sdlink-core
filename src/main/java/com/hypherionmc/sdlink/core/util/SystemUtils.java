@@ -12,6 +12,7 @@ public class SystemUtils {
     /**
      * Convert Bytes into a human-readable format, like 1GB
      * From https://stackoverflow.com/a/3758880
+     *
      * @param bytes The Size in Bytes
      * @return The size formatted in KB, MB, GB, TB, PB etc
      */
@@ -34,6 +35,7 @@ public class SystemUtils {
 
     /**
      * Convert Seconds into a Timestamp
+     *
      * @param sec Input in seconds
      */
     public static String secondsToTimestamp(long sec) {
@@ -55,7 +57,8 @@ public class SystemUtils {
         try {
             Long.parseLong(input);
             return true;
-        } catch (NumberFormatException ignored){}
+        } catch (NumberFormatException ignored) {
+        }
         return false;
     }
 }

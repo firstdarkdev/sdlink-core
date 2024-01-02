@@ -19,9 +19,8 @@ import java.util.HashMap;
  */
 public class ChannelManager {
 
-    private static StandardGuildMessageChannel consoleChannel;
-
     private static final HashMap<MessageDestination, Pair<StandardGuildMessageChannel, Boolean>> channelMap = new HashMap<>();
+    private static StandardGuildMessageChannel consoleChannel;
 
     /**
      * Load configured channel, while always defaulting back to ChatChannel for channels that aren't configured

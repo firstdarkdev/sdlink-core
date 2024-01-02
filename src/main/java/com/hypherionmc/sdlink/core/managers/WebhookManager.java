@@ -19,8 +19,8 @@ import java.util.HashMap;
  */
 public class WebhookManager {
 
-    private static WebhookClient chatWebhookClient, eventWebhookClient, consoleWebhookClient;
     private static final HashMap<MessageDestination, WebhookClient> clientMap = new HashMap<>();
+    private static WebhookClient chatWebhookClient, eventWebhookClient, consoleWebhookClient;
 
     /**
      * Load configured webhook clients

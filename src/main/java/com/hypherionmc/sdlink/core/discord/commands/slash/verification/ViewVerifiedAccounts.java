@@ -55,7 +55,7 @@ public class ViewVerifiedAccounts extends SDLinkSlashCommand {
             MessageUtil.listBatches(accounts, 10).forEach(itm -> {
                 count.getAndIncrement();
                 builder.clear();
-                builder.setTitle("Verified Accounts - Page " + count + "/" + (int)Math.ceil(((float)accounts.size() / 10)));
+                builder.setTitle("Verified Accounts - Page " + count + "/" + (int) Math.ceil(((float) accounts.size() / 10)));
                 builder.setColor(Color.GREEN);
                 StringBuilder sBuilder = new StringBuilder();
 

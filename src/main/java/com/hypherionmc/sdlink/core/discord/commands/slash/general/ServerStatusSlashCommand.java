@@ -30,13 +30,6 @@ public class ServerStatusSlashCommand extends SDLinkSlashCommand {
         this.guildOnly = true;
     }
 
-    @Override
-    protected void execute(SlashCommandEvent event) {
-        event.deferReply(true).queue();
-        Button refreshBtn  = Button.danger("sdrefreshbtn", "Refresh");
-        event.getHook().sendMessageEmbeds(runStatusCommand()).addActionRow(refreshBtn).queue();
-    }
-
     public static MessageEmbed runStatusCommand() {
         SystemInfo systemInfo = new SystemInfo();
         HardwareAbstractionLayer hal = systemInfo.getHardware();
@@ -106,5 +99,12 @@ public class ServerStatusSlashCommand extends SDLinkSlashCommand {
         builder.setDescription(stringBuilder.toString());
 
         return builder.build();
+    }
+
+    @Override
+    protected void execute(SlashCommandEvent event) {
+        event.deferReply(true).queue();
+        Button refreshBtn = Button.danger("sdrefreshbtn", "Refresh");
+        event.getHook().sendMessageEmbeds(runStatusCommand()).addActionRow(refreshBtn).queue();
     }
 }

@@ -13,19 +13,24 @@ import lombok.Setter;
 public class SDLinkAccount {
 
     @Id
-    @Getter @Setter
+    @Getter
+    @Setter
     private String uuid;
 
-    @Getter @Setter
+    @Getter
+    @Setter
     private String username;
 
-    @Getter @Setter
+    @Getter
+    @Setter
     private String discordID;
 
-    @Getter @Setter
+    @Getter
+    @Setter
     private String verifyCode;
 
-    @Getter @Setter
+    @Getter
+    @Setter
     private boolean isOffline;
 
 }

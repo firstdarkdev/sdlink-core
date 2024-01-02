@@ -24,6 +24,7 @@ public final class DiscordMessageBuilder {
 
     /**
      * Construct a discord message
+     *
      * @param messageType The type of message being sent
      */
     public DiscordMessageBuilder(MessageType messageType) {

@@ -22,18 +22,9 @@ import java.util.Random;
  */
 public final class EncryptionUtil {
 
-    public static EncryptionUtil INSTANCE = getInstance();
-    private final boolean canRun;
-
+    private final boolean canRun;    public static EncryptionUtil INSTANCE = getInstance();
     // Instance of the Encryptor Used
     private final StandardPBEStringEncryptor encryptor;
-
-    private static EncryptionUtil getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new EncryptionUtil();
-        }
-        return INSTANCE;
-    }
 
     private EncryptionUtil() {
         String encCode = "";
@@ -63,8 +54,16 @@ public final class EncryptionUtil {
             BotController.INSTANCE.getLogger().error("Failed to initialize encryption system. Your config values will not be encrypted!");
     }
 
+    private static EncryptionUtil getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new EncryptionUtil();
+        }
+        return INSTANCE;
+    }
+
     /**
      * Will Encrypt the string passed into it, if it's not already encrypted
+     *
      * @param input The string to be encrypted
      * @return The encrypted string
      */
@@ -82,6 +81,7 @@ public final class EncryptionUtil {
 
     /**
      * Decrypts an encrypted string
+     *
      * @param input The encrypted String
      * @return The Plain Text String
      */
@@ -119,5 +119,7 @@ public final class EncryptionUtil {
     private String getSaltString() {
         return RandomStringUtils.random(new Random().nextInt(40), true, true);
     }
+
+
 
 }

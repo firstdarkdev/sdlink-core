@@ -38,9 +38,10 @@ public class DiscordAuthor {
 
     /**
      * Internal. Use {@link #of(String, String, String)}
+     *
      * @param displayName The Username of the Author
-     * @param avatar The avatar URL of the Author
-     * @param isServer Is the Author the Minecraft Server
+     * @param avatar      The avatar URL of the Author
+     * @param isServer    Is the Author the Minecraft Server
      */
     private DiscordAuthor(String displayName, String avatar, String username, boolean isServer, String uuid) {
         this.displayName = displayName;
@@ -52,8 +53,9 @@ public class DiscordAuthor {
 
     /**
      * Create a new Discord Author
+     *
      * @param displayName The name/Username of the Author
-     * @param uuid The Mojang UUID of the Author
+     * @param uuid        The Mojang UUID of the Author
      * @return A constructed {@link DiscordAuthor}
      */
     public static DiscordAuthor of(String displayName, String uuid, String username) {

@@ -15,8 +15,8 @@ import com.hypherionmc.sdlink.core.discord.BotController;
 //TODO Remove this on release
 public class Profiler {
 
-    private long startTime;
     private final String profilerName;
+    private long startTime;
     private boolean hasStarted = false;
     private String message = "";
 

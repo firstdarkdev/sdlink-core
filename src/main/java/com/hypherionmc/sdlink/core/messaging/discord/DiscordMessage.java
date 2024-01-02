@@ -148,6 +148,7 @@ public final class DiscordMessage {
 
     /**
      * Build an embed with the supplied information
+     *
      * @param withAuthor Should the author be appended to the embed. Not used for Webhooks
      */
     private EmbedBuilder buildEmbed(boolean withAuthor, String key) {

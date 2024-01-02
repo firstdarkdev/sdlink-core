@@ -11,16 +11,20 @@ import lombok.Setter;
 @AllArgsConstructor(staticName = "of")
 public class DiscordUser {
 
-    @Getter @Setter
+    @Getter
+    @Setter
     private String effectiveName;
 
-    @Getter @Setter
+    @Getter
+    @Setter
     private String avatarUrl;
 
-    @Getter @Setter
+    @Getter
+    @Setter
     private long userId;
 
-    @Getter @Setter
+    @Getter
+    @Setter
     private String asMention;
 
 }

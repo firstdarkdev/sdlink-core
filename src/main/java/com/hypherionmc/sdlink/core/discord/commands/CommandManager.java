@@ -52,6 +52,7 @@ public class CommandManager {
 
     /**
      * INTERNAL. Used to register slash commands
+     *
      * @param client The Discord Command Client instance
      */
     public void register(CommandClient client) {

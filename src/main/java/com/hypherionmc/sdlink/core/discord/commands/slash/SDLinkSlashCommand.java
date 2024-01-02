@@ -17,7 +17,7 @@ public abstract class SDLinkSlashCommand extends SlashCommand {
         this.guildOnly = true;
 
         if (requiresPerms) {
-            this.userPermissions = new Permission[] { Permission.MANAGE_SERVER };
+            this.userPermissions = new Permission[]{Permission.MANAGE_SERVER};
         }
     }
 

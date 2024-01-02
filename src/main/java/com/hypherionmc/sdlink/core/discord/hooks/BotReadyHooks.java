@@ -25,6 +25,7 @@ public class BotReadyHooks {
 
     /**
      * Update the bot activity
+     *
      * @param event The {@link ReadyEvent}
      */
     public static void startActivityUpdates(ReadyEvent event) {

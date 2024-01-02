@@ -28,6 +28,7 @@ public class RoleManager {
 
     /**
      * Check and load the roles required by the bot
+     *
      * @param errCount
      * @param builder
      */
@@ -55,10 +56,11 @@ public class RoleManager {
 
     /**
      * Load a role from either a Name or ID
-     * @param errCount Counter holding the current error count
-     * @param builder String builder that is used to build the error messages
+     *
+     * @param errCount       Counter holding the current error count
+     * @param builder        String builder that is used to build the error messages
      * @param roleIdentifier Log identifier for the role being loaded
-     * @param roleID The ID or Name of the role to load
+     * @param roleID         The ID or Name of the role to load
      * @return The role that matched or NULL
      */
     private static Role getRole(AtomicInteger errCount, StringBuilder builder, String roleIdentifier, String roleID) {

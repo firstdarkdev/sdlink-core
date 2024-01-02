@@ -21,13 +21,20 @@ import java.util.List;
 public interface IMinecraftHelper {
 
     void discordMessageReceived(Member member, String message);
+
     Result checkWhitelisting();
 
     Pair<Integer, Integer> getPlayerCounts();
+
     List<MinecraftAccount> getOnlinePlayers();
+
     long getServerUptime();
+
     String getServerVersion();
+
     Result executeMinecraftCommand(String command, int permLevel, MessageReceivedEvent event, @Nullable SDLinkAccount account);
+
     boolean isOnlineMode();
+
     void banPlayer(MinecraftAccount acc);
 }

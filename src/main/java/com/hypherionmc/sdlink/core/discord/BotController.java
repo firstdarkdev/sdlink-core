@@ -35,30 +35,18 @@ import java.util.concurrent.TimeUnit;
  */
 public class BotController {
 
-    // Public instance of this class that can be called anywhere
-    public static BotController INSTANCE;
-
     // Thread Execution Manager
     public static final ScheduledExecutorService taskManager = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
-
-    // Required Variables
-    private JDA _jda;
+    // Public instance of this class that can be called anywhere
+    public static BotController INSTANCE;
     private final EventWaiter eventWaiter = new EventWaiter();
     private final Logger logger;
-
-    /**
-     * Construct a new instance of this class
-     * @param logger A constructed {@link Logger} that the bot will use
-     */
-    public static void newInstance(Logger logger) {
-        if (INSTANCE != null) {
-            INSTANCE.shutdownBot(false);
-        }
-        new BotController(logger);
-    }
+    // Required Variables
+    private JDA _jda;
 
     /**
      * INTERNAL
+     *
      * @param logger A constructed {@link Logger} that the bot will use
      */
     private BotController(Logger logger) {
@@ -89,6 +77,18 @@ public class BotController {
 
         // Initialize Embeds
         EmbedManager.init();
+    }
+
+    /**
+     * Construct a new instance of this class
+     *
+     * @param logger A constructed {@link Logger} that the bot will use
+     */
+    public static void newInstance(Logger logger) {
+        if (INSTANCE != null) {
+            INSTANCE.shutdownBot(false);
+        }
+        new BotController(logger);
     }
 
     /**
@@ -171,6 +171,7 @@ public class BotController {
 
     /**
      * Shutdown the Bot, optionally forcing a shutdown
+     *
      * @param forced Should the shutdown be forced
      */
     public void shutdownBot(boolean forced) {

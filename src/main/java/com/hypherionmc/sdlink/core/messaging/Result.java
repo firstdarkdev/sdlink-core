@@ -10,14 +10,8 @@ package com.hypherionmc.sdlink.core.messaging;
  */
 public class Result {
 
-    enum Type {
-        ERROR,
-        SUCCESS
-    }
-
     private final Type type;
     private final String message;
-
     private Result(Type type, String message) {
         this.type = type;
         this.message = message;
@@ -37,6 +31,11 @@ public class Result {
 
     public String getMessage() {
         return message;
+    }
+
+    enum Type {
+        ERROR,
+        SUCCESS
     }
 
 }
