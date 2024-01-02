@@ -20,6 +20,10 @@ public class AccessControl {
     @SpecComment("Does the player need to be a member of your discord to join")
     public boolean requireDiscordMembership = false;
 
+    @Path("allowMultipleAccounts")
+    @SpecComment("Can players verify multiple Minecraft Accounts")
+    public boolean allowMultipleAccounts = false;
+
     @Path("requiredRoles")
     @SpecComment("Optional: The player requires any of these roles to be able to join your server")
     public List<String> requiredRoles = new ArrayList<>();

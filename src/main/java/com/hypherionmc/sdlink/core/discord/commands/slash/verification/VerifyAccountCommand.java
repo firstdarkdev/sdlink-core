@@ -5,6 +5,7 @@
 package com.hypherionmc.sdlink.core.discord.commands.slash.verification;
 
 import com.hypherionmc.sdlink.core.accounts.MinecraftAccount;
+import com.hypherionmc.sdlink.core.config.SDLinkConfig;
 import com.hypherionmc.sdlink.core.database.SDLinkAccount;
 import com.hypherionmc.sdlink.core.discord.commands.slash.SDLinkSlashCommand;
 import com.hypherionmc.sdlink.core.messaging.Result;
@@ -48,10 +49,16 @@ public class VerifyAccountCommand extends SDLinkSlashCommand {
         }
 
         boolean didVerify = false;
+        boolean hasRejected = false;
 
         for (SDLinkAccount account : accounts) {
             if (account.getVerifyCode() == null)
                 continue;
+
+            if (accounts.stream().anyMatch(a -> a.getDiscordID() != null && a.getDiscordID().equals(event.getMember().getId())) && !SDLinkConfig.INSTANCE.accessControl.allowMultipleAccounts) {
+                event.getHook().sendMessage("Sorry, you already have a verified account and this server does not allow multiple accounts").queue();
+                return;
+            }
 
             if (account.getVerifyCode().equalsIgnoreCase(String.valueOf(mcCode))) {
                 MinecraftAccount minecraftAccount = MinecraftAccount.of(account.getUsername());
