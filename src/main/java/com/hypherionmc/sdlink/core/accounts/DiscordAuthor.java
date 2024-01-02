@@ -36,6 +36,10 @@ public class DiscordAuthor {
     @Getter
     private GameProfile profile = null;
 
+    @Getter String realPlayerAvatar = "";
+
+    @Getter String realPlayerName = "";
+
     /**
      * Internal. Use {@link #of(String, String, String)}
      *
@@ -76,6 +80,16 @@ public class DiscordAuthor {
                 server,
                 username
         );
+    }
+
+    public DiscordAuthor setPlayerAvatar(String usr, String userid) {
+        realPlayerAvatar = SDLinkConfig.INSTANCE.chatConfig.playerAvatarType.resolve(SDLinkPlatform.minecraftHelper.isOnlineMode() ? userid : usr);
+        return this;
+    }
+
+    public DiscordAuthor setPlayerName(String name) {
+        this.realPlayerName = name;
+        return this;
     }
 
     public DiscordAuthor setGameProfile(GameProfile profile) {

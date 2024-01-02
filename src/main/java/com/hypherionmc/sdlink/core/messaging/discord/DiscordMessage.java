@@ -173,6 +173,8 @@ public final class DiscordMessage {
                 .replace("%author%", this.author.getDisplayName())
                 .replace("%avatar%", this.author.getAvatar())
                 .replace("%message_contents%", this.message)
+                .replace("%player_avatar%", this.author.getRealPlayerAvatar())
+                .replace("%player_name%", this.author.getRealPlayerName())
                 .replace("%username%", this.author.getUsername());
 
         DataObject object = DataObject.fromJson(embedJson);
