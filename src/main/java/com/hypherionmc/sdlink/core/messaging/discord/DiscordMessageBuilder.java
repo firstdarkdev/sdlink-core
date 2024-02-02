@@ -11,6 +11,8 @@ import com.hypherionmc.sdlink.core.config.SDLinkConfig;
 import com.hypherionmc.sdlink.core.config.impl.MessageIgnoreConfig;
 import com.hypherionmc.sdlink.core.messaging.MessageType;
 
+import java.util.regex.Pattern;
+
 /**
  * @author HypherionSA
  * Used to construct a {@link DiscordMessage} to be sent back to discord
@@ -58,11 +60,18 @@ public final class DiscordMessageBuilder {
      */
     public DiscordMessageBuilder message(String message) {
         if (this.messageType == MessageType.CHAT) {
-            message = message.replace("@everyone", "");
-            message = message.replace("@here", "");
+            //using regex to replace @here and @everyone mentions
+            message = Pattern.compile("@+(here|everyone)").matcher(message).replaceAll("");
+
+//            message = message.replace("@everyone", "");
+//            message = message.replace("@here", "");
 
             if (!SDLinkConfig.INSTANCE.chatConfig.allowMentionsFromChat) {
-                message = message.replace("<@", "");
+
+                //using regex to replace any mention
+                message = Pattern.compile("<[^>]*\\d+>").matcher(message).replaceAll("");
+
+//                message = message.replace("<@", "");
             }
         }
 
