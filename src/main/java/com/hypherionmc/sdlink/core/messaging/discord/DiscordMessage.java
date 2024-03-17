@@ -19,6 +19,7 @@ import com.hypherionmc.sdlink.core.messaging.MessageType;
 import com.hypherionmc.sdlink.core.util.SDLinkUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.StandardGuildChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.StandardGuildMessageChannel;
@@ -82,7 +83,7 @@ public final class DiscordMessage {
      * Send a Non Console relay message to discord
      */
     private void sendNormalMessage() {
-        Triple<MessageChannel, WebhookClient, MessageChannelConfig.DestinationObject> channel = resolveDestination();
+        Triple<GuildMessageChannel, WebhookClient, MessageChannelConfig.DestinationObject> channel = resolveDestination();
 
         // Check if a webhook is configured, and use that instead
         if (channel.getMiddle() != null && SDLinkConfig.INSTANCE.channelsAndWebhooks.webhooks.enabled) {
@@ -186,7 +187,7 @@ public final class DiscordMessage {
     /**
      * Figure out where the message must be delivered to, based on the config values
      */
-    private Triple<MessageChannel, WebhookClient, MessageChannelConfig.DestinationObject> resolveDestination() {
+    private Triple<GuildMessageChannel, WebhookClient, MessageChannelConfig.DestinationObject> resolveDestination() {
         switch (messageType) {
             case CHAT -> {
                 MessageChannelConfig.DestinationObject chat = SDLinkConfig.INSTANCE.messageDestinations.chat;

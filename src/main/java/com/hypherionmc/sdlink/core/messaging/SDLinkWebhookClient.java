@@ -24,4 +24,9 @@ public class SDLinkWebhookClient extends WebhookClientBuilder {
         this.setWait(false);
     }
 
+    public SDLinkWebhookClient setThreadChannelID(String id) {
+        this.setThreadId(Long.parseLong(id));
+        return this;
+    }
+
 }

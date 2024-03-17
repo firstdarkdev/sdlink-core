@@ -10,8 +10,13 @@ import com.hypherionmc.sdlink.core.discord.BotController;
 import com.hypherionmc.sdlink.core.messaging.MessageDestination;
 import com.hypherionmc.sdlink.core.messaging.SDLinkWebhookClient;
 import com.hypherionmc.sdlink.core.util.EncryptionUtil;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static club.minnced.discord.webhook.WebhookClientBuilder.WEBHOOK_PATTERN;
 
 /**
  * @author HypherionSA
@@ -21,6 +26,7 @@ public class WebhookManager {
 
     private static final HashMap<MessageDestination, WebhookClient> clientMap = new HashMap<>();
     private static WebhookClient chatWebhookClient, eventWebhookClient, consoleWebhookClient;
+    private static final Pattern THREAD_PATTERN = Pattern.compile("thread_id=(\\d+)");
 
     /**
      * Load configured webhook clients
@@ -36,26 +42,26 @@ public class WebhookManager {
             return;
 
         if (!SDLinkConfig.INSTANCE.channelsAndWebhooks.webhooks.chatWebhook.isEmpty()) {
-            chatWebhookClient = new SDLinkWebhookClient(
+            chatWebhookClient = createClient(
                     "Chat",
                     EncryptionUtil.INSTANCE.decrypt(SDLinkConfig.INSTANCE.channelsAndWebhooks.webhooks.chatWebhook)
-            ).build();
+            );
             BotController.INSTANCE.getLogger().info("Using Webhook for Chat Messages");
         }
 
         if (!SDLinkConfig.INSTANCE.channelsAndWebhooks.webhooks.eventsWebhook.isEmpty()) {
-            eventWebhookClient = new SDLinkWebhookClient(
+            eventWebhookClient = createClient(
                     "Events",
                     EncryptionUtil.INSTANCE.decrypt(SDLinkConfig.INSTANCE.channelsAndWebhooks.webhooks.eventsWebhook)
-            ).build();
+            );
             BotController.INSTANCE.getLogger().info("Using Webhook for Event Messages");
         }
 
         if (!SDLinkConfig.INSTANCE.channelsAndWebhooks.webhooks.consoleWebhook.isEmpty()) {
-            consoleWebhookClient = new SDLinkWebhookClient(
+            consoleWebhookClient = createClient(
                     "Console",
                     EncryptionUtil.INSTANCE.decrypt(SDLinkConfig.INSTANCE.channelsAndWebhooks.webhooks.consoleWebhook)
-            ).build();
+            );
             BotController.INSTANCE.getLogger().info("Using Webhook for Console Messages");
         }
 
@@ -81,5 +87,42 @@ public class WebhookManager {
         if (consoleWebhookClient != null) {
             consoleWebhookClient.close();
         }
+    }
+
+    /**
+     * Workaround to support ThreadID's in Webhook URLS
+     * @param name The name of the Webhook Client
+     * @param url The Webhook URL
+     * @return The client with thread id set, if found
+     */
+    private static WebhookClient createClient(String name, String url) {
+        url = EncryptionUtil.INSTANCE.decrypt(url);
+
+        Matcher threadMatcher = THREAD_PATTERN.matcher(url);
+        Matcher webhookMatcher = WEBHOOK_PATTERN.matcher(url);
+
+        if (threadMatcher.find() && webhookMatcher.find()) {
+            return new SDLinkWebhookClient(
+                    name,
+                    String.format("https://discord.com/api/webhooks/%s/%s", webhookMatcher.group(1), webhookMatcher.group(2))
+            ).setThreadChannelID(threadMatcher.group(1)).build();
+        } else if (webhookMatcher.matches()) {
+            return new SDLinkWebhookClient(name, String.format("https://discord.com/api/webhooks/%s/%s", webhookMatcher.group(1), webhookMatcher.group(2))).build();
+        }
+
+        return new SDLinkWebhookClient(name, url).build();
+     }
+
+    private static Pair<String, String> parseWebhookUrl(String url) {
+        final Pattern pattern = Pattern.compile("\\?thread_id=[0-9]+", Pattern.CASE_INSENSITIVE);
+        String thread = "0";
+
+        if (pattern.matcher(url).find()) {
+            thread = pattern.matcher(url).group(0);
+        }
+
+        String whurl = url.replace("?thread_id=" + thread, "");
+
+        return Pair.of(whurl, thread);
     }
 }

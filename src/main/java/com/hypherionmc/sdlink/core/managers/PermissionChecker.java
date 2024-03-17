@@ -9,6 +9,8 @@ import com.hypherionmc.sdlink.core.discord.BotController;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.StandardGuildMessageChannel;
 
 import java.util.ArrayList;
@@ -153,7 +155,7 @@ public class PermissionChecker {
             return;
         }
 
-        StandardGuildMessageChannel channel = BotController.INSTANCE.getJDA().getChannelById(StandardGuildMessageChannel.class, channelID);
+        GuildMessageChannel channel = BotController.INSTANCE.getJDA().getChannelById(GuildMessageChannel.class, channelID);
 
         if (channel == null) {
             errCount.incrementAndGet();
@@ -163,7 +165,7 @@ public class PermissionChecker {
                     .append(" ID does not point to a valid Discord Channel. Please double check this")
                     .append("\r\n");
         } else {
-            EnumSet<Permission> chatPerms = bot.getPermissionsExplicit(channel);
+            EnumSet<Permission> chatPerms = bot.getPermissions(channel);
 
             BASE_CHANNEL_PERMS.forEach(perm -> {
                 if (!chatPerms.contains(perm)) {

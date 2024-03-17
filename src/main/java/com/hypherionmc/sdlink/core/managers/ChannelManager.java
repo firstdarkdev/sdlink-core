@@ -9,6 +9,7 @@ import com.hypherionmc.sdlink.core.discord.BotController;
 import com.hypherionmc.sdlink.core.messaging.MessageDestination;
 import lombok.Getter;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.StandardGuildChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.StandardGuildMessageChannel;
@@ -22,9 +23,9 @@ import java.util.HashMap;
  */
 public class ChannelManager {
 
-    private static final HashMap<MessageDestination, Pair<MessageChannel, Boolean>> channelMap = new HashMap<>();
+    private static final HashMap<MessageDestination, Pair<GuildMessageChannel, Boolean>> channelMap = new HashMap<>();
     @Getter
-    private static MessageChannel consoleChannel;
+    private static GuildMessageChannel consoleChannel;
 
     /**
      * Load configured channel, while always defaulting back to ChatChannel for channels that aren't configured
@@ -34,9 +35,9 @@ public class ChannelManager {
 
         JDA jda = BotController.INSTANCE.getJDA();
 
-        MessageChannel chatChannel = jda.getChannelById(MessageChannel.class, SDLinkConfig.INSTANCE.channelsAndWebhooks.channels.chatChannelID);
-        MessageChannel eventChannel = jda.getChannelById(MessageChannel.class, SDLinkConfig.INSTANCE.channelsAndWebhooks.channels.eventsChannelID);
-        consoleChannel = jda.getChannelById(MessageChannel.class, SDLinkConfig.INSTANCE.channelsAndWebhooks.channels.consoleChannelID);
+        GuildMessageChannel chatChannel = jda.getChannelById(GuildMessageChannel.class, SDLinkConfig.INSTANCE.channelsAndWebhooks.channels.chatChannelID);
+        GuildMessageChannel eventChannel = jda.getChannelById(GuildMessageChannel.class, SDLinkConfig.INSTANCE.channelsAndWebhooks.channels.eventsChannelID);
+        consoleChannel = jda.getChannelById(GuildMessageChannel.class, SDLinkConfig.INSTANCE.channelsAndWebhooks.channels.consoleChannelID);
 
         if (chatChannel != null) {
             channelMap.put(MessageDestination.CHAT, Pair.of(chatChannel, false));
@@ -46,7 +47,7 @@ public class ChannelManager {
         channelMap.put(MessageDestination.CONSOLE, consoleChannel != null ? Pair.of(consoleChannel, true) : Pair.of(chatChannel, false));
     }
 
-    public static MessageChannel getDestinationChannel(MessageDestination destination) {
+    public static GuildMessageChannel getDestinationChannel(MessageDestination destination) {
         return channelMap.get(destination).getLeft();
     }
 }
