@@ -203,15 +203,6 @@ public class BotController {
         }
     }
 
-    /**
-     * Ensure that whitelisting is set up properly, so the bot can use the feature
-     */
-    public void checkWhiteListing() {
-        if (SDLinkConfig.INSTANCE.accessControl.enabled && !SDLinkPlatform.minecraftHelper.checkWhitelisting().isError()) {
-            getLogger().error("SDLink Access Control is enabled, but so is whitelisting on your server. You need to disable whitelisting to use the AccessControl feature");
-        }
-    }
-
     public JDA getJDA() {
         return this._jda;
     }

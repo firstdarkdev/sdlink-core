@@ -4,9 +4,11 @@
  */
 package com.hypherionmc.sdlink.core.accounts;
 
+import com.hypherionmc.craterlib.core.event.CraterEventBus;
 import com.hypherionmc.sdlink.core.config.SDLinkConfig;
 import com.hypherionmc.sdlink.core.database.SDLinkAccount;
 import com.hypherionmc.sdlink.core.discord.BotController;
+import com.hypherionmc.sdlink.core.events.VerificationEvent;
 import com.hypherionmc.sdlink.core.managers.CacheManager;
 import com.hypherionmc.sdlink.core.managers.RoleManager;
 import com.hypherionmc.sdlink.core.messaging.Result;
@@ -218,6 +220,8 @@ public class MinecraftAccount {
             }
         }
 
+        CraterEventBus.INSTANCE.postEvent(new VerificationEvent.PlayerVerified(this));
+
         return Result.success("Your account has been verified");
     }
 
@@ -248,6 +252,8 @@ public class MinecraftAccount {
                 }
             }
         }
+
+        CraterEventBus.INSTANCE.postEvent(new VerificationEvent.PlayerUnverified(this));
 
         return Result.success("Your account has been un-verified");
     }
