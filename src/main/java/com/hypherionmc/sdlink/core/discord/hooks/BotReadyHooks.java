@@ -12,6 +12,7 @@ import com.hypherionmc.sdlink.core.services.SDLinkPlatform;
 import com.hypherionmc.sdlink.core.util.SystemUtils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.StandardGuildMessageChannel;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
 
@@ -65,13 +66,13 @@ public class BotReadyHooks {
         BotController.taskManager.scheduleAtFixedRate(() -> {
             try {
                 if (BotController.INSTANCE.isBotReady() && (SDLinkConfig.INSTANCE.botConfig.channelTopic.channelTopic != null && !SDLinkConfig.INSTANCE.botConfig.channelTopic.channelTopic.isEmpty())) {
-                    StandardGuildMessageChannel channel = ChannelManager.getDestinationChannel(MessageDestination.CHAT);
-                    if (channel != null) {
+                    MessageChannel channel = ChannelManager.getDestinationChannel(MessageDestination.CHAT);
+                    if (channel instanceof StandardGuildMessageChannel mc) {
                         String topic = SDLinkConfig.INSTANCE.botConfig.channelTopic.channelTopic
                                 .replace("%players%", String.valueOf(SDLinkPlatform.minecraftHelper.getPlayerCounts().getLeft()))
                                 .replace("%maxplayers%", String.valueOf(SDLinkPlatform.minecraftHelper.getPlayerCounts().getRight()))
                                 .replace("%uptime%", SystemUtils.secondsToTimestamp(SDLinkPlatform.minecraftHelper.getServerUptime()));
-                        channel.getManager().setTopic(topic).queue();
+                        mc.getManager().setTopic(topic).queue();
                     }
                 }
             } catch (Exception e) {

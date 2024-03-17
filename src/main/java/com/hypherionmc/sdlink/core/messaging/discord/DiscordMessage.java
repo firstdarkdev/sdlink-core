@@ -19,6 +19,8 @@ import com.hypherionmc.sdlink.core.messaging.MessageType;
 import com.hypherionmc.sdlink.core.util.SDLinkUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.StandardGuildChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.StandardGuildMessageChannel;
 import net.dv8tion.jda.api.utils.data.DataArray;
 import net.dv8tion.jda.api.utils.data.DataObject;
@@ -80,7 +82,7 @@ public final class DiscordMessage {
      * Send a Non Console relay message to discord
      */
     private void sendNormalMessage() {
-        Triple<StandardGuildMessageChannel, WebhookClient, MessageChannelConfig.DestinationObject> channel = resolveDestination();
+        Triple<MessageChannel, WebhookClient, MessageChannelConfig.DestinationObject> channel = resolveDestination();
 
         // Check if a webhook is configured, and use that instead
         if (channel.getMiddle() != null && SDLinkConfig.INSTANCE.channelsAndWebhooks.webhooks.enabled) {
@@ -132,7 +134,7 @@ public final class DiscordMessage {
             if (!BotController.INSTANCE.isBotReady() || !SDLinkConfig.INSTANCE.chatConfig.sendConsoleMessages)
                 return;
 
-            StandardGuildMessageChannel channel = ChannelManager.getConsoleChannel();
+            MessageChannel channel = ChannelManager.getConsoleChannel();
             if (channel != null) {
                 channel.sendMessage(this.message).queue();
             }
@@ -184,7 +186,7 @@ public final class DiscordMessage {
     /**
      * Figure out where the message must be delivered to, based on the config values
      */
-    private Triple<StandardGuildMessageChannel, WebhookClient, MessageChannelConfig.DestinationObject> resolveDestination() {
+    private Triple<MessageChannel, WebhookClient, MessageChannelConfig.DestinationObject> resolveDestination() {
         switch (messageType) {
             case CHAT -> {
                 MessageChannelConfig.DestinationObject chat = SDLinkConfig.INSTANCE.messageDestinations.chat;

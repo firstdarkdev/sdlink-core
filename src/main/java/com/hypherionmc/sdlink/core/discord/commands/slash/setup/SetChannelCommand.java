@@ -32,7 +32,7 @@ public class SetChannelCommand extends SDLinkSlashCommand {
         choices.add(new Command.Choice("Console", "console"));
 
         List<OptionData> optionData = new ArrayList<>();
-        optionData.add(new OptionData(OptionType.CHANNEL, "channel", "The channel to set").setChannelTypes(ChannelType.TEXT).setRequired(true));
+        optionData.add(new OptionData(OptionType.CHANNEL, "channel", "The channel to set").setChannelTypes(ChannelType.TEXT, ChannelType.FORUM, ChannelType.GUILD_PUBLIC_THREAD, ChannelType.GUILD_PRIVATE_THREAD).setRequired(true));
         optionData.add(new OptionData(OptionType.STRING, "type", "The type of channel to assign this channel to").addChoices(choices).setRequired(true));
         optionData.add(new OptionData(OptionType.BOOLEAN, "webhook", "Create a webhook instead of using the channel").setRequired(true));
 
