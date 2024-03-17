@@ -4,6 +4,8 @@
  */
 package com.hypherionmc.sdlink.core.messaging;
 
+import lombok.Getter;
+
 /**
  * @author HypherionSA
  * Helper Class to return the result of interactions between Discord and Minecraft
@@ -11,6 +13,7 @@ package com.hypherionmc.sdlink.core.messaging;
 public class Result {
 
     private final Type type;
+    @Getter
     private final String message;
     private Result(Type type, String message) {
         this.type = type;
@@ -27,10 +30,6 @@ public class Result {
 
     public boolean isError() {
         return this.type == Type.ERROR;
-    }
-
-    public String getMessage() {
-        return message;
     }
 
     enum Type {

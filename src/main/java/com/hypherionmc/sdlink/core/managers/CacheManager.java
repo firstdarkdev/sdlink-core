@@ -5,6 +5,7 @@
 package com.hypherionmc.sdlink.core.managers;
 
 import com.hypherionmc.sdlink.core.discord.BotController;
+import lombok.Getter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
@@ -15,10 +16,14 @@ import java.util.Set;
 
 public class CacheManager {
 
+    @Getter
     private static final HashMap<String, String> serverChannels = new HashMap<>();
+    @Getter
     private static final HashMap<String, String> serverRoles = new HashMap<>();
+    @Getter
     private static final HashMap<String, String> userCache = new HashMap<>();
-    private static Set<Member> discordMembers = new HashSet<>();
+    @Getter
+    private static final Set<Member> discordMembers = new HashSet<>();
 
     public static void loadCache() {
         loadChannelCache();
@@ -71,19 +76,4 @@ public class CacheManager {
         });
     }
 
-    public static HashMap<String, String> getServerChannels() {
-        return serverChannels;
-    }
-
-    public static HashMap<String, String> getServerRoles() {
-        return serverRoles;
-    }
-
-    public static HashMap<String, String> getUserCache() {
-        return userCache;
-    }
-
-    public static Set<Member> getDiscordMembers() {
-        return discordMembers;
-    }
 }

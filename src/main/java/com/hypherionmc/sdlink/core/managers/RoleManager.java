@@ -8,6 +8,7 @@ import com.hypherionmc.sdlink.core.config.SDLinkConfig;
 import com.hypherionmc.sdlink.core.discord.BotController;
 import com.hypherionmc.sdlink.core.util.SDLinkUtils;
 import com.hypherionmc.sdlink.core.util.SystemUtils;
+import lombok.Getter;
 import net.dv8tion.jda.api.entities.Role;
 
 import java.util.HashSet;
@@ -21,9 +22,12 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class RoleManager {
 
+    @Getter
     private static final Set<Role> verificationRoles = new HashSet<>();
+    @Getter
     private static final Set<Role> deniedRoles = new HashSet<>();
 
+    @Getter
     private static Role verifiedRole = null;
 
     /**
@@ -91,15 +95,4 @@ public class RoleManager {
         return null;
     }
 
-    public static Set<Role> getVerificationRoles() {
-        return verificationRoles;
-    }
-
-    public static Role getVerifiedRole() {
-        return verifiedRole;
-    }
-
-    public static Set<Role> getDeniedRoles() {
-        return deniedRoles;
-    }
 }

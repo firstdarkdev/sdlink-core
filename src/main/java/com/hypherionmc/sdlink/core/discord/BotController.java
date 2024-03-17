@@ -16,6 +16,7 @@ import com.hypherionmc.sdlink.core.util.ThreadedEventManager;
 import com.jagrosh.jdautilities.command.CommandClient;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
+import lombok.Getter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -37,10 +38,15 @@ public class BotController {
 
     // Thread Execution Manager
     public static final ScheduledExecutorService taskManager = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
+
     // Public instance of this class that can be called anywhere
     public static BotController INSTANCE;
+
+    @Getter
     private final EventWaiter eventWaiter = new EventWaiter();
+    @Getter
     private final Logger logger;
+
     // Required Variables
     private JDA _jda;
 
@@ -199,15 +205,8 @@ public class BotController {
         }
     }
 
-    public Logger getLogger() {
-        return logger;
-    }
-
     public JDA getJDA() {
         return this._jda;
     }
 
-    public EventWaiter getEventWaiter() {
-        return eventWaiter;
-    }
 }

@@ -3,7 +3,7 @@
 Minecraft independent code used by Simple Discord Link. This library contains all the core discord code, and code that is not
 dependent on Minecraft.
 
-Requires JAVA 16 and Above!
+Requires JAVA 17 and Above!
 
 ***
 

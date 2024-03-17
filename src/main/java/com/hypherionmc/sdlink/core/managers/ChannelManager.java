@@ -7,6 +7,7 @@ package com.hypherionmc.sdlink.core.managers;
 import com.hypherionmc.sdlink.core.config.SDLinkConfig;
 import com.hypherionmc.sdlink.core.discord.BotController;
 import com.hypherionmc.sdlink.core.messaging.MessageDestination;
+import lombok.Getter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.channel.middleman.StandardGuildMessageChannel;
 import org.apache.commons.lang3.tuple.Pair;
@@ -20,6 +21,7 @@ import java.util.HashMap;
 public class ChannelManager {
 
     private static final HashMap<MessageDestination, Pair<StandardGuildMessageChannel, Boolean>> channelMap = new HashMap<>();
+    @Getter
     private static StandardGuildMessageChannel consoleChannel;
 
     /**
@@ -40,10 +42,6 @@ public class ChannelManager {
 
         channelMap.put(MessageDestination.EVENT, eventChannel != null ? Pair.of(eventChannel, false) : Pair.of(chatChannel, false));
         channelMap.put(MessageDestination.CONSOLE, consoleChannel != null ? Pair.of(consoleChannel, true) : Pair.of(chatChannel, false));
-    }
-
-    public static StandardGuildMessageChannel getConsoleChannel() {
-        return consoleChannel;
     }
 
     public static StandardGuildMessageChannel getDestinationChannel(MessageDestination destination) {
