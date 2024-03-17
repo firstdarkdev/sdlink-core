@@ -96,8 +96,6 @@ public class WebhookManager {
      * @return The client with thread id set, if found
      */
     private static WebhookClient createClient(String name, String url) {
-        url = EncryptionUtil.INSTANCE.decrypt(url);
-
         Matcher threadMatcher = THREAD_PATTERN.matcher(url);
         Matcher webhookMatcher = WEBHOOK_PATTERN.matcher(url);
 
