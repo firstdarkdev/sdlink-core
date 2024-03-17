@@ -49,6 +49,7 @@ public class BotController {
 
     // Required Variables
     private JDA _jda;
+    private boolean shutdownCalled = false;
 
     /**
      * INTERNAL
@@ -101,6 +102,8 @@ public class BotController {
      * Start the bot and handle all the startup work
      */
     public void initializeBot() {
+        shutdownCalled = false;
+
         if (SDLinkConfig.INSTANCE == null || !SDLinkConfig.hasConfigLoaded) {
             logger.error("Failed to load config. Check your log for errors");
             return;
@@ -156,6 +159,9 @@ public class BotController {
         if (SDLinkConfig.INSTANCE == null)
             return false;
 
+        if (shutdownCalled)
+            return false;
+
         if (!SDLinkConfig.INSTANCE.generalConfig.enabled)
             return false;
 
@@ -181,6 +187,7 @@ public class BotController {
      * @param forced Should the shutdown be forced
      */
     public void shutdownBot(boolean forced) {
+        shutdownCalled = true;
         if (_jda != null) {
             _jda.shutdown();
         }
